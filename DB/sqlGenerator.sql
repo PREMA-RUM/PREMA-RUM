@@ -15,13 +15,13 @@ create table "Department"
     dept_name varchar(100) not null
 );
 
-create table "Proffesor"
+create table "Profesor"
 (
-    p_id    serial
+    p_id    integer default nextval('"Proffesor_p_id_seq"'::regclass) not null
         constraint proffesor_pk
             primary key,
-    p_name  varchar(30) not null,
-    dept_id integer     not null
+    p_name  varchar(30)                                               not null,
+    dept_id integer                                                   not null
         constraint dept_id
             references "Department"
 );
@@ -75,7 +75,7 @@ create table "SemesterOffer"
     so_capacity integer,
     p_id        integer not null
         constraint p_id
-            references "Proffesor",
+            references "Profesor",
     c_id        integer not null
         constraint c_id
             references "Course",
@@ -88,10 +88,10 @@ create table "TimeSlot"
 (
     ts_start_time time    not null,
     ts_end_time   time    not null,
-    ts_day        pg_enum not null,
     so_id         integer not null
         constraint so_id
-            references "SemesterOffer"
+            references "SemesterOffer",
+    ts_day        dayenum not null
 );
 
 create table "PreEnrollmentSelection"
@@ -111,8 +111,11 @@ create table "ProfessorTeaches"
             references "SemesterOffer",
     p_id  integer not null
         constraint p_id
-            references "Proffesor"
+            references "Profesor"
 );
+
+create unique index department_dept_name_uindex
+    on "Department" (dept_name);
 
 create table "CoursesTaken"
 (
