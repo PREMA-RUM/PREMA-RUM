@@ -15,4 +15,8 @@
       <Folder Include="Controllers" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\PreEnrollment.Core\PreEnrollment.Core.csproj" />
+    </ItemGroup>
+
 </Project>

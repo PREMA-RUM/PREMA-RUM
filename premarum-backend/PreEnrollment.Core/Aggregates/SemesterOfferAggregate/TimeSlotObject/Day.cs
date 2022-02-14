@@ -1,0 +1,12 @@
+namespace PreEnrollment.Core.Aggregates.SemesterOfferAggregate.TimeSlotObject;
+
+public enum Day
+{
+    Monday,
+    Tuesday,
+    Wednesday,
+    Thursday,
+    Friday,
+    Saturday,
+    Sunday
+}

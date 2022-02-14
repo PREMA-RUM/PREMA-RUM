@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AE8B0569-5A7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tst", "tst", "{985E9FA9-2FC2-42D3-8C69-7AEB01925799}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PreEnrollment.Core", "PreEnrollment.Core\PreEnrollment.Core.csproj", "{636F9BD7-B300-4F67-8727-14ADB75FB7CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,8 +24,13 @@ Global
 		{8910DADE-DB21-496F-ACEB-3F3A8E3313C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8910DADE-DB21-496F-ACEB-3F3A8E3313C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8910DADE-DB21-496F-ACEB-3F3A8E3313C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{636F9BD7-B300-4F67-8727-14ADB75FB7CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{636F9BD7-B300-4F67-8727-14ADB75FB7CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{636F9BD7-B300-4F67-8727-14ADB75FB7CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{636F9BD7-B300-4F67-8727-14ADB75FB7CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8910DADE-DB21-496F-ACEB-3F3A8E3313C4} = {AE8B0569-5A70-483C-B421-70FA47022E24}
+		{636F9BD7-B300-4F67-8727-14ADB75FB7CA} = {AE8B0569-5A70-483C-B421-70FA47022E24}
 	EndGlobalSection
 EndGlobal
