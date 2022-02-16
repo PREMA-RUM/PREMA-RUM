@@ -76,9 +76,6 @@ create table if not exists "SemesterOffer"
         constraint semesteroffer_pk
             primary key,
     so_capacity integer,
-    p_id integer not null
-        constraint p_id
-            references "Profesor",
     c_id integer not null
         constraint c_id
             references "Course",
@@ -130,5 +127,6 @@ create table if not exists "CoursesTaken"
     s_id  integer
         constraint s_id
             references "Semester"
+
 );
 
