@@ -18,10 +18,10 @@ create table if not exists "Department"
     dept_name varchar(100) not null unique
 );
 
-create table if not exists "Profesor"
+create table if not exists "Professor"
 (
     p_id serial not null
-        constraint proffesor_pk
+        constraint professor_pk
             primary key,
     p_name varchar(30) not null,
     dept_id integer not null
@@ -45,7 +45,7 @@ create table if not exists "PreEnrollment"
     pe_id serial
         constraint preenrollment_pk
             primary key,
-    pe_name varchar(20) not null,
+    pe_name varchar(100) not null,
     s_id integer not null
         constraint s_id
             references "Semester",
@@ -112,7 +112,7 @@ create table if not exists "ProfessorTeaches"
             references "SemesterOffer",
     p_id integer not null
         constraint p_id
-            references "Profesor",
+            references "Professor",
     primary key(so_id, p_id)
 );
 
@@ -129,4 +129,3 @@ create table if not exists "CoursesTaken"
             references "Semester"
 
 );
-
