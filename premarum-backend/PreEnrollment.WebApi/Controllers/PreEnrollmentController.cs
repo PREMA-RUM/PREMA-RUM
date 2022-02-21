@@ -21,13 +21,13 @@ public class PreEnrollmentController : ControllerBase
             {
                 Id = 1,
                 Name="First PreEnrollment",
-                Credits = 4,
                 Selections = new List<PreEnrollmentSemesterOfferDTO>()
                 {
                     new PreEnrollmentSemesterOfferDTO()
                     {
                         Id = 2,
                         Capacity = 10,
+                        SectionName = "04",
                         Course = new CourseDTO()
                         {
                             Id=4,

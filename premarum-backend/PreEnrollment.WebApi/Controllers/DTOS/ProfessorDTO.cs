@@ -1,8 +1,7 @@
 namespace PreEnrollment.WebApi.Controllers.DTOS;
 
-public class PreEnrollmentDTO
+public class ProfessorDTO
 {
     public int Id { get; set; }
     public string Name { get; set; }
-    public IEnumerable<PreEnrollmentSemesterOfferDTO> Selections { get; set; }
 }
