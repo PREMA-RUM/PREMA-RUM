@@ -85,6 +85,7 @@ create table if not exists "SemesterOffer"
         constraint semesteroffer_pk
             primary key,
     so_capacity integer,
+    so_section_name varchar(30) not null,
     c_id integer not null
         constraint c_id
             references "Course" on delete restrict,

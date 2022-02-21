@@ -248,6 +248,9 @@ public partial class PremaRumDbContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("so_id");
 
+            entity.Property(e => e.SectionName)
+                .HasColumnName("so_section_name");
+
             entity.Property(typeof(int), "CourseId").HasColumnName("c_id");
 
             entity.Property(typeof(int), "SemesterId").HasColumnName("s_id");

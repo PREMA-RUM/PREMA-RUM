@@ -37,11 +37,11 @@ INSERT INTO "Semester" (t_id, s_year) VALUES
     (3, 2020),
     (5, 2020);
 
-INSERT INTO "SemesterOffer" (so_capacity, c_id, s_id) VALUES
-    (30, 1, 1),
-    (20, 2, 1),
-    (10, 3, 1),
-    (20, 4, 2);
+INSERT INTO "SemesterOffer" (so_capacity, so_section_name, c_id, s_id) VALUES
+    (30, '30H', 1, 1),
+    (20, '05', 2, 1),
+    (10, '02', 3, 1),
+    (20, '03', 4, 2);
 
 INSERT INTO "Student" (st_email, dept_id) VALUES
      ('pepo@upr.edu', 1),
