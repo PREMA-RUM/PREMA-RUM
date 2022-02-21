@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using PreEnrollment.WebApi.Controllers.DTOS;
+using PreEnrollmentMgmt.WebApi.Controllers.DTOS;
 
-namespace PreEnrollment.WebApi.Controllers;
+namespace PreEnrollmentMgmt.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

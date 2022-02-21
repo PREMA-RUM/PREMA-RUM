@@ -1,12 +1,21 @@
-create type dayenum as enum ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday');
-create type termenum as enum ('Fall', 'Spring', 'First Summer','Second Summer','Six Week Summer');
+create table if not exists "Day"
+(
+    d_id serial primary key,
+    d_name varchar(50) unique
+);
+
+create table if not exists "Term"
+(
+    t_id serial constraint term_pk primary key,
+    t_name varchar(50) constraint term_name_unique unique
+);
 
 create table if not exists "Semester"
 (
     s_id serial
         constraint semester_pk
             primary key,
-    s_term termenum not null,
+    t_id integer constraint t_id references "Term" not null,
     s_year integer check (s_year > 2000 and s_year < 2200) not null
 );
 
@@ -26,7 +35,7 @@ create table if not exists "Professor"
     p_name varchar(30) not null,
     dept_id integer not null
         constraint dept_id
-            references "Department"
+            references "Department" on delete restrict
 );
 
 create table if not exists "Student"
@@ -34,10 +43,10 @@ create table if not exists "Student"
     st_id serial
         constraint student_pk
             primary key,
-    st_email varchar(50) not null,
+    st_email varchar(50) not null constraint st_email_unique unique,
     dept_id integer not null
         constraint dept_id
-            references "Department"
+            references "Department" on delete restrict
 );
 
 create table if not exists "PreEnrollment"
@@ -48,10 +57,10 @@ create table if not exists "PreEnrollment"
     pe_name varchar(100) not null,
     s_id integer not null
         constraint s_id
-            references "Semester",
+            references "Semester" on delete restrict,
     st_id integer not null
         constraint st_id
-            references "Student"
+            references "Student" on delete cascade
 );
 
 create table if not exists "Course"
@@ -67,7 +76,7 @@ create table if not exists "Course"
     c_name varchar(30) not null,
     dept_id integer
         constraint dept_id
-            references "Department"
+            references "Department" on delete restrict
 );
 
 create table if not exists "SemesterOffer"
@@ -78,10 +87,10 @@ create table if not exists "SemesterOffer"
     so_capacity integer,
     c_id integer not null
         constraint c_id
-            references "Course",
+            references "Course" on delete restrict,
     s_id integer not null
         constraint s_id
-            references "Semester"
+            references "Semester" on delete restrict
 );
 
 create table if not exists "TimeSlot"
@@ -90,18 +99,20 @@ create table if not exists "TimeSlot"
     ts_end_time time not null check(ts_start_time < ts_end_time),
     so_id integer not null
         constraint so_id
-            references "SemesterOffer",
-    ts_day dayenum not null
+            references "SemesterOffer" on delete restrict,
+    d_id integer constraint d_id references "Day" on delete restrict
+        not null,
+    constraint timeslot_pk primary key (ts_start_time, ts_end_time, so_id, d_id)
 );
 
 create table if not exists "PreEnrollmentSelection"
 (
     pe_id integer not null
         constraint pe_id
-            references "PreEnrollment",
+            references "PreEnrollment" on delete cascade,
     so_id integer not null
         constraint so_id
-            references "SemesterOffer",
+            references "SemesterOffer" on delete restrict,
     primary key (pe_id, so_id)
 );
 
@@ -109,23 +120,23 @@ create table if not exists "ProfessorTeaches"
 (
     so_id integer not null
         constraint so_id
-            references "SemesterOffer",
+            references "SemesterOffer" on delete restrict,
     p_id integer not null
         constraint p_id
-            references "Professor",
-    primary key(so_id, p_id)
+            references "Professor" on delete restrict,
+    constraint professorteaches_pk primary key(so_id, p_id)
 );
 
 create table if not exists "CoursesTaken"
 (
     st_id integer
         constraint st_id
-            references "Student",
+            references "Student" on delete cascade,
     c_id  integer
         constraint c_id
-            references "Course",
+            references "Course" on delete restrict,
     s_id  integer
         constraint s_id
-            references "Semester"
-
+            references "Semester" on delete restrict,
+    constraint courses_taken_pk primary key (st_id, c_id)
 );

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace PreEnrollment.WebApi.Controllers;
+namespace PreEnrollmentMgmt.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
