@@ -1,4 +1,4 @@
-namespace PreEnrollment.WebApi.Controllers.DTOS;
+namespace PreEnrollmentMgmt.WebApi.Controllers.DTOS;
 
 public class PreEnrollmentDTO
 {
