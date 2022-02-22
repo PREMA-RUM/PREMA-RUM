@@ -1,4 +1,6 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using PreEnrollmentMgmt.Core.Repositories;
 using PreEnrollmentMgmt.WebApi.Controllers.DTOS;
 
 namespace PreEnrollmentMgmt.WebApi.Controllers;
@@ -7,34 +9,23 @@ namespace PreEnrollmentMgmt.WebApi.Controllers;
 [ApiController]
 public class PreEnrollmentController : ControllerBase
 {
-    [HttpGet("Student/{id}")]
-    public IEnumerable<PreEnrollmentDTO> GetStudentPreEnrollments([FromRoute] int id)
+    private readonly IMapper _mapper;
+    private readonly IPreEnrollmentRepository _preEnrollmentRepository;
+
+    public PreEnrollmentController(IMapper mapper, IPreEnrollmentRepository preEnrollmentRepository)
     {
-        return new List<PreEnrollmentDTO>()
-        {
-            new PreEnrollmentDTO()
-            {
-                Id = 1,
-                Name="First PreEnrollment",
-                Selections = new List<PreEnrollmentSemesterOfferDTO>()
-                {
-                    new PreEnrollmentSemesterOfferDTO()
-                    {
-                        Id = 2,
-                        Capacity = 10,
-                        SectionName = "04",
-                        Course = new CourseDTO()
-                        {
-                            Id=4,
-                            Corequisites="Testing",
-                            Prerequisites="Testing2",
-                            CourseCode="CIIC4050",
-                            CourseName = "CIIC4050",
-                            Credits = 4
-                        }
-                    }
-                }
-            }
-        };
+        _mapper = mapper;
+        _preEnrollmentRepository = preEnrollmentRepository;
+    }
+
+    [HttpGet("Student/{id}")]
+    public async Task<IEnumerable<PreEnrollmentDTO>> GetStudentPreEnrollments([FromRoute] int id)
+    {
+        //TODO: Validate student requesting data is indeed the correct student
+        var preEnrollments = await _preEnrollmentRepository
+            .GetByStudentIdComplete(studentId: id);
+        var mapped = preEnrollments
+            .Select(pe => _mapper.Map<PreEnrollmentDTO>(pe));
+        return mapped;
     }
 }
