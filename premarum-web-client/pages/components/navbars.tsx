@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
-import { Box, CssBaseline, Divider, IconButton, ListItemIcon, ListItemText, Toolbar, Typography, List, ListItemButton } from '@mui/material/'
+import { Box, CssBaseline, Divider, IconButton, ListItemIcon, ListItemText, Toolbar, Typography, List, ListItemButton, Grid, Avatar, Button, Tooltip } from '@mui/material/'
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import MuiDrawer from '@mui/material/Drawer';
-import {Menu, ChevronLeft, ChevronRight, AccountBoxRounded, HomeRounded, ListAltRounded, AccountCircle} from '@mui/icons-material'
+import {Menu, ChevronLeft, ChevronRight, AccountBoxRounded, HomeRounded, ListAltRounded, AccountCircle, ManageAccountsRounded, SchoolRounded, LogoutRounded} from '@mui/icons-material'
 import { useRouter } from 'next/router';
 
 const drawerWidth = 240;
@@ -32,9 +32,9 @@ const closedMixin = (theme: Theme): CSSObject => ({
     duration: theme.transitions.duration.leavingScreen,
   }),
   overflowX: 'hidden',
-  width: `calc(${theme.spacing(7)} + 1px)`,
+  width: `calc(${theme.spacing(7.5)} + 1px)`,
   [theme.breakpoints.up('sm')]: {
-    width: `calc(${theme.spacing(9)} + 1px)`,
+    width: `calc(${theme.spacing(7.5)} + 1px)`,
   },
 });
 
@@ -77,10 +77,27 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
+const useStyles = {
+  logoComponent: {
+    position: "absolute",
+    bottom: 0,
+    marginBottom: 0,
+    height: "100px",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  boxSize: {
+    width: "45px",
+    height: "45px",
+  }
+};
+
 export default function Navbars({children}:any) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const router = useRouter();
+  const classes = useStyles;
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -110,45 +127,67 @@ export default function Navbars({children}:any) {
             <Typography variant="h6" noWrap component="div">
                 PREMARUM
             </Typography>
-
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
-        {/* <DrawerButtonHeader {...handleDrawerClose}/> */}
-        {/* <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRight /> : <ChevronLeft />}
-          </IconButton>
-        </DrawerHeader> */}
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'rtl' ? <ChevronRight /> : <ChevronLeft />}
           </IconButton>
         </DrawerHeader>
         <Divider />
-        <List>
-            <ListItemButton key="Home" onClick={() => {router.push('/'); console.log('Home');}}>
-                <ListItemIcon>
-                    <HomeRounded/>
-                </ListItemIcon>
-                <ListItemText primary="Home"/>
-            </ListItemButton>
 
-            <ListItemButton key="Course Catalog" onClick={() => {router.push('/'); console.log('Course Catalog');}}>
-                <ListItemIcon>
-                    <ListAltRounded/>
-                </ListItemIcon>
-                <ListItemText primary="Course Catalog"/>
-            </ListItemButton>
+          <List>
+              <Tooltip title="Home" placement="right">
+                <ListItemButton key="Home" onClick={() => {router.push('/')}}>
+                    <ListItemIcon>
+                        <HomeRounded/>
+                    </ListItemIcon>
+                    <ListItemText primary="Home"/>
+                </ListItemButton>
+              </Tooltip>
 
-            <ListItemButton key="Profile" onClick={() => {router.push('/'); console.log('Profile');}}>
-                <ListItemIcon>
-                    <AccountBoxRounded/>
-                </ListItemIcon> 
-                <ListItemText primary="Profile"/>
-            </ListItemButton>
-        </List>
-        <Divider />
+              <Tooltip title="Course Catalog" placement="right">  
+                <ListItemButton key="Course Catalog" onClick={() => {router.push('/catalog')}}>
+                    <ListItemIcon>
+                        <ListAltRounded/>
+                    </ListItemIcon>
+                    <ListItemText primary="Course Catalog"/>
+                </ListItemButton>
+              </Tooltip>
+              
+              <Tooltip title="Profile" placement="right">
+                <ListItemButton key="Profile" onClick={() => {router.push('/profile')}}>
+                    <ListItemIcon>
+                        <AccountBoxRounded/>
+                    </ListItemIcon> 
+                    <ListItemText primary="Profile"/>
+                </ListItemButton>
+              </Tooltip>  
+
+              <Divider />
+
+              <Tooltip title="Log Out" placement="right">
+                <ListItemButton key="Log Out" onClick={() => {router.push('/')}}>
+                    <ListItemIcon>
+                        <LogoutRounded/>
+                    </ListItemIcon> 
+                    <ListItemText primary="Log Out"/>
+                </ListItemButton>
+              </Tooltip>
+          </List>
+          
+          <Tooltip title="UPRM" placement="right">
+            <Button sx={classes.logoComponent} onClick={() => {router.push('/')}}>
+                <Box
+                  sx={classes.boxSize}
+                  component="img"
+                  alt="UPRM"
+                  src="https://www.uprm.edu/wdt/resources/seal-rum-uprm.svg"
+                />
+            </Button>
+          </Tooltip>
+
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
