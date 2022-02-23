@@ -1,7 +1,6 @@
 import { Grid, Typography } from '@mui/material'
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import Navbars from './components/navbars'
 
 const Home: NextPage = () => {
   return (
@@ -12,11 +11,12 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-
-
       <Grid container>
-        <Navbars/>
+        <Grid item>
+          <Typography>This is title page</Typography>
+        </Grid>
       </Grid>
+
     </div>
   )
 }
