@@ -5,7 +5,7 @@ using PreEnrollmentMgmt.DataAccess;
 
 namespace PreEnrollmentMgmt.Application.Repositories;
 
-public class StudentRepository: IStudentRepository
+public class StudentRepository : IStudentRepository
 {
     private readonly PremaRumDbContext _context;
 
@@ -13,10 +13,10 @@ public class StudentRepository: IStudentRepository
     {
         _context = context;
     }
-    
-    public async Task<Student> GetByEmailSimple(string email)
+
+    public async Task<Student?> GetByEmailSimple(string email)
     {
         // Check if student exists 
-        return await _context.Students.SingleAsync(st => st.Email == email);
+        return await _context.Students.SingleOrDefaultAsync(st => st!.Email == email);
     }
 }

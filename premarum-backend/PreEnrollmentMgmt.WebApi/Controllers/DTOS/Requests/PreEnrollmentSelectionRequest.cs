@@ -4,7 +4,5 @@ namespace PreEnrollmentMgmt.WebApi.Controllers.DTOS.Requests;
 
 public class PreEnrollmentSelectionRequest
 {
-    [Required]
-    [MaxLength(5)]
-    public int[] CourseOfferings { get; set; }
+    [Required] [MaxLength(5)] public int[] CourseOfferings { get; set; }
 }

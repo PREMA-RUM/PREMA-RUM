@@ -1,7 +1,9 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using PreEnrollmentMgmt.Core.Repositories;
+using PreEnrollmentMgmt.Core.Services;
 using PreEnrollmentMgmt.WebApi.Controllers.DTOS;
+using PreEnrollmentMgmt.WebApi.Controllers.DTOS.Requests;
 
 namespace PreEnrollmentMgmt.WebApi.Controllers;
 
@@ -10,22 +12,37 @@ namespace PreEnrollmentMgmt.WebApi.Controllers;
 public class PreEnrollmentController : ControllerBase
 {
     private readonly IMapper _mapper;
-    private readonly IPreEnrollmentRepository _preEnrollmentRepository;
+    private readonly PreEnrollmentService _preEnrollmentService;
+    private readonly ITransactionManager _transactionManager;
 
-    public PreEnrollmentController(IMapper mapper, IPreEnrollmentRepository preEnrollmentRepository)
+    public PreEnrollmentController(ITransactionManager transactionManager, IMapper mapper,
+        PreEnrollmentService preEnrollmentService)
     {
+        _transactionManager = transactionManager;
         _mapper = mapper;
-        _preEnrollmentRepository = preEnrollmentRepository;
+        _preEnrollmentService = preEnrollmentService;
     }
 
-    [HttpGet("Student/{id}")]
-    public async Task<IEnumerable<PreEnrollmentDTO>> GetStudentPreEnrollments([FromRoute] int id)
+
+    [HttpGet("Student/{studentEmail}")]
+    public async Task<IEnumerable<PreEnrollmentDTO>> GetStudentPreEnrollments([FromRoute] string studentEmail)
     {
-        //TODO: Validate student requesting data is indeed the correct student
-        var preEnrollments = await _preEnrollmentRepository
-            .GetByStudentIdComplete(studentId: id);
-        var mapped = preEnrollments
+        return (await _preEnrollmentService.GetStudentPreEnrollments(studentEmail))
             .Select(pe => _mapper.Map<PreEnrollmentDTO>(pe));
+    }
+
+    [HttpPost("{preEnrollmentId}/Selections/Student/{studentEmail}")]
+    public async Task<IEnumerable<PreEnrollmentSemesterOfferDTO>> AddNewSelection(
+        [FromRoute] int preEnrollmentId,
+        [FromBody] PreEnrollmentSelectionRequest toSelect,
+        [FromRoute] string studentEmail
+    )
+    {
+        var result =
+            await _preEnrollmentService.AddSelectionToPreEnrollment(preEnrollmentId, studentEmail,
+                toSelect.CourseOfferings);
+        await _transactionManager.Commit();
+        var mapped = result.Select(so => _mapper.Map<PreEnrollmentSemesterOfferDTO>(so));
         return mapped;
     }
 }
