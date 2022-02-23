@@ -26,9 +26,10 @@ const MyApp: React.FunctionComponent<MyAppProps> = (props) => {
   return (
     <CacheProvider value={emotionCache}>
       <ThemeProvider theme={lightTheme}>
-        {/* <Navbars/> */}
         <CssBaseline />
-        <Component {...pageProps} />
+        <Navbars>
+          <Component {...pageProps} />
+        </Navbars>
       </ThemeProvider>
     </CacheProvider>
   );
