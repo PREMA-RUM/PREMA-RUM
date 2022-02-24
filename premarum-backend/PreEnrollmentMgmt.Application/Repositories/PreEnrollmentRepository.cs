@@ -27,9 +27,25 @@ public class PreEnrollmentRepository: IPreEnrollmentRepository
     
     public async Task<IEnumerable<PreEnrollment>> GetByStudentIdComplete(int studentId)
     {
-        return await 
+        return await
             GetCompletePreEnrollmentQueryable()
-            .Where(pe => pe.StudentId == studentId)
-            .ToListAsync();
+                .Where(pe => pe.StudentId == studentId)
+                .ToListAsync();
     }
+
+    public async Task<PreEnrollment> GetByIdWithSemesterOffersSimple(int preEnrollmentId)
+    {
+        return await _context
+            .PreEnrollments
+            .Include(pe => pe.Selections)
+            .Include(pe => pe.StudentId)
+            .SingleAsync(pe => pe.Id == preEnrollmentId);
+    }
+
+    public void Save(PreEnrollment preEnrollment)
+    {
+        _context.PreEnrollments.Update(preEnrollment);
+    }
+    
+    
 }
