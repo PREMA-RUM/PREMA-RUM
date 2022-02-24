@@ -1,6 +1,6 @@
 ﻿namespace PreEnrollmentMgmt.Core.Entities;
 
-public partial class SemesterOffer
+public class SemesterOffer
 {
     public SemesterOffer()
     {
@@ -8,6 +8,7 @@ public partial class SemesterOffer
         PreEnrollments = new HashSet<PreEnrollment>();
         TimeSlots = new HashSet<TimeSlot>();
     }
+
     public int Id { get; set; }
     public int? Capacity { get; set; }
     public string SectionName { get; set; }

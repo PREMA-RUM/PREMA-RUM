@@ -1,6 +1,6 @@
 ﻿namespace PreEnrollmentMgmt.Core.Entities;
 
-public partial class Department
+public class Department
 {
     public Department()
     {

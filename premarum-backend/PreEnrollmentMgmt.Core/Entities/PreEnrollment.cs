@@ -1,6 +1,8 @@
-﻿namespace PreEnrollmentMgmt.Core.Entities;
+﻿using PreEnrollmentMgmt.Core.Exceptions;
 
-public partial class PreEnrollment
+namespace PreEnrollmentMgmt.Core.Entities;
+
+public class PreEnrollment
 {
     public PreEnrollment()
     {
@@ -10,9 +12,26 @@ public partial class PreEnrollment
     public int Id { get; set; }
     public string Name { get; set; } = null!;
     public int StudentId { get; set; }
-
     public int SemesterId { get; set; }
-
     public Semester Semester { get; set; } = null!;
     public ICollection<SemesterOffer> Selections { get; set; }
+
+    public bool CanBeChangedByStudent(Student? student)
+    {
+        return student != null && StudentId == student.Id;
+    }
+
+    public void ValidateSelection(SemesterOffer selectionCandidate)
+    {
+        if (SemesterId != selectionCandidate.Semester.Id)
+            throw new InvalidPreEnrollmentSelectionException(
+                "Semester offer must of the same semester as pre enrollment");
+        if (Selections.Contains(selectionCandidate))
+            throw new InvalidPreEnrollmentSelectionException("Semester offer must not already be selected");
+    }
+
+    public void AddSelection(SemesterOffer newSelection)
+    {
+        ((HashSet<SemesterOffer>) Selections).Add(newSelection);
+    }
 }

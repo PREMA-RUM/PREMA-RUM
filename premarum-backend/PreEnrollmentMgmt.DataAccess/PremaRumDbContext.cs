@@ -3,7 +3,7 @@ using PreEnrollmentMgmt.Core.Entities;
 
 namespace PreEnrollmentMgmt.DataAccess;
 
-public partial class PremaRumDbContext : DbContext
+public class PremaRumDbContext : DbContext
 {
     public PremaRumDbContext()
     {
@@ -29,10 +29,8 @@ public partial class PremaRumDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
-        {
             // TODO: Get Connection String from app settings.
             optionsBuilder.UseNpgsql("Host=localhost:9000;Database=premadb;Username=postgres;Password=1234");
-        }
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -81,7 +79,7 @@ public partial class PremaRumDbContext : DbContext
         modelBuilder.Entity<CoursesTaken>(entity =>
         {
             entity.ToTable("CoursesTaken");
-            
+
             entity.Property(e => e.StudentId)
                 .HasColumnName("st_id");
             entity.Property(e => e.CourseId)
@@ -152,7 +150,7 @@ public partial class PremaRumDbContext : DbContext
             entity.ToTable("PreEnrollment");
 
             entity.Property(e => e.Id).HasColumnName("pe_id");
-            
+
             entity.Property(e => e.Name)
                 .HasMaxLength(100)
                 .HasColumnName("pe_name");
@@ -160,7 +158,7 @@ public partial class PremaRumDbContext : DbContext
             entity
                 .Property(e => e.SemesterId)
                 .HasColumnName("s_id");
-            
+
             entity
                 .Property(e => e.StudentId)
                 .HasColumnName("st_id");
@@ -182,8 +180,10 @@ public partial class PremaRumDbContext : DbContext
                 .WithMany(p => p.PreEnrollments)
                 .UsingEntity<Dictionary<string, object>>(
                     "PreEnrollmentSelection",
-                    l => l.HasOne<SemesterOffer>().WithMany().HasForeignKey("SoId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("so_id"),
-                    r => r.HasOne<PreEnrollment>().WithMany().HasForeignKey("PeId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("pe_id"),
+                    l => l.HasOne<SemesterOffer>().WithMany().HasForeignKey("SoId")
+                        .OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("so_id"),
+                    r => r.HasOne<PreEnrollment>().WithMany().HasForeignKey("PeId")
+                        .OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("pe_id"),
                     j =>
                     {
                         j.HasKey("PeId", "SoId").HasName("PreEnrollmentSelection_pkey");
@@ -273,8 +273,10 @@ public partial class PremaRumDbContext : DbContext
                 .WithMany(p => p.OffersTeached)
                 .UsingEntity<Dictionary<string, object>>(
                     "ProfessorTeach",
-                    l => l.HasOne<Professor>().WithMany().HasForeignKey("PId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("p_id"),
-                    r => r.HasOne<SemesterOffer>().WithMany().HasForeignKey("SoId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("so_id"),
+                    l => l.HasOne<Professor>().WithMany().HasForeignKey("PId").OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("p_id"),
+                    r => r.HasOne<SemesterOffer>().WithMany().HasForeignKey("SoId")
+                        .OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("so_id"),
                     j =>
                     {
                         j.HasKey("SoId", "PId").HasName("professorteaches_pk");
@@ -342,7 +344,7 @@ public partial class PremaRumDbContext : DbContext
 
             entity.Property(typeof(int), "DId")
                 .HasColumnName("d_id");
-            
+
             entity.HasKey("EndTime", "StartTime", "SoId", "DId")
                 .HasName("timeslot_pk");
 
@@ -351,16 +353,12 @@ public partial class PremaRumDbContext : DbContext
                 .HasForeignKey("SoId")
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("so_id");
-            
+
             entity.HasOne(d => d.WeekDay)
                 .WithMany()
                 .HasForeignKey("DId")
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("d_id");
         });
-
-        OnModelCreatingPartial(modelBuilder);
     }
-
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
