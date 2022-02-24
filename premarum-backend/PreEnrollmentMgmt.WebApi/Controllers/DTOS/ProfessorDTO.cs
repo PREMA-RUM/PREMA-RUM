@@ -1,5 +1,3 @@
-using PreEnrollmentMgmt.Core.Entities;
-
 namespace PreEnrollmentMgmt.WebApi.Controllers.DTOS;
 
 public class ProfessorDTO

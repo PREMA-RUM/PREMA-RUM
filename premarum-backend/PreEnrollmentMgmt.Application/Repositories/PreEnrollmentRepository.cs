@@ -5,7 +5,7 @@ using PreEnrollmentMgmt.DataAccess;
 
 namespace PreEnrollmentMgmt.Application.Repositories;
 
-public class PreEnrollmentRepository: IPreEnrollmentRepository
+public class PreEnrollmentRepository : IPreEnrollmentRepository
 {
     private readonly PremaRumDbContext _context;
 
@@ -14,17 +14,6 @@ public class PreEnrollmentRepository: IPreEnrollmentRepository
         _context = context;
     }
 
-    private IQueryable<PreEnrollment> GetCompletePreEnrollmentQueryable()
-    {
-        return _context
-            .PreEnrollments
-            .Include(pe => pe.Semester).ThenInclude(s => s.Term)
-            .Include(pe => pe.Selections).ThenInclude(so => so.Course)
-            .Include(pe => pe.Selections).ThenInclude(so => so.Professors)
-            .Include(pe => pe.Selections).ThenInclude(so => so.TimeSlots)
-            .Include("Selections.TimeSlots.WeekDay");
-    }
-    
     public async Task<IEnumerable<PreEnrollment>> GetByStudentIdComplete(int studentId)
     {
         return await
@@ -46,6 +35,15 @@ public class PreEnrollmentRepository: IPreEnrollmentRepository
     {
         _context.PreEnrollments.Update(preEnrollment);
     }
-    
-    
+
+    private IQueryable<PreEnrollment> GetCompletePreEnrollmentQueryable()
+    {
+        return _context
+            .PreEnrollments
+            .Include(pe => pe.Semester).ThenInclude(s => s.Term)
+            .Include(pe => pe.Selections).ThenInclude(so => so.Course)
+            .Include(pe => pe.Selections).ThenInclude(so => so.Professors)
+            .Include(pe => pe.Selections).ThenInclude(so => so.TimeSlots)
+            .Include("Selections.TimeSlots.WeekDay");
+    }
 }

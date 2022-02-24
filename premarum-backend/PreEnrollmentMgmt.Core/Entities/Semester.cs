@@ -1,6 +1,6 @@
 ﻿namespace PreEnrollmentMgmt.Core.Entities;
 
-public partial class Semester
+public class Semester
 {
     public int Id { get; set; }
     public int Year { get; set; }

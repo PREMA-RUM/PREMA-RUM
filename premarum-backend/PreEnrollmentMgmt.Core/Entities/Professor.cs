@@ -1,6 +1,6 @@
 ﻿namespace PreEnrollmentMgmt.Core.Entities;
 
-public partial class Professor
+public class Professor
 {
     public Professor()
     {

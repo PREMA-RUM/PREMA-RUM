@@ -1,4 +1,5 @@
 ﻿using PreEnrollmentMgmt.Core.Exceptions;
+
 namespace PreEnrollmentMgmt.Core.Entities;
 
 public class PreEnrollment
@@ -11,12 +12,10 @@ public class PreEnrollment
     public int Id { get; set; }
     public string Name { get; set; } = null!;
     public int StudentId { get; set; }
-
     public int SemesterId { get; set; }
-
     public Semester Semester { get; set; } = null!;
     public ICollection<SemesterOffer> Selections { get; set; }
-    
+
     public bool CanBeChangedByStudent(Student? student)
     {
         return student != null && StudentId == student.Id;
@@ -35,11 +34,8 @@ public class PreEnrollment
     {
         ((HashSet<SemesterOffer>) Selections).Add(newSelection);
     }
-
     public void RemoveSelection(SemesterOffer selection)
     {
         ((HashSet<SemesterOffer>) Selections).Remove(selection);
     }
-    
-    
 }

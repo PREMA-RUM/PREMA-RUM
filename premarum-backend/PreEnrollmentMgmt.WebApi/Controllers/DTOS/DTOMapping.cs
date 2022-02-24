@@ -13,15 +13,9 @@ public class DTOMapping : Profile
         CreateMap<Professor, ProfessorDTO>();
         CreateMap<TimeSlot, TimeSlotDTO>()
             .ForMember(dest => dest.Day,
-                opt =>
-                {
-                    opt.MapFrom(src => src.WeekDay.Name);
-                });
+                opt => { opt.MapFrom(src => src.WeekDay.Name); });
         CreateMap<SemesterOffer, PreEnrollmentSemesterOfferDTO>();
         CreateMap<Semester, SemesterDTO>()
-            .ForMember(dest => dest.Term, opt =>
-            {
-                opt.MapFrom(src => src.Term.TermName);
-            });
+            .ForMember(dest => dest.Term, opt => { opt.MapFrom(src => src.Term.TermName); });
     }
 }

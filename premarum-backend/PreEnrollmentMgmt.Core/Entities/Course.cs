@@ -1,6 +1,6 @@
 ﻿namespace PreEnrollmentMgmt.Core.Entities;
 
-public partial class Course
+public class Course
 {
     public int Id { get; set; }
     public string CourseCode { get; set; } = null!;
