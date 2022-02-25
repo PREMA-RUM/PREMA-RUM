@@ -30,7 +30,7 @@ public class PremaRumDbContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
             // TODO: Get Connection String from app settings.
-            optionsBuilder.UseNpgsql("Host=localhost:9000;Database=premadb;Username=postgres;Password=1234");
+            optionsBuilder.UseNpgsql("Host=localhost:9001;Database=premadb;Username=postgres;Password=1234");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
