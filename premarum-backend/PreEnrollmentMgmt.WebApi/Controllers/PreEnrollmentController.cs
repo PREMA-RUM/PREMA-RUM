@@ -47,16 +47,14 @@ public class PreEnrollmentController : ControllerBase
     }
 
     [HttpDelete("{preEnrollmentId}/Selections/Student/{studentEmail}")]
-    public async Task<string> RemoveSelection(
+    public async Task RemoveSelection(
         [FromRoute] int preEnrollmentId,
         [FromBody] PreEnrollmentSelectionRequest toDelete,
         [FromRoute] string studentEmail
     )
     {
-        var result =
-            await _preEnrollmentService.RemoveSelectionFromPreEnrollment(preEnrollmentId, studentEmail,
+        await _preEnrollmentService.RemoveSelectionFromPreEnrollment(preEnrollmentId, studentEmail,
                 toDelete.CourseOfferings);
         await _transactionManager.Commit();
-        return result;
     }
 }

@@ -12,20 +12,11 @@ public class StudentValidationService
         _studentRepository = studentRepository;
     }
     
-    public async Task<Boolean> ValidateStudentExists(string studentEmail)
+    public async Task<Student> ValidateStudentExists(string studentEmail)
     {
         var student = await _studentRepository.GetByEmailSimple(studentEmail);
         if (student == null)
             throw new StudentNotFoundException("No student found with specified email");
-        return true;
+        return student;
     }
-    
-    public async Task<Boolean> ValidateStudentCanModify(string studentEmail, int preEnrollmentId)
-    {
-        var student = await _studentRepository.GetByEmailSimple(studentEmail);
-        if (student == null)
-            throw new StudentNotFoundException("No student found with specified email");
-        return student.Id == preEnrollmentId;
-    }
-    
 }

@@ -20,8 +20,13 @@ public class PreEnrollment
     {
         return student != null && StudentId == student.Id;
     }
+    public void AddSelection(SemesterOffer newSelection)
+    {
+        ValidateSelection(newSelection);
+        ((HashSet<SemesterOffer>) Selections).Add(newSelection);
+    }
 
-    public void ValidateSelection(SemesterOffer selectionCandidate)
+    private void ValidateSelection(SemesterOffer selectionCandidate)
     {
         if (SemesterId != selectionCandidate.Semester.Id)
             throw new InvalidPreEnrollmentSelectionException(
@@ -30,12 +35,8 @@ public class PreEnrollment
             throw new InvalidPreEnrollmentSelectionException("Semester offer must not already be selected");
     }
 
-    public void AddSelection(SemesterOffer newSelection)
+    public void RemoveSelections(int[] CourseOfferings)
     {
-        ((HashSet<SemesterOffer>) Selections).Add(newSelection);
-    }
-    public void RemoveSelection(SemesterOffer selection)
-    {
-        ((HashSet<SemesterOffer>) Selections).Remove(selection);
+        ((HashSet<SemesterOffer>) Selections).RemoveWhere( so => CourseOfferings.Contains(so.Id));
     }
 }

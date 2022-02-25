@@ -27,7 +27,6 @@ public class PreEnrollmentRepository : IPreEnrollmentRepository
         return await _context
             .PreEnrollments
             .Include(pe => pe.Selections)
-            .Include(pe => pe.StudentId)
             .SingleAsync(pe => pe.Id == preEnrollmentId);
     }
 

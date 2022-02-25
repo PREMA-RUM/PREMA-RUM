@@ -24,56 +24,46 @@ public class PreEnrollmentService
     public async Task<IEnumerable<SemesterOffer>> AddSelectionToPreEnrollment(int preEnrollmentId, string studentEmail,
         int[] courseOfferings)
     {
-        if (courseOfferings is {Length: > 5})
+        if (courseOfferings is {Length: > 7})
             throw new InvalidPreEnrollmentSelectionException("Cannot insert more than 5 selections at a time");
 
-        var preEnrollment = await _preEnrollmentRepository.GetByIdWithSemesterOffersSimple(preEnrollmentId);
-        
-        if( ! await _studentValidationService.ValidateStudentCanModify(studentEmail, preEnrollment.StudentId))
+        var preEnrollment = await ValidatePreEnrollmentExists(preEnrollmentId);
+
+        var student = await _studentValidationService.ValidateStudentExists(studentEmail);
+
+        if( !preEnrollment.CanBeChangedByStudent(student))
             throw new InvalidPreEnrollmentSelectionException("Student cannot change PreEnrollment");
-        
-        if (preEnrollment == null)
-            throw new InvalidPreEnrollmentSelectionException("PreEnrollment Not Found");
 
         var semesterOffers = await _semesterOfferRepository.GetByIdList(courseOfferings);
 
         if (semesterOffers.Count() < courseOfferings.Length)
             throw new InvalidPreEnrollmentSelectionException("Some selected course offerings to add do not exist");
 
-        foreach (var semesterOffer in semesterOffers)
-        {
-            preEnrollment.ValidateSelection(semesterOffer);
+        foreach (var semesterOffer in semesterOffers) 
             preEnrollment.AddSelection(semesterOffer);
-        }
 
         _preEnrollmentRepository.Save(preEnrollment);
         return semesterOffers;
     }
     
-    public async Task<string> RemoveSelectionFromPreEnrollment(int preEnrollmentId, string studentEmail,
+    public async Task RemoveSelectionFromPreEnrollment(int preEnrollmentId, string studentEmail,
         int[] courseOfferings)
     {
-        if (courseOfferings is {Length: > 5})
+        if (courseOfferings is {Length: > 7})
             throw new InvalidPreEnrollmentSelectionException("Cannot remove more than 5 selections at a time");
 
-        var preEnrollment = await _preEnrollmentRepository.GetByIdWithSemesterOffersSimple(preEnrollmentId);
+        var preEnrollment = await ValidatePreEnrollmentExists(preEnrollmentId);
 
-        if (preEnrollment == null)
-            throw new InvalidPreEnrollmentSelectionException("PreEnrollment Not Found");
-        
-        if( ! await _studentValidationService.ValidateStudentCanModify(studentEmail, preEnrollment.StudentId))
+        var student = await _studentValidationService.ValidateStudentExists(studentEmail);
+
+        if( !preEnrollment.CanBeChangedByStudent(student))
             throw new InvalidPreEnrollmentSelectionException("Student cannot change PreEnrollment");
 
         if (preEnrollment.Selections.Count < courseOfferings.Length)
             throw new InvalidPreEnrollmentSelectionException("Cannot remove more selections than what are available");
-
-        foreach (var semesterOffer in preEnrollment.Selections)
-        {
-            if(courseOfferings.Contains(semesterOffer.Id))
-                preEnrollment.RemoveSelection(semesterOffer);
-        }
+        
+        preEnrollment.RemoveSelections(courseOfferings);
         _preEnrollmentRepository.Save(preEnrollment);
-        return "200 OK";
     }
 
     public async Task<IEnumerable<PreEnrollment>> GetStudentPreEnrollments(string studentEmail)
@@ -84,5 +74,13 @@ public class PreEnrollmentService
         var preEnrollments = await _preEnrollmentRepository
             .GetByStudentIdComplete(student.Id);
         return preEnrollments;
+    }
+    
+    public async Task<PreEnrollment> ValidatePreEnrollmentExists(int preEnrollmentId)
+    {
+        var preEnrollment = await _preEnrollmentRepository.GetByIdWithSemesterOffersSimple(preEnrollmentId);
+        if (preEnrollment == null)
+            throw new PreEnrollmentNotFoundException("No PreEnrollment found with specified email");
+        return preEnrollment;
     }
 }
