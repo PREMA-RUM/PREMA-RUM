@@ -449,3 +449,5 @@ $RECYCLE.BIN/
 ##
 .vscode/*
 premarum-backend/.vscode/
+
+out

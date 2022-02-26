@@ -1,20 +1,20 @@
-using PreEnrollmentMgmt.Application.Repositories;
-using PreEnrollmentMgmt.Core.Repositories;
-using PreEnrollmentMgmt.Core.Services;
+using Microsoft.EntityFrameworkCore;
 using PreEnrollmentMgmt.DataAccess;
+using PreEnrollmentMgmt.WebApi;
 using PreEnrollmentMgmt.WebApi.Controllers.DTOS;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Application Services
+Startup.ConfigureProgramServices(builder);
+
+// Framework Services
 builder.Services.AddControllers();
-builder.Services.AddDbContext<PremaRumDbContext>();
-builder.Services.AddScoped<IPreEnrollmentRepository, PreEnrollmentRepository>();
-builder.Services.AddScoped<IStudentRepository, StudentRepository>();
-builder.Services.AddScoped<ISemesterOfferRepository, SemesterOfferRepository>();
-builder.Services.AddScoped<ITransactionManager, TransactionManager>();
-builder.Services.AddScoped<PreEnrollmentService, PreEnrollmentService>();
-builder.Services.AddScoped<StudentValidationService, StudentValidationService>();
+builder.Services.AddDbContext<PremaRumDbContext>(opt =>
+{
+    opt.UseNpgsql(
+        Environment.GetEnvironmentVariable("ConnectionString") ?? throw new InvalidOperationException());
+});
 builder.Services.AddAutoMapper(typeof(DTOMapping));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -30,7 +30,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
