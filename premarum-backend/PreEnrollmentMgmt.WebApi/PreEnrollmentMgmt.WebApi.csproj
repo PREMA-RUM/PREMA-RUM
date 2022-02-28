@@ -8,19 +8,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0"/>
-        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.1"/>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3"/>
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.1" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Controllers"/>
+        <Folder Include="Controllers" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\PreEnrollmentMgmt.Application\PreEnrollmentMgmt.Application.csproj"/>
-        <ProjectReference Include="..\PreEnrollmentMgmt.Core\PreEnrollmentMgmt.Core.csproj"/>
-        <ProjectReference Include="..\PreEnrollmentMgmt.DataAccess\PreEnrollmentMgmt.DataAccess.csproj"/>
+        <ProjectReference Include="..\PreEnrollmentMgmt.Application\PreEnrollmentMgmt.Application.csproj" />
+        <ProjectReference Include="..\PreEnrollmentMgmt.Core\PreEnrollmentMgmt.Core.csproj" />
+        <ProjectReference Include="..\PreEnrollmentMgmt.DataAccess\PreEnrollmentMgmt.DataAccess.csproj" />
     </ItemGroup>
 
 </Project>
