@@ -5,6 +5,7 @@ import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import MuiDrawer from '@mui/material/Drawer';
 import {Menu, ChevronLeft, ChevronRight, AccountBoxRounded, HomeRounded, ListAltRounded, AccountCircle, ManageAccountsRounded, SchoolRounded, LogoutRounded} from '@mui/icons-material'
 import { useRouter } from 'next/router';
+import {useMsal} from "@azure/msal-react";
 
 const drawerWidth = 240;
 
@@ -99,6 +100,8 @@ export default function Navbars({children}:any) {
   const router = useRouter();
   const classes = useStyles;
 
+  const { instance } = useMsal();
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -168,7 +171,10 @@ export default function Navbars({children}:any) {
               <Divider />
 
               <Tooltip title="Log Out" placement="right">
-                <ListItemButton key="Log Out" onClick={() => {router.push('/')}}>
+                <ListItemButton key="Log Out" onClick={() => {
+                    instance.logout();
+                    router.push('/')
+                }}>
                     <ListItemIcon>
                         <LogoutRounded/>
                     </ListItemIcon> 
@@ -178,7 +184,7 @@ export default function Navbars({children}:any) {
           </List>
           
           <Tooltip title="UPRM" placement="right">
-            <Button sx={classes.logoComponent} onClick={() => {router.push('/')}}>
+            <Button sx={classes.logoComponent} onClick={() => router.push('/')}>
                 <Box
                   sx={classes.boxSize}
                   component="img"
