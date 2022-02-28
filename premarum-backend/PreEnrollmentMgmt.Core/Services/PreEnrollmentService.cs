@@ -83,4 +83,17 @@ public class PreEnrollmentService
             throw new PreEnrollmentNotFoundException("No PreEnrollment found with specified email");
         return preEnrollment;
     }
+
+    public async Task UpdateName(int preEnrollmentId, string studentEmail, string newName)
+    {
+        var preEnrollment = await ValidatePreEnrollmentExists(preEnrollmentId);
+
+        var student = await _studentValidationService.ValidateStudentExists(studentEmail);
+
+        if( !preEnrollment.CanBeChangedByStudent(student))
+            throw new InvalidPreEnrollmentSelectionException("Student cannot change PreEnrollment");
+        
+        preEnrollment.Name = newName;
+        _preEnrollmentRepository.Save(preEnrollment);
+    }
 }

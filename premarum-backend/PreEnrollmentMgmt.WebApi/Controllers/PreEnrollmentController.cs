@@ -57,4 +57,16 @@ public class PreEnrollmentController : ControllerBase
                 toDelete.CourseOfferings);
         await _transactionManager.Commit();
     }
+
+    [HttpPut("{preEnrollmentId}/Student/{studentEmail}")]
+
+    public async Task UpdatePreEnrollmentName(
+        [FromRoute] int preEnrollmentId,
+        [FromRoute] string studentEmail,
+        [FromBody] string newName
+    )
+    {
+        await _preEnrollmentService.UpdateName(preEnrollmentId, studentEmail, newName);
+        await _transactionManager.Commit();
+    }
 }
