@@ -9,10 +9,11 @@ public class PreEnrollment
         Selections = new HashSet<SemesterOffer>();
     }
 
-    public PreEnrollment(string name, int semesterId)
+    public PreEnrollment(string name, int semesterId, int studentId)
     {
         Name = name;
         SemesterId = semesterId;
+        StudentId = studentId;
     }
 
     public int Id { get; set; }

@@ -74,7 +74,7 @@ public class PreEnrollmentService
         await _semesterValidationService.ValidateSemesterExists(semesterId);
         if (await _preEnrollmentRepository.ContainsWithNameStudentAndSemesterId(name, student.Id, semesterId))
             throw new CoreException("PreEnrollment Already Exists");
-        var newPreEnrollment = new PreEnrollment(name, semesterId);
+        var newPreEnrollment = new PreEnrollment(name, semesterId, student.Id);
         student.AddPreEnrollment(newPreEnrollment);
         return newPreEnrollment;
     }
