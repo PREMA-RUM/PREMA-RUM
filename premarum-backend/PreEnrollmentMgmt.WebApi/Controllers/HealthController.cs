@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PreEnrollmentMgmt.WebApi.Controllers;
@@ -10,5 +11,12 @@ public class HealthController : ControllerBase
     public string HealthCheck()
     {
         return "I am good";
+    }
+
+    [Authorize]
+    [HttpGet("Secure")]
+    public string SecureHealthCheck()
+    {
+        return $"{User.Identity?.Name} is checking health";
     }
 }
