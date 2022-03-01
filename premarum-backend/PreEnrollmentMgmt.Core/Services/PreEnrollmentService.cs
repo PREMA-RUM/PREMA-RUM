@@ -20,6 +20,13 @@ public class PreEnrollmentService
         _studentRepository = studentRepository;
         _studentValidationService = studentValidationService;
     }
+    private async Task<PreEnrollment> ValidatePreEnrollmentExists(int preEnrollmentId)
+    {
+        var preEnrollment = await _preEnrollmentRepository.GetByIdWithSemesterOffersSimple(preEnrollmentId);
+        if (preEnrollment == null)
+            throw new PreEnrollmentNotFoundException("No PreEnrollment found with specified email");
+        return preEnrollment;
+    }
 
     public async Task<IEnumerable<SemesterOffer>> AddSelectionToPreEnrollment(int preEnrollmentId, string studentEmail,
         int[] courseOfferings)
@@ -76,13 +83,6 @@ public class PreEnrollmentService
         return preEnrollments;
     }
     
-    public async Task<PreEnrollment> ValidatePreEnrollmentExists(int preEnrollmentId)
-    {
-        var preEnrollment = await _preEnrollmentRepository.GetByIdWithSemesterOffersSimple(preEnrollmentId);
-        if (preEnrollment == null)
-            throw new PreEnrollmentNotFoundException("No PreEnrollment found with specified email");
-        return preEnrollment;
-    }
 
     public async Task UpdateName(int preEnrollmentId, string studentEmail, string newName)
     {
