@@ -15,4 +15,9 @@ public class Student
     public ICollection<CoursesTaken> CoursesTaken { get; set; }
     public Department Department { get; set; } = null!;
     public ICollection<PreEnrollment> PreEnrollments { get; set; }
+
+    public void AddPreEnrollment(PreEnrollment preEnrollment)
+    {
+        PreEnrollments.Add(preEnrollment);
+    }
 }
