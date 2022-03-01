@@ -35,6 +35,19 @@ public class PreEnrollmentRepository : IPreEnrollmentRepository
         _context.PreEnrollments.Update(preEnrollment);
     }
 
+    public async Task<bool> ContainsWithNameStudentAndSemesterId(string name, int studentId, int semesterId)
+    {
+        int id = await _context
+            .PreEnrollments
+            .Where(pe =>
+                pe.StudentId == studentId &&
+                pe.Name == name &&
+                pe.SemesterId == semesterId)
+            .Select(pe => pe.Id)
+            .SingleOrDefaultAsync();
+        return id != 0;
+    }
+
     private IQueryable<PreEnrollment> GetCompletePreEnrollmentQueryable()
     {
         return _context

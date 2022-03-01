@@ -27,8 +27,8 @@ public class PreEnrollmentController : ControllerBase
     [HttpGet("Student/{studentEmail}")]
     public async Task<IEnumerable<PreEnrollmentDTO>> GetStudentPreEnrollments([FromRoute] string studentEmail)
     {
-        return (await _preEnrollmentService.GetStudentPreEnrollments(studentEmail))
-            .Select(pe => _mapper.Map<PreEnrollmentDTO>(pe));
+        var result = await _preEnrollmentService.GetStudentPreEnrollments(studentEmail);
+        return _mapper.Map<IEnumerable<PreEnrollmentDTO>>(result);
     }
 
     [HttpPost("{preEnrollmentId}/Selections/Student/{studentEmail}")]
@@ -42,8 +42,7 @@ public class PreEnrollmentController : ControllerBase
             await _preEnrollmentService.AddSelectionToPreEnrollment(preEnrollmentId, studentEmail,
                 toSelect.CourseOfferings);
         await _transactionManager.Commit();
-        var mapped = result.Select(so => _mapper.Map<PreEnrollmentSemesterOfferDTO>(so));
-        return mapped;
+        return _mapper.Map<IEnumerable<PreEnrollmentSemesterOfferDTO>>(result);
     }
 
     [HttpDelete("{preEnrollmentId}/Selections/Student/{studentEmail}")]
@@ -54,7 +53,16 @@ public class PreEnrollmentController : ControllerBase
     )
     {
         await _preEnrollmentService.RemoveSelectionFromPreEnrollment(preEnrollmentId, studentEmail,
-                toDelete.CourseOfferings);
+            toDelete.CourseOfferings);
         await _transactionManager.Commit();
+    }
+
+    [HttpPost("Student/{studentEmail}")]
+    public async Task<PreEnrollmentDTO> CreateNewPreEnrollment([FromRoute] string studentEmail,
+        [FromBody] NewPreEnrollmentRequest request)
+    {
+        var result = await _preEnrollmentService.CreateNewPreEnrollment(studentEmail, request.Name, request.SemesterId);
+        await _transactionManager.Commit();
+        return _mapper.Map<PreEnrollmentDTO>(result);
     }
 }

@@ -12,7 +12,9 @@ public static class Startup
         builder.Services.AddScoped<IStudentRepository, StudentRepository>();
         builder.Services.AddScoped<ISemesterOfferRepository, SemesterOfferRepository>();
         builder.Services.AddScoped<ITransactionManager, TransactionManager>();
+        builder.Services.AddScoped<ISemesterRepository, SemesterRepository>();
         builder.Services.AddScoped<PreEnrollmentService, PreEnrollmentService>();
         builder.Services.AddScoped<StudentValidationService, StudentValidationService>();
+        builder.Services.AddScoped<SemesterValidationService, SemesterValidationService>();
     }
 }
