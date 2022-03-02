@@ -22,6 +22,14 @@ public class PreEnrollmentService
         _semesterValidationService = semesterValidationService;
         _studentValidationService = studentValidationService;
     }
+    
+    public async Task<PreEnrollment> ValidatePreEnrollmentExists(int preEnrollmentId)
+    {
+        var preEnrollment = await _preEnrollmentRepository.GetByIdWithSemesterOffersSimple(preEnrollmentId);
+        if (preEnrollment == null)
+            throw new PreEnrollmentNotFoundException("No PreEnrollment found with specified email");
+        return preEnrollment;
+    }
 
     public async Task<IEnumerable<SemesterOffer>> AddSelectionToPreEnrollment(int preEnrollmentId, string studentEmail,
         int[] courseOfferings)
@@ -88,12 +96,17 @@ public class PreEnrollmentService
             .GetByStudentIdComplete(student.Id);
         return preEnrollments;
     }
-
-    public async Task<PreEnrollment> ValidatePreEnrollmentExists(int preEnrollmentId)
+    
+    public async Task UpdateName(int preEnrollmentId, string studentEmail, string newName)
     {
-        var preEnrollment = await _preEnrollmentRepository.GetByIdWithSemesterOffersSimple(preEnrollmentId);
-        if (preEnrollment == null)
-            throw new PreEnrollmentNotFoundException("No PreEnrollment found with specified email");
-        return preEnrollment;
+        var preEnrollment = await ValidatePreEnrollmentExists(preEnrollmentId);
+
+        var student = await _studentValidationService.ValidateStudentExists(studentEmail);
+
+        if( !preEnrollment.CanBeChangedByStudent(student))
+            throw new InvalidPreEnrollmentSelectionException("Student cannot change PreEnrollment");
+        
+        preEnrollment.Name = newName;
+        _preEnrollmentRepository.Save(preEnrollment);
     }
 }
