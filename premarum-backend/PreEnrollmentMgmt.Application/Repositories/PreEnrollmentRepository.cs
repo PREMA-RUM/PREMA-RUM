@@ -30,6 +30,12 @@ public class PreEnrollmentRepository : IPreEnrollmentRepository
             .SingleAsync(pe => pe.Id == preEnrollmentId);
     }
 
+    public async Task<PreEnrollment?> GetByIdWithSemesterOffersComplete(int preEnrollmentId)
+    {
+        return await GetCompletePreEnrollmentQueryable()
+            .SingleOrDefaultAsync(pe => pe.Id == preEnrollmentId);
+    }
+
     public void Save(PreEnrollment preEnrollment)
     {
         _context.PreEnrollments.Update(preEnrollment);

@@ -1,4 +1,5 @@
 ﻿using PreEnrollmentMgmt.Core.Exceptions;
+using PreEnrollmentMgmt.Core.ValueObjects;
 
 namespace PreEnrollmentMgmt.Core.Entities;
 
@@ -44,5 +45,28 @@ public class PreEnrollment
     public void RemoveSelections(int[] CourseOfferings)
     {
         ((HashSet<SemesterOffer>) Selections).RemoveWhere( so => CourseOfferings.Contains(so.Id));
+    }
+
+    public bool HasMoreThan21Credits()
+    {
+        int credits = Selections
+            .Select(so => so.Course.CourseCredit)
+            .Sum();
+        return credits > 21;
+    }
+    
+    public async Task<List<Overlaps>> GetOverlappingOfferings()
+    {
+        var result = new List<Overlaps>();
+        var selectionArray = Selections.ToArray();
+        for (int i = 0; i < selectionArray.Length; i++) 
+        {
+            for (int j = i + 1; j < selectionArray.Length; j++)
+            {
+                if (selectionArray[i].OverlapsWith(selectionArray[j])) 
+                    result.Add(new Overlaps(selectionArray[i], selectionArray[j]));
+            }
+        }
+        return result;
     }
 }

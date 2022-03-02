@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PreEnrollmentMgmt.Core.Repositories;
 using PreEnrollmentMgmt.Core.Services;
+using PreEnrollmentMgmt.Core.ValueObjects.Warnings;
 using PreEnrollmentMgmt.WebApi.Controllers.DTOS;
 using PreEnrollmentMgmt.WebApi.Controllers.DTOS.Requests;
 
@@ -78,5 +79,12 @@ public class PreEnrollmentController : ControllerBase
     {
         await _preEnrollmentService.UpdateName(preEnrollmentId, User.Identity?.Name!, updateNameRequest.NewName);
         await _transactionManager.Commit();
+    }
+    
+    [HttpGet("{preEnrollmentId}/Warnings")]
+    public async Task<IEnumerable<PreEnrollmentWarning>> GetPreEnrollmentWarnings([FromRoute] int preEnrollmentId)
+    {
+        var warnings = _preEnrollmentService.GetPreEnrollmentWarnings(preEnrollmentId);
+        return await warnings;
     }
 }
