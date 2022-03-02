@@ -14,10 +14,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Controllers" />
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\PreEnrollmentMgmt.Application\PreEnrollmentMgmt.Application.csproj" />
         <ProjectReference Include="..\PreEnrollmentMgmt.Core\PreEnrollmentMgmt.Core.csproj" />
         <ProjectReference Include="..\PreEnrollmentMgmt.DataAccess\PreEnrollmentMgmt.DataAccess.csproj" />

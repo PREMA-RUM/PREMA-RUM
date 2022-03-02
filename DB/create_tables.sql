@@ -44,7 +44,7 @@ create table if not exists "Student"
         constraint student_pk
             primary key,
     st_email varchar(50) not null constraint st_email_unique unique,
-    dept_id integer not null
+    dept_id integer
         constraint dept_id
             references "Department" on delete restrict
 );
