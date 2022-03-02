@@ -24,7 +24,7 @@ public class SemesterOffer
         {
             foreach (var ts2 in target.TimeSlots)
             {
-                if (ts.WeekDay.Id != ts2.WeekDay.Id) // Cannot overlap if not the same day
+                if (ts.WeekDay?.Id != ts2.WeekDay?.Id) // Cannot overlap if not the same day
                     continue;
                 if (ts.StartTime.IsBetween(ts2.StartTime, ts2.EndTime))
                     return true;
