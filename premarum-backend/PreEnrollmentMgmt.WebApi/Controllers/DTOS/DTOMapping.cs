@@ -10,6 +10,7 @@ public class DTOMapping : Profile
     {
         CreateMap<PreEnrollment, PreEnrollmentDTO>();
         CreateMap<Course, CourseDTO>();
+        CreateMap<Student, StudentDTO>();
         CreateMap<Professor, ProfessorDTO>();
         CreateMap<TimeSlot, TimeSlotDTO>()
             .ForMember(dest => dest.Day,

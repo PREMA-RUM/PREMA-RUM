@@ -15,6 +15,7 @@ public static class Startup
         builder.Services.AddScoped<ISemesterRepository, SemesterRepository>();
         builder.Services.AddScoped<PreEnrollmentService, PreEnrollmentService>();
         builder.Services.AddScoped<StudentValidationService, StudentValidationService>();
+        builder.Services.AddScoped<StudentService, StudentService>();
         builder.Services.AddScoped<SemesterValidationService, SemesterValidationService>();
     }
 }

@@ -20,4 +20,9 @@ public class Student
     {
         PreEnrollments.Add(preEnrollment);
     }
+
+    public void ChangeDepartment(int newDepartment)
+    {
+        DepartmentId = newDepartment;
+    }
 }
