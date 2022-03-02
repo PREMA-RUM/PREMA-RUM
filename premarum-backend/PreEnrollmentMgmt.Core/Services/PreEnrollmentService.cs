@@ -132,8 +132,7 @@ public class PreEnrollmentService
             warningList.AddRange(
                 overlaps.Select(o => new PreEnrollmentWarning(
                         preEnrollmentId: preEnrollmentId,
-                        message:
-                        $"{o.Offering1.Course.CourseName}-{o.Offering1.SectionName} overlaps with {o.Offering2.Course.CourseName}-{o.Offering2.SectionName}"
+                        message: o.ToString()!
                     )
                 )
             );

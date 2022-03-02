@@ -11,4 +11,10 @@ public class Overlaps
     }
     public SemesterOffer Offering1 { get; private set; }
     public SemesterOffer Offering2 { get; private set; }
+
+    public override string ToString()
+    {
+        return
+            $"{Offering1.Course.CourseName}-{Offering1.SectionName} overlaps with {Offering2.Course.CourseName}-{Offering2.SectionName}";
+    }
 }
