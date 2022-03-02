@@ -17,9 +17,11 @@ public class StudentService
         _studentValidationService = studentValidationService;
     }
 
-    public async Task<Student> GetStudent(string studentEmail)
+    public async Task<Student> GetOrCreateStudent(string studentEmail)
     {
-        return await _studentValidationService.ValidateStudentExists(studentEmail);
+        var student =  await _studentRepository.GetByEmailSimple(studentEmail) ?? new Student(studentEmail);
+        _studentRepository.Save(student);
+        return student;
     }
     public async Task UpdateDepartmentName(string studentEmail, int newDepartmentId)
     {

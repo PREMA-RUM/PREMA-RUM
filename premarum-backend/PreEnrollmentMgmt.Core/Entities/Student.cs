@@ -2,8 +2,10 @@
 
 public class Student
 {
-    public Student()
+    public Student(string studentEmail)
     {
+        Email = studentEmail;
+        DepartmentId = -1;
         PreEnrollments = new HashSet<PreEnrollment>();
         CoursesTaken = new HashSet<CoursesTaken>();
     }
