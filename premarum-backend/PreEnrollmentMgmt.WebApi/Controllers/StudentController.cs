@@ -28,7 +28,7 @@ public class StudentController : ControllerBase
     [HttpGet("Student/{studentEmail}")]
     public async Task<IEnumerable<StudentDTO>> GetStudent([FromRoute] string studentEmail)
     {
-        var student = await _studentService.GetStudent(studentEmail);
+        var student = await _studentService.GetOrCreateStudent(studentEmail);
         return _mapper.Map<IEnumerable<StudentDTO>>(student);
     }
     
