@@ -21,10 +21,10 @@ public class StudentService
     {
         return await _studentValidationService.ValidateStudentExists(studentEmail);
     }
-    public async Task UpdateDepartmentName(string studentEmail, int newName)
+    public async Task UpdateDepartmentName(string studentEmail, int newDepartmentId)
     {
         var student = await _studentValidationService.ValidateStudentExists(studentEmail);
-        student.ChangeDepartment(newName);
+        student.DepartmentId = newDepartmentId;
         _studentRepository.Save(student);
     }
 }
