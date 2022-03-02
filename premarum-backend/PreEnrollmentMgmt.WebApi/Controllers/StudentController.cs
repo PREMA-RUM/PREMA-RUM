@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PreEnrollmentMgmt.Core.Repositories;
 using PreEnrollmentMgmt.Core.Services;
 using PreEnrollmentMgmt.WebApi.Controllers.DTOS;
+using PreEnrollmentMgmt.WebApi.Controllers.DTOS.Requests;
 
 namespace PreEnrollmentMgmt.WebApi.Controllers;
 
@@ -26,19 +27,20 @@ public class StudentController : ControllerBase
     }
 
     [HttpGet("Student/{studentEmail}")]
-    public async Task<IEnumerable<StudentDTO>> GetStudent([FromRoute] string studentEmail)
+    public async Task<StudentDTO> GetOrCreateStudent([FromRoute] string studentEmail)
     {
         var student = await _studentService.GetOrCreateStudent(studentEmail);
-        return _mapper.Map<IEnumerable<StudentDTO>>(student);
+        await _transactionManager.Commit();
+        return _mapper.Map<StudentDTO>(student);
     }
     
     [HttpPut("Student/{studentEmail}")]
     public async Task UpdateDepartmentName(
         [FromRoute] string studentEmail,
-        [FromBody] int newName
+        [FromBody] ChangeDepartmentRequest newName
     )
     {
-        await _studentService.UpdateDepartmentName(studentEmail, newName);
+        await _studentService.UpdateDepartmentName(studentEmail, newName.DepartmentId);
         await _transactionManager.Commit();
     }
 }

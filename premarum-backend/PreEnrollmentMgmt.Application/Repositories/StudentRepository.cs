@@ -19,7 +19,11 @@ public class StudentRepository : IStudentRepository
         // Check if student exists 
         return await _context.Students.SingleOrDefaultAsync(st => st!.Email == email);
     }
-    
+
+    public async Task Create(Student student)
+    {
+        await _context.Students.AddAsync(student);
+    }
     public void Save(Student student)
     {
         _context.Update(student);

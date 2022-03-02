@@ -5,5 +5,6 @@ namespace PreEnrollmentMgmt.Core.Repositories;
 public interface IStudentRepository
 {
     Task<Student?> GetByEmailSimple(string email);
+    Task Create(Student student);
     void Save(Student student);
 }

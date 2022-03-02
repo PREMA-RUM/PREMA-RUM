@@ -20,7 +20,7 @@ public class StudentService
     public async Task<Student> GetOrCreateStudent(string studentEmail)
     {
         var student =  await _studentRepository.GetByEmailSimple(studentEmail) ?? new Student(studentEmail);
-        _studentRepository.Save(student);
+        await _studentRepository.Create(student);
         return student;
     }
     public async Task UpdateDepartmentName(string studentEmail, int newDepartmentId)
