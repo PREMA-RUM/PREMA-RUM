@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PreEnrollmentMgmt.WebApi.Controllers.DTOS.Requests;
 
-public class ChangeDepartmentRequest
+public class UpdatePreEnrollmentNameRequest
 {
-    [Required] public int DepartmentId { get; set; }
+    [Required] public string NewName { get; set; }
 }

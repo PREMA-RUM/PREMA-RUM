@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PreEnrollmentMgmt.Core.Repositories;
 using PreEnrollmentMgmt.Core.Services;
@@ -24,57 +25,58 @@ public class PreEnrollmentController : ControllerBase
     }
 
 
-    [HttpGet("Student/{studentEmail}")]
-    public async Task<IEnumerable<PreEnrollmentDTO>> GetStudentPreEnrollments([FromRoute] string studentEmail)
+    [Authorize]
+    [HttpGet]
+    public async Task<IEnumerable<PreEnrollmentDTO>> GetStudentPreEnrollments()
     {
-        var result = await _preEnrollmentService.GetStudentPreEnrollments(studentEmail);
+        var result = await _preEnrollmentService.GetStudentPreEnrollments(User.Identity?.Name!);
         return _mapper.Map<IEnumerable<PreEnrollmentDTO>>(result);
     }
 
-    [HttpPost("{preEnrollmentId}/Selections/Student/{studentEmail}")]
+    [Authorize]
+    [HttpPost("{preEnrollmentId}/Selections")]
     public async Task<IEnumerable<PreEnrollmentSemesterOfferDTO>> AddNewSelection(
         [FromRoute] int preEnrollmentId,
-        [FromBody] PreEnrollmentSelectionRequest toSelect,
-        [FromRoute] string studentEmail
+        [FromBody] PreEnrollmentSelectionRequest toSelect
     )
     {
         var result =
-            await _preEnrollmentService.AddSelectionToPreEnrollment(preEnrollmentId, studentEmail,
+            await _preEnrollmentService.AddSelectionToPreEnrollment(preEnrollmentId, User.Identity?.Name!,
                 toSelect.CourseOfferings);
         await _transactionManager.Commit();
         return _mapper.Map<IEnumerable<PreEnrollmentSemesterOfferDTO>>(result);
     }
 
-    [HttpDelete("{preEnrollmentId}/Selections/Student/{studentEmail}")]
+    [Authorize]
+    [HttpDelete("{preEnrollmentId}/Selections")]
     public async Task RemoveSelection(
         [FromRoute] int preEnrollmentId,
-        [FromBody] PreEnrollmentSelectionRequest toDelete,
-        [FromRoute] string studentEmail
+        [FromBody] PreEnrollmentSelectionRequest toDelete
     )
     {
-        await _preEnrollmentService.RemoveSelectionFromPreEnrollment(preEnrollmentId, studentEmail,
+        await _preEnrollmentService.RemoveSelectionFromPreEnrollment(preEnrollmentId, User.Identity?.Name!,
             toDelete.CourseOfferings);
         await _transactionManager.Commit();
     }
 
-    [HttpPost("Student/{studentEmail}")]
-    public async Task<PreEnrollmentDTO> CreateNewPreEnrollment([FromRoute] string studentEmail,
-        [FromBody] NewPreEnrollmentRequest request)
+    [Authorize]
+    [HttpPost]
+    public async Task<PreEnrollmentDTO> CreateNewPreEnrollment([FromBody] NewPreEnrollmentRequest request)
     {
-        var result = await _preEnrollmentService.CreateNewPreEnrollment(studentEmail, request.Name, request.SemesterId);
+        var result =
+            await _preEnrollmentService.CreateNewPreEnrollment(User.Identity?.Name!, request.Name, request.SemesterId);
         await _transactionManager.Commit();
         return _mapper.Map<PreEnrollmentDTO>(result);
     }
-    
-    
-    [HttpPut("{preEnrollmentId}/Student/{studentEmail}")]
+
+    [Authorize]
+    [HttpPut("{preEnrollmentId}")]
     public async Task UpdatePreEnrollmentName(
         [FromRoute] int preEnrollmentId,
-        [FromRoute] string studentEmail,
-        [FromBody] string newName
+        [FromBody] UpdatePreEnrollmentNameRequest updateNameRequest
     )
     {
-        await _preEnrollmentService.UpdateName(preEnrollmentId, studentEmail, newName);
+        await _preEnrollmentService.UpdateName(preEnrollmentId, User.Identity?.Name!, updateNameRequest.NewName);
         await _transactionManager.Commit();
     }
 }
