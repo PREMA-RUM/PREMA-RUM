@@ -1,8 +1,7 @@
 using PreEnrollmentMgmt.Core.Entities;
+using PreEnrollmentMgmt.Core.Entities.ComputedEntities;
 using PreEnrollmentMgmt.Core.Exceptions;
 using PreEnrollmentMgmt.Core.Repositories;
-using PreEnrollmentMgmt.Core.ValueObjects;
-using PreEnrollmentMgmt.Core.ValueObjects.Warnings;
 
 namespace PreEnrollmentMgmt.Core.Services;
 
@@ -116,28 +115,8 @@ public class PreEnrollmentService
         return preEnrollment;
     }
 
-    public async Task<IEnumerable<PreEnrollmentWarning>> GetPreEnrollmentWarnings(int preEnrollmentId)
+    public async Task<IEnumerable<OverlappingPreEnrollmentSelections>> GetPreEnrollmentOverlaps(int preEnrollmentId)
     {
-        return await Task.Run(async () =>
-        {
-            var preEnrollment = await ValidatePreEnrollmentExists(preEnrollmentId, fetchComplete: true);
-            var warningList = new List<PreEnrollmentWarning>();
-            if (preEnrollment.HasMoreThan21Credits())
-                warningList.Add(new PreEnrollmentWarning(
-                        preEnrollmentId: preEnrollmentId,
-                        message: "More than 21 Credits selected"
-                    )
-                );
-            List<Overlaps> overlaps = await preEnrollment.GetOverlappingOfferings();
-            warningList.AddRange(
-                overlaps.Select(o => new PreEnrollmentWarning(
-                        preEnrollmentId: preEnrollmentId,
-                        message: o.ToString()!
-                    )
-                )
-            );
-            return warningList;
-        });
+        return await _preEnrollmentRepository.GetConflictingSelections(preEnrollmentId);
     }
-
 }

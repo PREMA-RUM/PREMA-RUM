@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PreEnrollmentMgmt.Core.Entities;
+using PreEnrollmentMgmt.Core.Entities.ComputedEntities;
 using PreEnrollmentMgmt.Core.Repositories;
 using PreEnrollmentMgmt.DataAccess;
 
@@ -63,5 +64,15 @@ public class PreEnrollmentRepository : IPreEnrollmentRepository
             .Include(pe => pe.Selections).ThenInclude(so => so.Professors)
             .Include(pe => pe.Selections).ThenInclude(so => so.TimeSlots)
             .Include("Selections.TimeSlots.WeekDay");
+    }
+
+    public async Task<IEnumerable<OverlappingPreEnrollmentSelections>> GetConflictingSelections(int preEnrollmentId)
+    {
+        return await _context
+            .OverlappingSemesterOffers
+            .FromSqlRaw(
+                "select * from sp_conflicting_selections({0})", 
+                preEnrollmentId
+            ).ToListAsync();
     }
 }
