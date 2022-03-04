@@ -3,6 +3,7 @@ import { AddRounded } from '@mui/icons-material';
 import { grey } from '@mui/material/colors';
 import React from 'react';
 import { useRouter } from 'next/router';
+import PreenrollmentCard from '../components/PreenrollmentCard';
 
 // Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
 const top100Films = [
@@ -42,7 +43,7 @@ export default function Home() {
 
   return (
     <>
-    <Grid container direction="column">
+    <Grid container direction="column" sx={classes.mainGrid}>
 
       <Grid item>
           <Card sx={classes.topCard}>
@@ -81,16 +82,13 @@ export default function Home() {
 
       <Grid item>
         <Card sx={classes.contentCard}>
-
-          <Grid container direction="column" alignContent='center' justifyContent="center" sx={classes.coursesContainer}>
+          <Grid container direction="column" justifyContent="center" alignItems="center">
             <Typography>Nothing here yet... :(</Typography>
             <AddButton/>
           </Grid>
 
-          <Grid container direction="column" alignContent='center' justifyContent="center" sx={classes.coursesContainer}>
-              
-          </Grid>
-          
+          <PreenrollmentCard/>
+          <PreenrollmentCard/>
         </Card>
       </Grid>
       
@@ -150,6 +148,10 @@ export default function Home() {
 }
 
 const useStyles = {
+  mainGrid: {
+    width: '100%',
+    height: '100%',
+  },
   topCard: {
       padding: '5px 25px',
       backgroundColor: 'primary.light',
@@ -167,18 +169,25 @@ const useStyles = {
       minWidth: '300px'
   },
   addCoursesButton: {
-      backgroundColor: 'primary.dark'
+      backgroundColor: 'primary.dark',
   },
   contentCard: {
       backgroundColor: 'secondary.light',
-      padding: '15px',
+      padding: '25px',
       minHeight: '80vh',
+      width: '100%',
+      justifyContent: 'center',
+      alignItems: 'center',
   },
   contentText: {
       padding: '2px 10px',
   },
   coursesContainer: {
-      marginTop: 10
+      minWidth: '100%',
+      maxHeight: '80vh',
+  },
+  itemStyle: {
+    width: '100%',
   },
   modalGridMain: {
       width: '100%',
