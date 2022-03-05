@@ -182,9 +182,9 @@ public class PremaRumDbContext : DbContext
                 .UsingEntity<Dictionary<string, object>>(
                     "PreEnrollmentSelection",
                     l => l.HasOne<SemesterOffer>().WithMany().HasForeignKey("SoId")
-                        .OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("so_id"),
+                        .OnDelete(DeleteBehavior.Restrict).HasConstraintName("so_id"),
                     r => r.HasOne<PreEnrollment>().WithMany().HasForeignKey("PeId")
-                        .OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("pe_id"),
+                        .OnDelete(DeleteBehavior.Cascade).HasConstraintName("pe_id"),
                     j =>
                     {
                         j.HasKey("PeId", "SoId").HasName("PreEnrollmentSelection_pkey");
