@@ -1,4 +1,5 @@
 using PreEnrollmentMgmt.Core.Entities;
+using PreEnrollmentMgmt.Core.Entities.ComputedEntities;
 using PreEnrollmentMgmt.Core.Exceptions;
 using PreEnrollmentMgmt.Core.Repositories;
 
@@ -21,14 +22,6 @@ public class PreEnrollmentService
         _studentRepository = studentRepository;
         _semesterValidationService = semesterValidationService;
         _studentValidationService = studentValidationService;
-    }
-    
-    public async Task<PreEnrollment> ValidatePreEnrollmentExists(int preEnrollmentId)
-    {
-        var preEnrollment = await _preEnrollmentRepository.GetByIdWithSemesterOffersSimple(preEnrollmentId);
-        if (preEnrollment == null)
-            throw new PreEnrollmentNotFoundException("No PreEnrollment found with specified email");
-        return preEnrollment;
     }
 
     public async Task<IEnumerable<SemesterOffer>> AddSelectionToPreEnrollment(int preEnrollmentId, string studentEmail,
@@ -96,17 +89,34 @@ public class PreEnrollmentService
             .GetByStudentIdComplete(student.Id);
         return preEnrollments;
     }
-    
+
     public async Task UpdateName(int preEnrollmentId, string studentEmail, string newName)
     {
         var preEnrollment = await ValidatePreEnrollmentExists(preEnrollmentId);
 
         var student = await _studentValidationService.ValidateStudentExists(studentEmail);
 
-        if( !preEnrollment.CanBeChangedByStudent(student))
+        if (!preEnrollment.CanBeChangedByStudent(student))
             throw new InvalidPreEnrollmentSelectionException("Student cannot change PreEnrollment");
-        
+
         preEnrollment.Name = newName;
         _preEnrollmentRepository.Save(preEnrollment);
+    }
+
+    public async Task<PreEnrollment> ValidatePreEnrollmentExists(int preEnrollmentId, bool fetchComplete = false)
+    {
+        PreEnrollment? preEnrollment;
+        if (fetchComplete)
+            preEnrollment = await _preEnrollmentRepository.GetByIdWithSemesterOffersComplete(preEnrollmentId);
+        else
+            preEnrollment = await _preEnrollmentRepository.GetByIdWithSemesterOffersSimple(preEnrollmentId);
+        if (preEnrollment == null)
+            throw new PreEnrollmentNotFoundException("No PreEnrollment found with specified email");
+        return preEnrollment;
+    }
+
+    public async Task<IEnumerable<OverlappingPreEnrollmentSelections>> GetPreEnrollmentOverlaps(int preEnrollmentId)
+    {
+        return await _preEnrollmentRepository.GetConflictingSelections(preEnrollmentId);
     }
 }

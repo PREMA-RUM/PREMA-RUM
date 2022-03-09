@@ -141,3 +141,43 @@ create table if not exists "CoursesTaken"
             references "Semester" on delete restrict,
     constraint courses_taken_pk primary key (st_id, c_id)
 );
+
+-- Stored Procedures
+create or replace function sp_conflicting_selections(
+    pre_enrollment_id integer
+)
+    returns table (
+                      semester_offer_id_a integer,
+                      semester_offer_id_b integer,
+                      start_time_a time,
+                      end_time_a time,
+                      start_time_b time,
+                      end_time_b time,
+                      day_id integer
+                  )
+    language plpgsql as $$
+begin
+    create or replace temp view PreEnrollmentsWithSlots
+    as
+    select pe_id, so_id, ts_start_time, ts_end_time, d_id
+    from "PreEnrollment"
+             natural inner join "PreEnrollmentSelection"
+             natural inner join "SemesterOffer"
+             natural inner join "Course"
+             natural inner join "TimeSlot"
+    order by pe_id;
+
+    return query select
+                     A.so_id semester_offer_id_a, B.so_id semester_offer_id_b,
+                     A.ts_start_time start_time_a, A.ts_end_time end_time_a,
+                     B.ts_start_time start_time_b, B.ts_end_time end_time_b,
+                     A.d_id day_id
+                 from PreEnrollmentsWithSlots A
+                          inner join PreEnrollmentsWithSlots B
+                                     on A.pe_id = B.pe_id AND
+                                        A.so_id != B.so_id AND
+                                        A.d_id = B.d_id AND
+                                        A.so_id < B.so_id AND
+                                        (A.ts_start_time, A.ts_end_time) OVERLAPS (B.ts_start_time, B.ts_end_time)
+                 where A.pe_id = pre_enrollment_id;
+end;$$

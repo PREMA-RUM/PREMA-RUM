@@ -22,10 +22,12 @@ public class PreEnrollment
     public int SemesterId { get; set; }
     public Semester Semester { get; set; } = null!;
     public ICollection<SemesterOffer> Selections { get; set; }
+
     public bool CanBeChangedByStudent(Student? student)
     {
         return student != null && StudentId == student.Id;
     }
+
     public void AddSelection(SemesterOffer newSelection)
     {
         ValidateSelection(newSelection);
@@ -43,6 +45,6 @@ public class PreEnrollment
 
     public void RemoveSelections(int[] CourseOfferings)
     {
-        ((HashSet<SemesterOffer>) Selections).RemoveWhere( so => CourseOfferings.Contains(so.Id));
+        ((HashSet<SemesterOffer>) Selections).RemoveWhere(so => CourseOfferings.Contains(so.Id));
     }
 }

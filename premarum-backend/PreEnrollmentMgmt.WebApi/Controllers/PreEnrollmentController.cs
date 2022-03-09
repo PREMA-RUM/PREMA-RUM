@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PreEnrollmentMgmt.Core.Entities.ComputedEntities;
 using PreEnrollmentMgmt.Core.Repositories;
 using PreEnrollmentMgmt.Core.Services;
 using PreEnrollmentMgmt.WebApi.Controllers.DTOS;
@@ -78,5 +79,13 @@ public class PreEnrollmentController : ControllerBase
     {
         await _preEnrollmentService.UpdateName(preEnrollmentId, User.Identity?.Name!, updateNameRequest.NewName);
         await _transactionManager.Commit();
+    }
+    
+    [Authorize]
+    [HttpGet("{preEnrollmentId}/Overlaps")]
+    public async Task<IEnumerable<ConflictingSelectionDTO>> GetPreEnrollmentWarnings([FromRoute] int preEnrollmentId)
+    {
+        var conflicts = await _preEnrollmentService.GetPreEnrollmentOverlaps(preEnrollmentId);
+        return _mapper.Map<IEnumerable<ConflictingSelectionDTO>>(conflicts);
     }
 }

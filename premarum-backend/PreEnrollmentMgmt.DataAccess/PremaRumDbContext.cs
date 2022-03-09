@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PreEnrollmentMgmt.Core.Entities;
+using PreEnrollmentMgmt.Core.Entities.ComputedEntities;
 
 namespace PreEnrollmentMgmt.DataAccess;
 
@@ -25,6 +26,9 @@ public class PremaRumDbContext : DbContext
     public virtual DbSet<Student> Students { get; set; } = null!;
     public virtual DbSet<Term> Terms { get; set; } = null!;
     public virtual DbSet<TimeSlot> TimeSlots { get; set; } = null!;
+
+    // --- Computed Entities 
+    public virtual DbSet<OverlappingPreEnrollmentSelections> OverlappingSemesterOffers { get; set; } = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -356,6 +360,18 @@ public class PremaRumDbContext : DbContext
                 .HasForeignKey("DId")
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("d_id");
+        });
+
+        modelBuilder.Entity<OverlappingPreEnrollmentSelections>(entity =>
+        {
+            entity.HasNoKey();
+            entity.Property(e => e.DayId).HasColumnName("day_id");
+            entity.Property(e => e.EndTimeA).HasColumnName("end_time_a");
+            entity.Property(e => e.StartTimeA).HasColumnName("start_time_a");
+            entity.Property(e => e.EndTimeB).HasColumnName("end_time_b");
+            entity.Property(e => e.StartTimeB).HasColumnName("start_time_b");
+            entity.Property(e => e.SemesterOfferIdA).HasColumnName("semester_offer_id_a");
+            entity.Property(e => e.SemesterOfferIdB).HasColumnName("semester_offer_id_b");
         });
     }
 }
