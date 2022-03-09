@@ -28,7 +28,7 @@ public class PreEnrollmentService
         int[] courseOfferings)
     {
         if (courseOfferings is {Length: > 7})
-            throw new InvalidPreEnrollmentSelectionException("Cannot insert more than 5 selections at a time");
+            throw new InvalidPreEnrollmentSelectionException("Cannot insert more than 7 selections at a time");
 
         var preEnrollment = await ValidatePreEnrollmentExists(preEnrollmentId);
 
@@ -53,7 +53,7 @@ public class PreEnrollmentService
         int[] courseOfferings)
     {
         if (courseOfferings is {Length: > 7})
-            throw new InvalidPreEnrollmentSelectionException("Cannot remove more than 5 selections at a time");
+            throw new InvalidPreEnrollmentSelectionException("Cannot remove more than 7 selections at a time");
 
         var preEnrollment = await ValidatePreEnrollmentExists(preEnrollmentId);
 
@@ -118,5 +118,14 @@ public class PreEnrollmentService
     public async Task<IEnumerable<OverlappingPreEnrollmentSelections>> GetPreEnrollmentOverlaps(int preEnrollmentId)
     {
         return await _preEnrollmentRepository.GetConflictingSelections(preEnrollmentId);
+    }
+
+    public async Task DeletePreEnrollment(int preEnrollmentId, string studentEmail)
+    {
+        var preEnrollment = await ValidatePreEnrollmentExists(preEnrollmentId);
+        var student = await _studentValidationService.ValidateStudentExists(studentEmail);
+        if (!preEnrollment.CanBeChangedByStudent(student))
+            throw new CoreException("Student cannot modify pre enrollment");
+        _preEnrollmentRepository.DeletePreEnrollment(preEnrollment);
     }
 }

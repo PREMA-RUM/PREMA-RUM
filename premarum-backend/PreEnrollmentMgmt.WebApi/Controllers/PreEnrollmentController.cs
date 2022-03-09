@@ -80,12 +80,20 @@ public class PreEnrollmentController : ControllerBase
         await _preEnrollmentService.UpdateName(preEnrollmentId, User.Identity?.Name!, updateNameRequest.NewName);
         await _transactionManager.Commit();
     }
-    
+
     [Authorize]
     [HttpGet("{preEnrollmentId}/Overlaps")]
     public async Task<IEnumerable<ConflictingSelectionDTO>> GetPreEnrollmentWarnings([FromRoute] int preEnrollmentId)
     {
         var conflicts = await _preEnrollmentService.GetPreEnrollmentOverlaps(preEnrollmentId);
         return _mapper.Map<IEnumerable<ConflictingSelectionDTO>>(conflicts);
+    }
+
+    [Authorize]
+    [HttpDelete("{preEnrollmentId}")]
+    public async Task DeletePreEnrollment(int preEnrollmentId)
+    {
+        await _preEnrollmentService.DeletePreEnrollment(preEnrollmentId, User.Identity?.Name!);
+        await _transactionManager.Commit();
     }
 }

@@ -23,12 +23,12 @@ public class PreEnrollmentRepository : IPreEnrollmentRepository
                 .ToListAsync();
     }
 
-    public async Task<PreEnrollment> GetByIdWithSemesterOffersSimple(int preEnrollmentId)
+    public async Task<PreEnrollment?> GetByIdWithSemesterOffersSimple(int preEnrollmentId)
     {
         return await _context
             .PreEnrollments
             .Include(pe => pe.Selections)
-            .SingleAsync(pe => pe.Id == preEnrollmentId);
+            .SingleOrDefaultAsync(pe => pe.Id == preEnrollmentId);
     }
 
     public async Task<PreEnrollment?> GetByIdWithSemesterOffersComplete(int preEnrollmentId)
@@ -55,6 +55,11 @@ public class PreEnrollmentRepository : IPreEnrollmentRepository
         return id != 0;
     }
 
+    public void DeletePreEnrollment(PreEnrollment preEnrollment)
+    {
+        _context.PreEnrollments.Remove(preEnrollment);
+    }
+
     private IQueryable<PreEnrollment> GetCompletePreEnrollmentQueryable()
     {
         return _context
@@ -65,7 +70,7 @@ public class PreEnrollmentRepository : IPreEnrollmentRepository
             .Include(pe => pe.Selections).ThenInclude(so => so.TimeSlots)
             .Include("Selections.TimeSlots.WeekDay");
     }
-
+    
     public async Task<IEnumerable<OverlappingPreEnrollmentSelections>> GetConflictingSelections(int preEnrollmentId)
     {
         return await _context
