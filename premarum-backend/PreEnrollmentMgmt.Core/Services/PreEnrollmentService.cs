@@ -102,7 +102,7 @@ public class PreEnrollmentService
         preEnrollment.Name = newName;
         _preEnrollmentRepository.Save(preEnrollment);
     }
-    
+
     public async Task<PreEnrollment> ValidatePreEnrollmentExists(int preEnrollmentId, bool fetchComplete = false)
     {
         PreEnrollment? preEnrollment;
@@ -114,10 +114,12 @@ public class PreEnrollmentService
             throw new PreEnrollmentNotFoundException("No PreEnrollment found with specified email");
         return preEnrollment;
     }
+
     public async Task<IEnumerable<OverlappingPreEnrollmentSelections>> GetPreEnrollmentOverlaps(int preEnrollmentId)
     {
         return await _preEnrollmentRepository.GetConflictingSelections(preEnrollmentId);
     }
+
     public async Task DeletePreEnrollment(int preEnrollmentId, string studentEmail)
     {
         var preEnrollment = await ValidatePreEnrollmentExists(preEnrollmentId);
