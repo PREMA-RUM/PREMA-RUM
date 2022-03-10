@@ -3,6 +3,11 @@ import {Button} from "@mui/material/";
 import {useMsal} from "@azure/msal-react";
 import {PopupRequest} from "@azure/msal-browser";
 
+// **************************************************************
+// Currently Used in Landing/index.tsx; makes it easier to edit
+// this component in itself unused,
+// **************************************************************
+
 type ButtonProps = {
     
 }

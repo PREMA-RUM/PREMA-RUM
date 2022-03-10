@@ -15,6 +15,7 @@ import Head from 'next/head';
 import {Configuration, PublicClientApplication} from "@azure/msal-browser";
 import {AuthenticatedTemplate, MsalProvider, UnauthenticatedTemplate } from '@azure/msal-react';
 import LoginButton from "./components/LoginButton";
+import Landing from './landing';
 //import '../styles/globals.css';
 interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache;
@@ -53,7 +54,7 @@ const MyApp: React.FunctionComponent<MyAppProps> = (props) => {
             </Navbars>
           </AuthenticatedTemplate>
           <UnauthenticatedTemplate>
-            <LoginButton />
+            <Landing />
           </UnauthenticatedTemplate>
         </ThemeProvider>
       </CacheProvider>
