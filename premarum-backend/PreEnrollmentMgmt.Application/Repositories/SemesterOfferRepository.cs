@@ -21,6 +21,37 @@ public class SemesterOfferRepository : ISemesterOfferRepository
             .ToListAsync();
     }
 
+    public async Task<Semester?> GetAvailableSemesterById(int id)
+    {
+        return await _context
+            .Semesters
+            .Include(sem => sem.Term)
+            .SingleOrDefaultAsync(se => se.Id == id);
+    }
+
+    public async Task<IEnumerable<Semester>> GetAvailableSemesters()
+    {
+        return await _context
+            .Semesters
+            .Include(sem => sem.Term)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Department>> GetAvailableDepartments()
+    {
+        return await _context
+            .Departments
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Course>> GetAvailableCourses()
+    {
+        return await _context
+            .Courses
+            .Include(c => c.Department)
+            .ToListAsync();
+    }
+
     private IQueryable<SemesterOffer> GetCompleteSemesterOfferQueryable()
     {
         return _context

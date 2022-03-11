@@ -6,16 +6,16 @@ namespace PreEnrollmentMgmt.Core.Services;
 
 public class SemesterValidationService
 {
-    private readonly ISemesterRepository _semesterRepository;
+    private readonly ISemesterOfferRepository _semesterOfferRepository;
 
-    public SemesterValidationService(ISemesterRepository semesterRepository)
+    public SemesterValidationService(ISemesterOfferRepository semesterOfferRepository)
     {
-        _semesterRepository = semesterRepository;
+        _semesterOfferRepository = semesterOfferRepository;
     }
 
     public async Task<Semester> ValidateSemesterExists(int semesterId)
     {
-        var result = await _semesterRepository.GetByIdComplete(semesterId);
+        var result = await _semesterOfferRepository.GetAvailableSemesterById(semesterId);
         if (result == null)
             throw new CoreException("Semester does not exist");
         return result;
