@@ -2,7 +2,7 @@ import { Autocomplete, Button, Card, CardActions, CardContent, CardHeader, Divid
 import { AddRounded } from '@mui/icons-material'
 import React from 'react';
 import { grey } from '@mui/material/colors';
-import { DataGrid, GridToolbar, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton } from '@mui/x-data-grid';
+import { DataGrid, GridColumns, GridToolbar, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton } from '@mui/x-data-grid';
 import { useDemoData } from '@mui/x-data-grid-generator';
 
 function CustomToolbar() {
@@ -49,7 +49,8 @@ export default function Catalog() {
                     <Grid container direction='column'>
                         <DataGrid
                             checkboxSelection
-                            {...data}
+                            rows={data.rows}
+                            columns={data.columns as GridColumns}
                             components={{
                                 Toolbar: CustomToolbar,
                             }}
