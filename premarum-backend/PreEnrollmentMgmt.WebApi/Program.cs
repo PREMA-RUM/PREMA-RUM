@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
+using Npgsql;
 using PreEnrollmentMgmt.DataAccess;
 using PreEnrollmentMgmt.WebApi;
 using PreEnrollmentMgmt.WebApi.Controllers.DTOS;
@@ -14,17 +15,38 @@ Startup.ConfigureProgramServices(builder);
 
 // Framework Services
 builder.Services.AddControllers();
+
 builder.Services.AddDbContext<PremaRumDbContext>(opt =>
 {
+    var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL") ??
+                      throw new InvalidOperationException("DATABASE_URL needed");
+    var databaseUri = new Uri(databaseUrl);
+    var userInfo = databaseUri.UserInfo.Split(':');
+
+    var connectionStringBuilder = new NpgsqlConnectionStringBuilder
+    {
+        Host = databaseUri.Host,
+        Port = databaseUri.Port,
+        Username = userInfo[0],
+        Password = userInfo[1],
+        Database = databaseUri.LocalPath.TrimStart('/')
+    };
+
+    if (builder.Environment.IsProduction())
+    {
+        connectionStringBuilder.SslMode = SslMode.Require;
+        connectionStringBuilder.TrustServerCertificate = true;
+    }
+
     opt.UseNpgsql(
-        Environment.GetEnvironmentVariable("ConnectionString") ?? throw new InvalidOperationException());
+        connectionStringBuilder.ToString());
 });
 builder.Services.AddAutoMapper(typeof(DTOMapping));
 
 // Authentication Configurations
 builder.Services
     .AddMicrosoftIdentityWebApiAuthentication(builder.Configuration);
-builder.Services.AddAuthorization(options => 
+builder.Services.AddAuthorization(options =>
 {
     options.DefaultPolicy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
         .RequireAuthenticatedUser()
@@ -45,7 +67,7 @@ builder.Services.AddSwaggerGen(c =>
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
     });
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
@@ -57,8 +79,7 @@ builder.Services.AddSwaggerGen(c =>
                 },
                 Scheme = "oauth2",
                 Name = "Bearer",
-                In = ParameterLocation.Header,
-
+                In = ParameterLocation.Header
             },
             new List<string>()
         }

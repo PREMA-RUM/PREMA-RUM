@@ -19,7 +19,7 @@ services:
       context: ./premarum-backend
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionString=Host=db:5432;Database=premadb;Username=postgres;Password=supersecretpassword
+      - DATABASE_URL=postgresql://postgres:supersecretpassword@db:5432/premadb
     ports:
       - '8888:80'
     volumes:
