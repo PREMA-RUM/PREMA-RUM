@@ -1,13 +1,11 @@
 # [PREMA-RUM](https://www.premarum.com/)
+
 ## Team Members: [Kenneth J. Rosario Acevedo](https://github.com/kenneth-rosario), [José A. Rivera Morales](https://github.com/jvserivera), [Yavier A. Mari Rodríguez](https://github.com/YMari)
-#
 
 ### PREMA-RUM is a web application for creating enrollment logistical plans, storing and sharing them with the community.
-<br/>
 
 ### This project was originally built for the CIIC4151/INSO4151 (Senior Development Project - Capstone) course at UPRM, Spring 2022.
 
-#
 ## Development Guide
 ### Prerequisites:
 - Download and install [Docker](https://docs.docker.com/get-docker/).
@@ -55,12 +53,9 @@ docker-compose up db
 
 The database will be mapped to your machine's port 9001.
 
-#
-
 ## Deployment
 
 ### CI/CD has been configured making new changes to main automatically be pushed to the backend and frontend servers. 
-<br/>
 
 ### Current Hosting Services: (as of March 16, 2022)
 - [Heroku](https://www.heroku.com/) for Backend and Database.
