@@ -8,6 +8,7 @@ public class StudentService
 {
     
     private readonly IStudentRepository _studentRepository;
+    private readonly ICourseRepository _courseRepository;
     private readonly StudentValidationService _studentValidationService;
 
     public StudentService( IStudentRepository studentRepository,
@@ -33,5 +34,18 @@ public class StudentService
         var student = await _studentValidationService.ValidateStudentExists(studentEmail);
         student.DepartmentId = newDepartmentId;
         _studentRepository.Save(student);
+    }
+
+    public async Task<ICollection<CoursesTaken>> AddCoursesTaken(string studentEmail, int[] courseIds)
+    {
+        var student = await _studentValidationService.ValidateStudentExists(studentEmail);
+        var courses = await _courseRepository.GetByIdList(courseIds);
+        foreach (var course in courses)
+        {
+            var courseTaken = new CoursesTaken(course,-1, student.Id);
+            student.AddCoursesTaken(courseTaken);
+        }
+
+        return student.CoursesTaken;
     }
 }

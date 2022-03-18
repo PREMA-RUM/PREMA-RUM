@@ -28,4 +28,9 @@ public class Student
     {
         PreEnrollments.Add(preEnrollment);
     }
+
+    public void AddCoursesTaken(CoursesTaken coursesTaken)
+    {
+        CoursesTaken.Add(coursesTaken);
+    }
 }

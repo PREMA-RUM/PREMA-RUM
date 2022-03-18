@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PreEnrollmentMgmt.Core.Entities;
 using PreEnrollmentMgmt.Core.Repositories;
 using PreEnrollmentMgmt.Core.Services;
 using PreEnrollmentMgmt.WebApi.Controllers.DTOS;
@@ -42,5 +43,16 @@ public class StudentController : ControllerBase
     {
         await _studentService.UpdateDepartment(User.Identity?.Name!, newDepartmentRequest.DepartmentId);
         await _transactionManager.Commit();
+    }
+    
+    [Authorize]
+    [HttpPut]
+    public async Task<IEnumerable<CoursesTakenDTO>> AddCoursesTaken(
+        [FromBody] AddCoursesTakenRequest newCoursesTakenRequest
+    )
+    {
+        var result = await _studentService.AddCoursesTaken(User.Identity?.Name!, newCoursesTakenRequest.CoursesTakenIds);
+        await _transactionManager.Commit();
+        return _mapper.Map<IEnumerable<CoursesTakenDTO>>(result);
     }
 }
