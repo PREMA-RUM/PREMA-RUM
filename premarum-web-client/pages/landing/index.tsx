@@ -86,7 +86,7 @@ export default function Landing() {
                             height="420"
                             frameBorder="0"
                             title="PREMA-RUM Demo Video"
-                            src="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
                         />
                     </Box>
                     <Typography variant="h5" sx={classes.bottomSubtitle}>Designed for UPRM students, by UPRM students.</Typography>

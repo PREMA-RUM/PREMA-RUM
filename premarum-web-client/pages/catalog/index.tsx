@@ -33,7 +33,7 @@ export default function Catalog() {
                         
                         <Grid item>
                             <Grid container direction="row" alignItems="center">
-                                <Typography sx={classes.title}>Courses</Typography>
+                                <Typography sx={classes.title}>Course Catalog</Typography>
                                 <Divider orientation="vertical" variant='middle' light flexItem sx={classes.dividerItem}/>
                                 <TextField size="small" variant="outlined" placeholder="Search Courses..." sx={classes.searchInput}/>
                             </Grid>
