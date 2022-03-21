@@ -171,9 +171,12 @@ export default function Navbars({children}:any) {
               <Divider />
 
               <Tooltip title="Log Out" placement="right">
-                <ListItemButton key="Log Out" onClick={() => {
-                    instance.logout();
-                    router.push('/')
+                <ListItemButton key="Log Out" onClick={async () => {
+                  console.log(instance.getActiveAccount())
+                    await router.push('/')
+                    await instance.logoutPopup({
+                      account: instance.getActiveAccount()
+                    })
                 }}>
                     <ListItemIcon>
                         <LogoutRounded/>
