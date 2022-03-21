@@ -172,11 +172,10 @@ export default function Navbars({children}:any) {
 
               <Tooltip title="Log Out" placement="right">
                 <ListItemButton key="Log Out" onClick={async () => {
+                  console.log(instance.getActiveAccount())
                     await router.push('/')
-                    await instance.logoutRedirect({
-                      onRedirectNavigate: (url) => {
-                          return false
-                      }
+                    await instance.logoutPopup({
+                      account: instance.getActiveAccount()
                     })
                 }}>
                     <ListItemIcon>
