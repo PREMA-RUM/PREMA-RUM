@@ -2,6 +2,8 @@ import * as React from "react";
 import {Box, Button, Card, CardContent, CardMedia, Grid, Typography} from "@mui/material";
 import {useMsal} from "@azure/msal-react";
 import {PopupRequest} from "@azure/msal-browser";
+import getOrCreateUser from "../../utility/requests/getOrCreateUser";
+import { TOKEN_REQUEST } from "../../utility/constants";
 
 type ButtonProps = {
     
@@ -19,14 +21,30 @@ const LoginButton: React.FunctionComponent<ButtonProps> = () => {
     }
     
     let loginRequest:PopupRequest = {
-        scopes:["api://83c3cbe7-f00e-4ea8-87d8-bf4d75690f17/access_as_user"],
-        redirectUri:"/"
+        ...TOKEN_REQUEST
     }
     
-    function loginBehavior() {
-        instance
-            .loginPopup(loginRequest)
-            .catch(_ => alert("Login Failed. Try Again."))
+    async function loginBehavior() {
+        try {
+            const res = await instance.loginPopup(loginRequest)
+            await instance.setActiveAccount(res.account)
+        } catch(err: any) {
+            alert("Login Failed. Try Again.");
+            console.error(err);
+            return
+        }
+
+        try {
+            await getOrCreateUser(instance);
+        } catch(err) {
+            alert("Login Failed. Try Again.");
+            console.error(err);
+            await instance.logoutRedirect({
+                onRedirectNavigate: (url) => {
+                    return false
+                }
+            })
+        }
     }
     
     return (
