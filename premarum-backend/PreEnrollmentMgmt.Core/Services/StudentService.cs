@@ -36,16 +36,16 @@ public class StudentService
         _studentRepository.Save(student);
     }
 
-    public async Task<ICollection<CoursesTaken>> AddCoursesTaken(string studentEmail, int[] courseIds)
+    public async Task<ICollection<CoursesTaken>> AddCoursesTaken(string studentEmail, int[] courseIds, int semesterId = 0)
     {
         var student = await _studentValidationService.ValidateStudentExists(studentEmail);
         var courses = await _courseRepository.GetByIdList(courseIds);
         foreach (var course in courses)
         {
-            var courseTaken = new CoursesTaken(course,-1, student.Id);
-            student.AddCoursesTaken(courseTaken);
+            CoursesTaken courseTaken = new CoursesTaken(course.Id, student.Id, semesterId);
+            if(!student.CoursesTaken.Contains(courseTaken))
+                student.AddCoursesTaken(courseTaken);
         }
-
         return student.CoursesTaken;
     }
 }

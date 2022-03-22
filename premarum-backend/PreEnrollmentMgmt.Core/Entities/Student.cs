@@ -2,12 +2,12 @@
 
 public class Student
 {
-    
-     protected Student()
-     {
-         PreEnrollments = new HashSet<PreEnrollment>();
-         CoursesTaken = new HashSet<CoursesTaken>();
-     }
+    protected Student()
+    {
+        PreEnrollments = new HashSet<PreEnrollment>();
+        CoursesTaken = new HashSet<CoursesTaken>();
+    }
+
     public Student(string studentEmail)
     {
         Email = studentEmail;

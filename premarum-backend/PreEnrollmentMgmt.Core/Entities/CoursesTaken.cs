@@ -2,13 +2,13 @@
 
 public class CoursesTaken
 {
-    public CoursesTaken(Course course, int semesterId, int studentId)
+    public CoursesTaken(int courseId, int studentId, int semesterId)
     {
-        Course = course;
-        SemesterId = semesterId;
         StudentId = studentId;
-        CourseId = course.Id;
+        CourseId = courseId;
+        SemesterId = semesterId;
     }
+
     public int CourseId { get; set; }
     public int SemesterId { get; set; }
     public int StudentId { get; set; }
