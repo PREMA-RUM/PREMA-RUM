@@ -20,6 +20,20 @@ public class StudentRepository : IStudentRepository
         return await _context.Students.SingleOrDefaultAsync(st => st!.Email == email);
     }
 
+    public async Task<Student?> GetByEmailWithCoursesTaken(string email)
+    {
+        return await GetCompletePreEnrollmentQueryable()
+            .Where(st => st!.Email == email)
+            .FirstOrDefaultAsync();
+    }
+    
+    private IQueryable<Student> GetCompletePreEnrollmentQueryable()
+    {
+        return _context
+            .Students
+            .Include(st => st.CoursesTaken);
+    }
+    
     public async Task Create(Student student)
     {
         await _context.Students.AddAsync(student);
