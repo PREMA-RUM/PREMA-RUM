@@ -7,7 +7,6 @@ using PreEnrollmentMgmt.WebApi.Controllers.DTOS;
 namespace PreEnrollmentMgmt.WebApi.Controllers;
 
 [ApiController]
-[Authorize]
 [Route("api/[controller]")]
 public class CourseCatalogController : ControllerBase
 {

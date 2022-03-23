@@ -1,23 +1,47 @@
-import { Autocomplete, Button, Card, CardActions, CardContent, CardHeader, Divider, Fade, Grid, Modal, TextField, Typography } from '@mui/material'
+import {
+    Autocomplete,
+    Button,
+    Card,
+    CardActions,
+    CardContent,
+    CardHeader,
+    CircularProgress,
+    Divider,
+    Fade,
+    Grid,
+    Modal, Stack,
+    TextField,
+    Typography,
+} from '@mui/material'
 import { AddRounded } from '@mui/icons-material';
 import { grey } from '@mui/material/colors';
-import React from 'react';
+import React, {useState} from 'react';
 import { useRouter } from 'next/router';
 import PreenrollmentCard from '../components/PreenrollmentCard';
+import getAllSemesters from "../../utility/requests/getAllSemesters";
+import {ISemesterResponse} from "../../utility/requests/responseTypes";
+import {
+    useMutatePreEnrollmentsCache,
+    usePreEnrollments
+} from "../../utility/hooks/usePreEnrollments";
+import createPreEnrollment from "../../utility/requests/createPreEnrollment";
+import {useMsal} from "@azure/msal-react";
 
-// Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
-const top100Films = [
-  { title: 'The Shawshank Redemption', year: 1994 },
-  { title: 'The Godfather', year: 1972 },
-  { title: 'The Godfather: Part II', year: 1974 },
-  { title: 'The Dark Knight', year: 2008 },
-  { title: '12 Angry Men', year: 1957 },
-  { title: "Schindler's List", year: 1993 },
-  { title: 'Pulp Fiction', year: 1994 },
-]
+type HomeProps = {
+    semesters: ISemesterResponse[]
+}
 
-export default function Home() {
+export default function Home(props: HomeProps) {
+  const {instance} = useMsal();
   const [open, setOpen] = React.useState(false);
+  const [modalLoading, setModalLoading] = React.useState(false);
+  const [newPreEnrollmentName, setNewPreEnrollmentName] = useState("");
+  const [newPreEnrollmentSemester, setNewPreEnrollmentSemester] = useState<ISemesterResponse | null>(null)
+  const {preEnrollments, isLoading, isError} = usePreEnrollments();
+  const mutatePreEnrollmentCache = useMutatePreEnrollmentsCache();
+    
+  console.log(preEnrollments)
+    
   const router = useRouter();
 
   const handleModalOpen = () => {
@@ -27,6 +51,28 @@ export default function Home() {
   const handleModalClose = () => {
       setOpen(false);
   };
+  
+  const handlePreEnrollmentCreate = async () => {
+      setModalLoading(true)
+      let result;
+      try {
+          result = await createPreEnrollment(instance, {
+              semesterId: newPreEnrollmentSemester!.id,
+              name: newPreEnrollmentName
+          });
+      } catch(err) {
+          // TODO: Switch with correct backend error message
+          alert(err)
+          setModalLoading(false);
+          return;
+      }
+      await mutatePreEnrollmentCache(result);
+      setNewPreEnrollmentName("");
+      setNewPreEnrollmentSemester(null);
+      setModalLoading(false)
+      // mutate useSwr state with new object
+      router.push("/preenrollment")
+  }
 
   function AddButton() {
     return(
@@ -39,6 +85,25 @@ export default function Home() {
           Add Pre-Enrollment
       </Button>
     )
+  }
+  
+  function PreEnrollmentsSection() {
+      if (isLoading) {
+          return <CircularProgress/>;
+      }
+      if (preEnrollments?.length == 0) {
+          return <Grid container direction="column" justifyContent="center" alignItems="center">
+              <Typography>Nothing here yet... :(</Typography>
+              <AddButton/>
+          </Grid>;
+      }
+      return <>
+          {
+              preEnrollments?.map((currVal, index) => 
+                  <PreenrollmentCard key={index}/>
+              )
+          }
+      </>
   }
 
   return (
@@ -56,8 +121,8 @@ export default function Home() {
                           <Autocomplete
                             sx={classes.semesterSelect}
                             id="tags-outlined"
-                            options={top100Films}
-                            getOptionLabel={(option) => option.title}
+                            options={props.semesters}
+                            getOptionLabel={(option) => `${option.term}-${option.year}`}
                             filterSelectedOptions
                             size="small"
                             renderInput={(params) => (
@@ -82,13 +147,7 @@ export default function Home() {
 
       <Grid item>
         <Card sx={classes.contentCard}>
-          <Grid container direction="column" justifyContent="center" alignItems="center">
-            <Typography>Nothing here yet... :(</Typography>
-            <AddButton/>
-          </Grid>
-
-          <PreenrollmentCard/>
-          <PreenrollmentCard/>
+            {PreEnrollmentsSection()}
         </Card>
       </Grid>
       
@@ -109,35 +168,48 @@ export default function Home() {
                   <Divider/>
 
                   <CardContent sx={classes.cardContent}>
-
-                    <TextField
-                      sx={classes.titleInput}
-                      placeholder="Add Pre-Enrollment Title..."
-                      variant="outlined"
-                      fullWidth
-                    />
-
-                    <Autocomplete
-                      id="tags-outlined"
-                      options={top100Films}
-                      getOptionLabel={(option) => option.title}
-                      filterSelectedOptions
-                      renderInput={(params) => (
-                      <TextField
-                          {...params}
-                          label="Semester Selection"
-                          placeholder="Select Semester..."
-                      />
+                      {modalLoading?(
+                          <Stack alignItems="center" justifyContent="center">
+                            <CircularProgress />
+                          </Stack>
+                      ):(
+                          <>
+                              <TextField
+                                  sx={classes.titleInput}
+                                  placeholder="Add Pre-Enrollment Title..."
+                                  variant="outlined"
+                                  fullWidth
+                                  value={newPreEnrollmentName}
+                                  onChange={event => setNewPreEnrollmentName(event.target.value)}
+                              />
+    
+                              <Autocomplete
+                                  id="tags-outlined"
+                                  options={props.semesters}
+                                  getOptionLabel={(option) => `${option.term}-${option.year}`}
+                                  filterSelectedOptions
+                                  onChange={(event, newValue) => {
+                                      setNewPreEnrollmentSemester(newValue);
+                                  }}
+                                  renderInput={(params) => (
+                                      <TextField
+                                          {...params}
+                                          label="Semester Selection"
+                                          placeholder="Select Semester..."
+                                      />
+                                  )}
+                              />
+                          </>
                       )}
-                    />
-
                   </CardContent>
 
                   <Divider/>
 
-                  <CardActions sx={classes.cardActions}>
+                  <CardActions sx={classes.cardActions} >
                       <Button onClick={handleModalClose}>Cancel</Button>
-                      <Button onClick={() => {router.push('/preenrollment')}}>Submit</Button>
+                      <Button
+                          disabled={modalLoading || !newPreEnrollmentName || !newPreEnrollmentSemester} // disable when modal is loading
+                          onClick={handlePreEnrollmentCreate}>Submit</Button>
                   </CardActions>
               </Card>
           </Grid>
@@ -213,3 +285,11 @@ const useStyles = {
 };
 
 const classes = useStyles;
+
+export async function getStaticProps() {
+    return {
+        props: {
+            semesters: await getAllSemesters()
+        }, // will be passed to the page component as props
+    }
+}
