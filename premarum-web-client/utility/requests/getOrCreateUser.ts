@@ -1,4 +1,4 @@
-import { InteractionRequiredAuthError, IPublicClientApplication, PopupRequest } from "@azure/msal-browser";
+import { IPublicClientApplication } from "@azure/msal-browser";
 import axios from "axios";
 import { HOST } from "../constants";
 import { getAuthToken } from "../helpers";

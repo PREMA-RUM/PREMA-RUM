@@ -4,6 +4,9 @@ import {useMsal} from "@azure/msal-react";
 import {PopupRequest} from "@azure/msal-browser";
 import getOrCreateUser from "../../utility/requests/getOrCreateUser";
 import { TOKEN_REQUEST } from "../../utility/constants";
+import {Lan} from "@mui/icons-material";
+import {NextPage} from "next";
+import {useRouter} from "next/router";
 
 type ButtonProps = {
     
@@ -11,6 +14,7 @@ type ButtonProps = {
 
 const LoginButton: React.FunctionComponent<ButtonProps> = () => {
     const { instance, inProgress } = useMsal();
+    const router = useRouter();
     
     if (inProgress === "login") {
         return (
@@ -36,6 +40,7 @@ const LoginButton: React.FunctionComponent<ButtonProps> = () => {
 
         try {
             await getOrCreateUser(instance);
+            await router.push("/home");
         } catch(err) {
             alert("Login Failed. Try Again.");
             console.error(err);
@@ -96,6 +101,13 @@ export default function Landing() {
         </>
     )
 }
+
+Landing.getLayout = function getLayout(page: NextPage) {
+    return (
+        page
+    )
+}
+
 
 const useStyles = {
     loginButton: {

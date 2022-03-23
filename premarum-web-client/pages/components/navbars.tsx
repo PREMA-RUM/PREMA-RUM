@@ -142,7 +142,7 @@ export default function Navbars({children}:any) {
 
           <List>
               <Tooltip title="Home" placement="right">
-                <ListItemButton key="Home" onClick={() => {router.push('/')}}>
+                <ListItemButton key="Home" onClick={() => {router.push('/home')}}>
                     <ListItemIcon>
                         <HomeRounded/>
                     </ListItemIcon>
