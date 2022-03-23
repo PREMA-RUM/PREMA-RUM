@@ -48,7 +48,6 @@ export default function Catalog() {
                 <Card sx={classes.contentCard} >
                     <Grid container direction='column'>
                         <DataGrid
-                            checkboxSelection
                             rows={data.rows}
                             columns={data.columns as GridColumns}
                             components={{

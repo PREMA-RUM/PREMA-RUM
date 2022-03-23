@@ -3,6 +3,7 @@ import { AddRounded } from '@mui/icons-material';
 import React from 'react';
 import CatalogGrid from '../components/catalogGrid';
 import { orange } from '@mui/material/colors';
+import ScheduleCalendar from '../components/scheduleCalendar';
 
 export default function Preenrollment() {
     const [value, setValue] = React.useState(0);
@@ -90,7 +91,7 @@ export default function Preenrollment() {
 
                 </Grid>
                 <TabPanel value={value} index={0}>
-                    Schedule Body
+                    <ScheduleCalendar/>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
                     <CatalogGrid/>

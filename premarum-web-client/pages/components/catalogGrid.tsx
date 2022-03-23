@@ -36,6 +36,7 @@ export default function CatalogGrid() {
                 checkboxSelection
                 rows={data.rows}
                 columns={data.columns as GridColumns}
+                autoHeight
                 components={{
                     Toolbar: CustomToolbar,
                 }}
