@@ -63,4 +63,14 @@ public class StudentController : ControllerBase
         var result = await _studentService.GetCoursesTaken(User.Identity?.Name!);
         return _mapper.Map<IEnumerable<CoursesTakenDTO>> (result);
     }
+
+    [Authorize]
+    [HttpDelete]
+    public async Task RemoveStudentCoursestaken(
+        [FromBody] RemoveCoursesTakenRequest newRemoveCoursesTakenRequest
+        )
+    {
+        await _studentService.RemoveCoursesTaken(User.Identity?.Name!, newRemoveCoursesTakenRequest.CoursesTakenIds);
+        await _transactionManager.Commit();
+    }
 }

@@ -33,4 +33,9 @@ public class Student
     {
         CoursesTaken.Add(coursesTaken);
     }
+    
+    public void RemoveCoursesTaken(int[] CourseIds)
+    {
+        ((HashSet<CoursesTaken>) CoursesTaken).RemoveWhere(taken => CourseIds.Contains(taken.CourseId));
+    }
 }
