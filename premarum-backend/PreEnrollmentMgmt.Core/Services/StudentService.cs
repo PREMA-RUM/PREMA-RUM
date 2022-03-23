@@ -48,4 +48,10 @@ public class StudentService
         }
         return student.CoursesTaken;
     }
+
+    public async Task<ICollection<CoursesTaken>> GetCoursesTaken(string studentEmail)
+    {
+        var student = await _studentValidationService.ValidateStudentExists(studentEmail);
+        return student.CoursesTaken;
+    }
 }

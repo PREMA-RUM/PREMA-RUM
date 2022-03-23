@@ -55,4 +55,12 @@ public class StudentController : ControllerBase
         await _transactionManager.Commit();
         return _mapper.Map<IEnumerable<CoursesTakenDTO>>(result);
     }
+
+    [Authorize]
+    [HttpGet]
+    public async Task<IEnumerable<CoursesTakenDTO>> GetStudentCoursesTaken()
+    {
+        var result = await _studentService.GetCoursesTaken(User.Identity?.Name!);
+        return _mapper.Map<IEnumerable<CoursesTakenDTO>> (result);
+    }
 }
