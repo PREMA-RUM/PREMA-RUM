@@ -4,6 +4,7 @@ import React from 'react';
 import CatalogGrid from '../components/catalogGrid';
 import { orange } from '@mui/material/colors';
 import ScheduleCalendar from '../components/scheduleCalendar';
+import ScheduleTable from '../components/scheduleTable';
 
 export default function Preenrollment() {
     const [value, setValue] = React.useState(0);
@@ -91,6 +92,7 @@ export default function Preenrollment() {
 
                 </Grid>
                 <TabPanel value={value} index={0}>
+                    <ScheduleTable/>
                     <ScheduleCalendar/>
                 </TabPanel>
                 <TabPanel value={value} index={1}>

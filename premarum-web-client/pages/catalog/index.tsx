@@ -48,6 +48,7 @@ export default function Catalog() {
                 <Card sx={classes.contentCard} >
                     <Grid container direction='column'>
                         <DataGrid
+                            autoHeight
                             rows={data.rows}
                             columns={data.columns as GridColumns}
                             components={{
