@@ -2,7 +2,7 @@ import { Box, Button, Card, Divider, Grid, Tab, Tabs, TextField, Typography } fr
 import { AddRounded } from '@mui/icons-material';
 import React from 'react';
 import CatalogGrid from '../components/catalogGrid';
-import { orange } from '@mui/material/colors';
+import { grey } from '@mui/material/colors';
 import ScheduleCalendar from '../components/scheduleCalendar';
 import ScheduleTable from '../components/scheduleTable';
 
@@ -41,9 +41,20 @@ export default function Preenrollment() {
                 startIcon={<AddRounded/>}
                 variant="contained"
                 sx={classes.addSelectionButton}
-                onClick={() => console.log("poggy")}
             >
               Add Selection
+          </Button>
+        )
+    }
+
+    function RemoveSelectionButton() {
+        return(
+            <Button
+                startIcon={<AddRounded/>}
+                variant="contained"
+                sx={classes.addSelectionButton}
+            >
+              Remove Selection
           </Button>
         )
     }
@@ -88,7 +99,11 @@ export default function Preenrollment() {
                         <Grid item>
                             <AddSelectionButton/>
                         </Grid>
-                    ):<></>}
+                    ):
+                        <Grid item>
+                            <RemoveSelectionButton/>
+                        </Grid>
+                    }
 
                 </Grid>
                 <TabPanel value={value} index={0}>
@@ -135,7 +150,7 @@ const useStyles = {
         backgroundColor: 'primary.dark',
     },
     contentCard: {
-        backgroundColor: orange[200],
+        backgroundColor: grey[200],
         padding: '25px',
         minHeight: '80vh',
         width: '100%',
