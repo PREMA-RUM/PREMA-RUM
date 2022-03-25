@@ -1,5 +1,6 @@
 import {DeleteRounded} from "@mui/icons-material";
 import {Card, CardHeader, Divider, Avatar, Button, ButtonGroup} from "@mui/material";
+import { useRouter } from "next/router";
 import {
     IPreEnrollmentResponse,
     IPreEnrollmentSelectionResponse,
@@ -8,9 +9,11 @@ import {
 
 
 function OptionsButton() {
-    return (
+    const router = useRouter();
+
+    return(
         <ButtonGroup variant="contained" disableElevation sx={classes.buttonGroup}>
-            <Button>Edit</Button>
+            <Button onClick={() => {router.push('/preenrollment')}}>Edit</Button>
             <Button size="small">
                 <DeleteRounded/>
             </Button>
