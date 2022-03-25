@@ -1,12 +1,11 @@
-import * as React from "react";
-import {Box, Button, Card, CardContent, CardMedia, Grid, Typography} from "@mui/material";
+import {Box, Button, Card, CardContent, Grid, Typography} from "@mui/material";
 import {useMsal} from "@azure/msal-react";
 import {PopupRequest} from "@azure/msal-browser";
 import getOrCreateUser from "../../utility/requests/getOrCreateUser";
 import { TOKEN_REQUEST } from "../../utility/constants";
-import {Lan} from "@mui/icons-material";
 import {NextPage} from "next";
 import {useRouter} from "next/router";
+import React, {useState} from "react";
 
 type ButtonProps = {
     
@@ -14,9 +13,10 @@ type ButtonProps = {
 
 const LoginButton: React.FunctionComponent<ButtonProps> = () => {
     const { instance, inProgress } = useMsal();
+    const [loginLoading, setLoginLoading] = useState(false);
     const router = useRouter();
     
-    if (inProgress === "login") {
+    if (inProgress === "login" || loginLoading) {
         return (
             <Button size="large" sx={classes.loginButton} disabled>
                 Authentication In Progress...
@@ -29,6 +29,7 @@ const LoginButton: React.FunctionComponent<ButtonProps> = () => {
     }
     
     async function loginBehavior() {
+        setLoginLoading(true)
         try {
             const res = await instance.loginPopup(loginRequest)
             await instance.setActiveAccount(res.account)
@@ -49,6 +50,7 @@ const LoginButton: React.FunctionComponent<ButtonProps> = () => {
                     return false
                 }
             })
+            setLoginLoading(false);
         }
     }
     
