@@ -1,17 +1,18 @@
-import { Autocomplete, Button, Card, CardActions, CardContent, CardHeader, Divider, Fade, Grid, Modal, TextField, Typography } from '@mui/material'
-import { AddRounded } from '@mui/icons-material'
+import { Box, Card, Divider, Grid, Paper, TextField, Typography } from '@mui/material'
 import React from 'react';
 import { grey } from '@mui/material/colors';
-import { DataGrid, GridColumns, GridToolbar, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton } from '@mui/x-data-grid';
+import { DataGrid, GridColumns, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton } from '@mui/x-data-grid';
 import { useDemoData } from '@mui/x-data-grid-generator';
 
 function CustomToolbar() {
     return(
-        <GridToolbarContainer>
-            <GridToolbarColumnsButton />
-            <GridToolbarFilterButton />
-            <GridToolbarDensitySelector />
-        </GridToolbarContainer>
+        <Box sx={classes.toolbarBox}>
+            <GridToolbarContainer>
+                <GridToolbarColumnsButton />
+                <GridToolbarFilterButton />
+                <GridToolbarDensitySelector />
+            </GridToolbarContainer>
+        </Box>
     )
 }
 
@@ -46,7 +47,7 @@ export default function Catalog() {
 
             <Grid item>
                 <Card sx={classes.contentCard} >
-                    <Grid container direction='column'>
+                    <Paper elevation={0} sx={classes.dataContainer}>
                         <DataGrid
                             autoHeight
                             rows={data.rows}
@@ -55,7 +56,7 @@ export default function Catalog() {
                                 Toolbar: CustomToolbar,
                             }}
                         />
-                    </Grid>
+                    </Paper>
                 </Card>
             </Grid>
           
@@ -65,6 +66,10 @@ export default function Catalog() {
 }
 
 const useStyles = {
+    toolbarBox: {
+        marginTop: 1,
+        marginLeft: 1,
+    },
     topCard: {
         padding: '5px 25px',
         backgroundColor: 'primary.light',
@@ -89,8 +94,8 @@ const useStyles = {
         minHeight: '80vh',
         overflow: 'auto',
     },
-    dataGrid: {
-        
+    dataContainer: {
+
     },
   };
 
