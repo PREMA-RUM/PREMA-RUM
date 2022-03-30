@@ -1,10 +1,10 @@
 import { Box, Button, Card, Divider, Grid, Tab, Tabs, TextField, Typography } from '@mui/material'
 import { AddRounded } from '@mui/icons-material';
 import React from 'react';
-import CatalogGrid from '../components/catalogGrid';
+import CatalogGrid from '../../components/catalogGrid';
 import { grey } from '@mui/material/colors';
-import ScheduleCalendar from '../components/scheduleCalendar';
-import ScheduleTable from '../components/scheduleTable';
+import ScheduleCalendar from '../../components/scheduleCalendar';
+import ScheduleTable from '../../components/scheduleTable';
 
 export default function Preenrollment() {
     const [value, setValue] = React.useState(0);

@@ -3,8 +3,7 @@ import React, { useState } from "react";
 import moment from 'moment';
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import dynamic from 'next/dynamic'
-// const Calendar = dynamic(() => import('react-big-calendar'), {ssr: false})
+
 
 const rows = [
     {id: 1, course: 'CIIC3000', section: '010', credits: 3, days: 'LWV', classroom: 'S121', timeslot: '3:30pm - 4:20pm', professor: 'Kejie Lu'},

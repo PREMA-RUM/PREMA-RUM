@@ -5,7 +5,7 @@ import {
     IPreEnrollmentResponse,
     IPreEnrollmentSelectionResponse,
     ISemesterResponse
-} from "../../../utility/requests/responseTypes";
+} from "../../utility/requests/responseTypes";
 
 
 function OptionsButton() {
