@@ -1,8 +1,8 @@
 import React from "react";
-import {usePreEnrollments} from "../../../utility/hooks/usePreEnrollments";
+import {usePreEnrollments} from "../../utility/hooks/usePreEnrollments";
 import {CircularProgress, Grid, Typography} from "@mui/material";
 import PreEnrollmentCard, {PreEnrollmentCardProps} from "./PreEnrollmentCard";
-import {IPreEnrollmentResponse} from "../../../utility/requests/responseTypes";
+import {IPreEnrollmentResponse} from "../../utility/requests/responseTypes";
 
 
 export default function PreEnrollmentCardSection(): JSX.Element {

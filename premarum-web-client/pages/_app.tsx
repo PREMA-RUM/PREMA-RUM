@@ -10,11 +10,11 @@ import '@fontsource/roboto/700.css';
 
 import createEmotionCache from '../utility/createEmotionCache';
 import lightThemeOptions from '../styles/theme/lightThemeOptions';
-import Navbars from './components/navbars';
+import Navbars from '../components/navbars';
 import Head from 'next/head';
 import {Configuration, PublicClientApplication} from "@azure/msal-browser";
 import {AuthenticatedTemplate, MsalProvider} from '@azure/msal-react';
-import AuthDefaultLayout from './components/DefaultLayout'
+import AuthDefaultLayout from '../components/DefaultLayout'
 import {NextPage} from "next";
 import {ReactElement, ReactNode} from "react";
 

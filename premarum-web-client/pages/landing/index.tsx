@@ -71,6 +71,7 @@ export default function Landing() {
                 <Grid container direction="column" justifyContent="space-around" alignItems="center">
                     <Typography variant="h1" sx={classes.topTitle}>PREMA-RUM</Typography>
                     <Typography variant="h5" sx={classes.topSubtitle}>The easiest way to prepare yourself for your next semester.</Typography>
+                    <Typography variant='h5' sx={classes.topSubtitle}>The app for creating enrollment logistical plans, storing, and sharing them with the community.</Typography>
                     <LoginButton/>
                 </Grid>
             </CardContent>
@@ -86,7 +87,7 @@ export default function Landing() {
                             height="420"
                             frameBorder="0"
                             title="PREMA-RUM Demo Video"
-                            src="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
                         />
                     </Box>
                     <Typography variant="h5" sx={classes.bottomSubtitle}>Designed for UPRM students, by UPRM students.</Typography>

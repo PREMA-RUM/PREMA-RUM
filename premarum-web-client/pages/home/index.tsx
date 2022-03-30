@@ -24,7 +24,7 @@ import {
 } from "../../utility/hooks/usePreEnrollments";
 import createPreEnrollment from "../../utility/requests/createPreEnrollment";
 import {useMsal} from "@azure/msal-react";
-import PreEnrollmentCardSection from "../components/PreEnrollmentCardSection";
+import PreEnrollmentCardSection from "../../components/PreEnrollmentCardSection";
 
 type HomeProps = {
     semesters: ISemesterResponse[]
