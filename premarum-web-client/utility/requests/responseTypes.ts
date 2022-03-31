@@ -28,7 +28,8 @@ export interface ITimeSlotResponse {
 export interface IPreEnrollmentSelectionResponse {
     id: number
     sectionName: string
-    capacity: number
+    capacity: number,
+    classRoom: string | null
     course: ICourseResponse
     professors: IProfessorResponse[]
     timeSlots: ITimeSlotResponse[]
