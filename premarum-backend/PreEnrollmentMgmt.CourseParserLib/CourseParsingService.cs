@@ -10,7 +10,7 @@ public class CourseParsingService
         var stream = new AntlrInputStream(requisites);
         var lexer = new CourseGrammarLexer(stream);
         var parser = new CourseGrammarParser(new CommonTokenStream(lexer));
-        var tree = parser.parse()!;
+        var tree = parser.start()!;
         var visitor = new CourseTreeVisitor( coursesTaken.ToImmutableHashSet() );
         return false;
     }
