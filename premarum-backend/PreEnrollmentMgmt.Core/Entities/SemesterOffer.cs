@@ -12,6 +12,7 @@ public class SemesterOffer
     public int Id { get; set; }
     public int? Capacity { get; set; }
     public string SectionName { get; set; }
+    public string? ClassRoom { get; set; }
     public Course Course { get; set; } = null!;
     public Semester Semester { get; set; } = null!;
     public ICollection<Professor> Professors { get; set; }

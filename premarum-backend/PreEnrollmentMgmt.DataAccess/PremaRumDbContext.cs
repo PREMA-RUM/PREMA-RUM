@@ -258,6 +258,9 @@ public class PremaRumDbContext : DbContext
 
             entity.Property(e => e.Capacity).HasColumnName("so_capacity");
 
+            entity.Property(e => e.ClassRoom)
+                .HasColumnName("so_classroom");
+
             entity.HasOne(d => d.Course)
                 .WithMany()
                 .HasForeignKey("CourseId")
