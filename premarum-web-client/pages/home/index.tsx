@@ -18,7 +18,7 @@ import {grey} from '@mui/material/colors';
 import React, {useState} from 'react';
 import {useRouter} from 'next/router';
 import getAllSemesters from "../../utility/requests/getAllSemesters";
-import {ISemesterResponse} from "../../utility/requests/responseTypes";
+import {IPreEnrollmentResponse, ISemesterResponse} from "../../utility/requests/responseTypes";
 import {
     useMutatePreEnrollmentsCache,
 } from "../../utility/hooks/usePreEnrollments";
@@ -50,7 +50,7 @@ export default function Home(props: HomeProps) {
 
     const handlePreEnrollmentCreate = async () => {
         setModalLoading(true)
-        let result;
+        let result: IPreEnrollmentResponse;
         try {
             result = await createPreEnrollment(instance, {
                 semesterId: newPreEnrollmentSemester!.id,
@@ -64,8 +64,8 @@ export default function Home(props: HomeProps) {
         }
         setNewPreEnrollmentName("");
         setNewPreEnrollmentSemester(null);
-        await router.push("/preenrollment")
         await mutatePreEnrollmentCache(result);
+        await router.push(`/preenrollment/${result.id}`)
     }
 
     function AddButton() {

@@ -1,5 +1,6 @@
-import { Box, Paper } from "@mui/material";
+import {Box, CircularProgress, Grid, Paper} from "@mui/material";
 import { GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, DataGrid, GridColDef } from "@mui/x-data-grid";
+import {useSemesterOfferings} from "../utility/hooks/useSemesterOfferings";
 
 
 const rows = [
@@ -32,7 +33,20 @@ function CustomToolbar() {
     )
 }
 
-export default function CatalogGrid() {
+type CatalogGridProps = {
+    semesterId: number,
+    exclude?: number[] // Ids to exclude
+}
+
+export default function CatalogGrid({semesterId}: CatalogGridProps) {
+    const {courseOfferings, isLoading, isError} = useSemesterOfferings(semesterId);
+    console.log(courseOfferings)
+    if (isLoading) {
+        return <Grid container alignItems="center" justifyContent="center" >
+            <CircularProgress />
+        </Grid> 
+    }
+    
     return(
         <Paper elevation={0} sx={classes.containerBox}>
             <DataGrid

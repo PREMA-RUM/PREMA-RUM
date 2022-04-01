@@ -7,13 +7,16 @@ import {
     ISemesterResponse
 } from "../../utility/requests/responseTypes";
 
+export type OptionsButtonProps = {
+    preEnrollmentId: number
+}
 
-function OptionsButton() {
+function OptionsButton({preEnrollmentId}: OptionsButtonProps) {
     const router = useRouter();
 
     return(
         <ButtonGroup variant="contained" disableElevation sx={classes.buttonGroup}>
-            <Button onClick={() => {router.push('/preenrollment')}}>Edit</Button>
+            <Button onClick={() => {router.push(`/preenrollment/${preEnrollmentId}`)}}>Edit</Button>
             <Button size="small">
                 <DeleteRounded/>
             </Button>
@@ -63,7 +66,7 @@ function PreEnrollmentCardItem({preEnrollment}: PreEnrollmentCardItemProps) {
                         </Avatar>
                     }
                     action={
-                        <OptionsButton/>
+                        <OptionsButton preEnrollmentId={preEnrollment.id}/>
                     }
                     title={`${preEnrollment.name} - ${getTotalCredits()} Credits`}
                     subheader={getCourseStringList()}
