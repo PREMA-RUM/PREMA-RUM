@@ -52,7 +52,7 @@ public class SemesterOfferRepository : ISemesterOfferRepository
             .ToListAsync();
     }
 
-    private IQueryable<SemesterOffer> GetCompleteSemesterOfferQueryable()
+    public IQueryable<SemesterOffer> GetCompleteSemesterOfferQueryable()
     {
         return _context
             .SemesterOffers

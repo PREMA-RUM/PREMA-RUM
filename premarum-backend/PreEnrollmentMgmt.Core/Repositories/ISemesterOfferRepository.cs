@@ -9,4 +9,5 @@ public interface ISemesterOfferRepository
     Task<IEnumerable<Semester>> GetAvailableSemesters();
     Task<IEnumerable<Department>> GetAvailableDepartments();
     Task<IEnumerable<Course>> GetAvailableCourses();
+    IQueryable<SemesterOffer> GetCompleteSemesterOfferQueryable();
 }

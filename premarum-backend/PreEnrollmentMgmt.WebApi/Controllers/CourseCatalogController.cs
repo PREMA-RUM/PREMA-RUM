@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PreEnrollmentMgmt.Core.Repositories;
 using PreEnrollmentMgmt.WebApi.Controllers.DTOS;
 
@@ -38,5 +39,16 @@ public class CourseCatalogController : ControllerBase
     {
         var result = await _semesterOfferRepository.GetAvailableCourses();
         return _mapper.Map<IEnumerable<CourseDTO>>(result);
+    }
+
+    // TODO: Add pagination for non filtered requests
+    [HttpGet("")]
+    public async Task<IEnumerable<PreEnrollmentSemesterOfferDTO>> FilterSemesterOffers(
+        [FromQuery] int? semesterId = null)
+    {
+        var result = _semesterOfferRepository.GetCompleteSemesterOfferQueryable();
+        if (semesterId != null)
+            result = result.Where(so => so.Semester.Id == semesterId);
+        return _mapper.Map<IEnumerable<PreEnrollmentSemesterOfferDTO>>(await result.ToListAsync());
     }
 }
