@@ -93,7 +93,7 @@ export default function Profile() {
         return(
             <CustomTooltip arrow title={course + ' - ' + description} placement="top">
                 <Card sx={classes.courseCard}>
-                    <Grid container direction="row" justifyContent="center" alignItems="center" sx={classes.courseCardGrid}>
+                    <Grid container direction="row" justifyContent="space-between" alignItems="center" sx={classes.courseCardGrid}>
                         <Grid item>
                             <Typography sx={classes.courseText}>{course}</Typography>
                         </Grid>
@@ -248,12 +248,13 @@ const useStyles = {
     },
     courseCardGrid: {
         height: '100%',
+        padding: '0 5px 0 10px'
     },
     courseText: {
-        marginLeft: 6
+
     },
     courseDeleteIcon: {
-        marginLeft: 2
+        marginLeft: 0.5,
     },
     contentCard: {
         backgroundColor: 'secondary.light',

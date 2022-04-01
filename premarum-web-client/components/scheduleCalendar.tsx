@@ -61,6 +61,13 @@ function ScheduleDates() {
 
 const localizer = momentLocalizer(moment);
 
+const formats = {
+    dayFormat: "dddd",
+    eventTimeRangeFormat: () => { 
+        return "";
+    },
+}
+
 export default function ScheduleCalendar() {
     const [dates, setDates] = useState(ScheduleDates());
 
@@ -72,9 +79,21 @@ export default function ScheduleCalendar() {
                 endAccessor="end"
                 view="week"
                 toolbar={false}
-                formats={{dayFormat: "dddd"}}
+                formats={formats}
                 defaultDate={new Date('03-20-2022 00:00')} // default date to make week static on this time
                 events={dates}
+                eventPropGetter={(event, start, end, isSelected) => ({
+                    event,
+                    start,
+                    end,
+                    isSelected,
+                    style: {
+                        backgroundColor: "rgba(152, 0, 78, 0.8)",
+                        border: 'none',
+                        padding: '10px 0 10px 10px'
+                    },
+                    
+                })}
             />
         </Paper>
     )
