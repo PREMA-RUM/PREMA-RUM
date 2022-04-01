@@ -35,7 +35,7 @@ public class StudentController : ControllerBase
     }
 
     [Authorize]
-    [HttpPost]
+    [HttpPut]
     public async Task UpdateStudentDepartment(
         [FromBody] ChangeDepartmentRequest newDepartmentRequest
     )
