@@ -1,7 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PreEnrollmentMgmt.Core.Entities;
 using PreEnrollmentMgmt.Core.Repositories;
 using PreEnrollmentMgmt.Core.Services;
 using PreEnrollmentMgmt.WebApi.Controllers.DTOS;
@@ -44,14 +43,14 @@ public class StudentController : ControllerBase
         await _studentService.UpdateDepartment(User.Identity?.Name!, newDepartmentRequest.DepartmentId);
         await _transactionManager.Commit();
     }
-    
+
     [Authorize]
     [HttpPut]
     public async Task<IEnumerable<CoursesTakenDTO>> AddCoursesTaken(
         [FromBody] AddCoursesTakenRequest newCoursesTakenRequest
     )
     {
-        var result = await _studentService.AddCoursesTaken(User.Identity?.Name!, newCoursesTakenRequest.CoursesTakenIds);
+        var result = await _studentService.AddCoursesTaken(User.Identity?.Name!, newCoursesTakenRequest.CoursesTaken);
         await _transactionManager.Commit();
         return _mapper.Map<IEnumerable<CoursesTakenDTO>>(result);
     }
@@ -61,14 +60,14 @@ public class StudentController : ControllerBase
     public async Task<IEnumerable<CoursesTakenDTO>> GetStudentCoursesTaken()
     {
         var result = await _studentService.GetCoursesTaken(User.Identity?.Name!);
-        return _mapper.Map<IEnumerable<CoursesTakenDTO>> (result);
+        return _mapper.Map<IEnumerable<CoursesTakenDTO>>(result);
     }
 
     [Authorize]
     [HttpDelete]
     public async Task RemoveStudentCoursestaken(
         [FromBody] RemoveCoursesTakenRequest newRemoveCoursesTakenRequest
-        )
+    )
     {
         await _studentService.RemoveCoursesTaken(User.Identity?.Name!, newRemoveCoursesTakenRequest.CoursesTakenIds);
         await _transactionManager.Commit();

@@ -36,27 +36,25 @@ public class StudentService
         _studentRepository.Save(student);
     }
 
-    public async Task<ICollection<CoursesTaken>> AddCoursesTaken(string studentEmail, int[] courseIds, int semesterId = 0)
+    public async Task<ICollection<CoursesTaken>> AddCoursesTaken(string studentEmail, CoursesTaken[] coursesTaken)
     {
-        var student = await _studentValidationService.ValidateStudentExists(studentEmail);
-        var courses = await _courseRepository.GetByIdList(courseIds);
-        foreach (var course in courses)
+        var student = await _studentValidationService.ValidateStudentExists(studentEmail, true);
+        foreach (var course in coursesTaken)
         {
-            CoursesTaken courseTaken = new CoursesTaken(course.Id, student.Id, semesterId);
-            if(!student.CoursesTaken.Contains(courseTaken))
-                student.AddCoursesTaken(courseTaken);
+            if(!student.CoursesTaken.Contains(course))
+                student.AddCoursesTaken(course);
         }
         return student.CoursesTaken;
     }
     
-    public async Task RemoveCoursesTaken(string studentEmail, int[] courseIds)
+    public async Task<int[]> RemoveCoursesTaken(string studentEmail,int[] courseIds )
     {
         if (courseIds is {Length: > 7})
             throw new InvalidCourseTakenDeletionException("Cannot remove more than 7 courses taken at a time");
                 
         var student = await _studentValidationService.ValidateStudentExists(studentEmail);
-        student.RemoveCoursesTaken(courseIds);
-        
+        int[] deleted = student.RemoveCoursesTaken(courseIds);
+        return deleted;
     }
 
     public async Task<ICollection<CoursesTaken>> GetCoursesTaken(string studentEmail)

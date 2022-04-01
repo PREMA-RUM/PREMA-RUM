@@ -9,6 +9,13 @@ public class CoursesTaken
         SemesterId = semesterId;
     }
 
+    public CoursesTaken(int courseId, int studentId)
+    {
+        StudentId = studentId;
+        CourseId = courseId;
+        SemesterId = 0;
+    }
+
     public int CourseId { get; set; }
     public int SemesterId { get; set; }
     public int StudentId { get; set; }

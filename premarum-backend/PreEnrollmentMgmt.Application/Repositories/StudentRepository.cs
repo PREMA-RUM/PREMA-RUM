@@ -22,12 +22,12 @@ public class StudentRepository : IStudentRepository
 
     public async Task<Student?> GetByEmailWithCoursesTaken(string email)
     {
-        return await GetCompletePreEnrollmentQueryable()
+        return await GetStudentWithCoursesQueryable()
             .Where(st => st!.Email == email)
             .FirstOrDefaultAsync();
     }
     
-    private IQueryable<Student> GetCompletePreEnrollmentQueryable()
+    private IQueryable<Student> GetStudentWithCoursesQueryable()
     {
         return _context
             .Students
