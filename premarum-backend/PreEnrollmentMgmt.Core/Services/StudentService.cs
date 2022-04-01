@@ -8,7 +8,6 @@ public class StudentService
 {
     
     private readonly IStudentRepository _studentRepository;
-    private readonly ICourseRepository _courseRepository;
     private readonly StudentValidationService _studentValidationService;
 
     public StudentService( IStudentRepository studentRepository,
@@ -47,13 +46,13 @@ public class StudentService
         return student.CoursesTaken;
     }
     
-    public async Task<int[]> RemoveCoursesTaken(string studentEmail,int[] courseIds )
+    public async Task<ICollection<CoursesTaken>> RemoveCoursesTaken(string studentEmail,int[] courseIds )
     {
         if (courseIds is {Length: > 7})
             throw new InvalidCourseTakenDeletionException("Cannot remove more than 7 courses taken at a time");
                 
         var student = await _studentValidationService.ValidateStudentExists(studentEmail);
-        int[] deleted = student.RemoveCoursesTaken(courseIds);
+        var deleted = student.RemoveCoursesTaken(courseIds);
         return deleted;
     }
 

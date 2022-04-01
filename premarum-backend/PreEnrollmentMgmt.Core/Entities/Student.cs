@@ -34,18 +34,17 @@ public class Student
         CoursesTaken.Add(coursesTaken);
     }
     
-    public int[] RemoveCoursesTaken(int[] CourseIds)
+    public List<CoursesTaken> RemoveCoursesTaken(int[] CourseIds)
     {
-        var deleted = new List<int>();
+        var deleted = new List<CoursesTaken>();
         foreach (var coursesTaken in CoursesTaken)
         {
             if (CourseIds.Contains(coursesTaken.CourseId))
-                deleted.Add(coursesTaken.CourseId);
+                deleted.Add(coursesTaken);
         }
         
         ((HashSet<CoursesTaken>) CoursesTaken).RemoveWhere(taken => CourseIds.Contains(taken.CourseId));
-
-        return deleted.ToArray();
+        return deleted;
 
     }
 }

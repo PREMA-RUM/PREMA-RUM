@@ -64,11 +64,12 @@ public class StudentController : ControllerBase
 
     [Authorize]
     [HttpDelete("/CoursesTaken")]
-    public async Task RemoveStudentCoursestaken(
+    public async Task<IEnumerable<CoursesTakenDTO>> RemoveStudentCoursestaken(
         [FromBody] RemoveCoursesTakenRequest newRemoveCoursesTakenRequest
     )
     {
-        await _studentService.RemoveCoursesTaken(User.Identity?.Name!, newRemoveCoursesTakenRequest.CoursesTakenIds);
+        var removed  = await _studentService.RemoveCoursesTaken(User.Identity?.Name!, newRemoveCoursesTakenRequest.CoursesTakenIds);
         await _transactionManager.Commit();
+        return _mapper.Map<IEnumerable<CoursesTakenDTO>>(removed);
     }
 }
