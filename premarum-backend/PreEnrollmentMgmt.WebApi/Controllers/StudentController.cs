@@ -35,7 +35,7 @@ public class StudentController : ControllerBase
     }
 
     [Authorize]
-    [HttpPut]
+    [HttpPost]
     public async Task UpdateStudentDepartment(
         [FromBody] ChangeDepartmentRequest newDepartmentRequest
     )
@@ -43,9 +43,8 @@ public class StudentController : ControllerBase
         await _studentService.UpdateDepartment(User.Identity?.Name!, newDepartmentRequest.DepartmentId);
         await _transactionManager.Commit();
     }
-
     [Authorize]
-    [HttpPut]
+    [HttpPost("/CoursesTaken")]
     public async Task<IEnumerable<CoursesTakenDTO>> AddCoursesTaken(
         [FromBody] AddCoursesTakenRequest newCoursesTakenRequest
     )
@@ -56,7 +55,7 @@ public class StudentController : ControllerBase
     }
 
     [Authorize]
-    [HttpGet]
+    [HttpGet("/CoursesTaken")]
     public async Task<IEnumerable<CoursesTakenDTO>> GetStudentCoursesTaken()
     {
         var result = await _studentService.GetCoursesTaken(User.Identity?.Name!);
@@ -64,7 +63,7 @@ public class StudentController : ControllerBase
     }
 
     [Authorize]
-    [HttpDelete]
+    [HttpDelete("/CoursesTaken")]
     public async Task RemoveStudentCoursestaken(
         [FromBody] RemoveCoursesTakenRequest newRemoveCoursesTakenRequest
     )
