@@ -1,6 +1,6 @@
-import { Autocomplete, Button, Card, CardActions, CardContent, CardHeader, Divider, Fade, Grid, Modal, TextField, Typography } from '@mui/material'
-import { AddRounded } from '@mui/icons-material'
-import React from 'react';
+import { Autocomplete, Button, Card, CardActions, CardContent, CardHeader, Divider, Fade, Grid, Modal, TextField, Typography, IconButton, Tooltip, styled, tooltipClasses, TooltipProps } from '@mui/material'
+import { AddRounded, CloseRounded, EditRounded } from '@mui/icons-material'
+import React, { useEffect } from 'react';
 import { grey } from '@mui/material/colors';
 
 // Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
@@ -14,8 +14,24 @@ const top100Films = [
     { title: 'Pulp Fiction', year: 1994 },
 ]
 
+type CourseData = {
+    data: {
+        course: string,
+        description: string,
+    }
+}
+
+const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+))({
+    [`& .${tooltipClasses.tooltip}`]: {
+      maxWidth: 300,
+    },
+});
+
 export default function Profile() {
     const [open, setOpen] = React.useState(false);
+    const [readOnly, setReadOnly] = React.useState(false);
 
     const handleModalOpen = () => {
         setOpen(true);
@@ -23,7 +39,15 @@ export default function Profile() {
     
     const handleModalClose = () => {
         setOpen(false);
-    };
+    };   
+
+    // const handleReadOnlyTrue = () => {
+    //     setReadOnly(true);
+    // };
+    
+    // const handleReadOnlyFalse = () => {
+    //     setReadOnly(false);
+    // };
 
     function AddButton() {
         return(
@@ -35,6 +59,50 @@ export default function Profile() {
             >
                 Add Courses Taken
             </Button>
+        )
+    }
+
+    // function ReadOnlyButton() {
+    //     if (!readOnly) {
+    //         return(
+    //             <Button
+    //             startIcon={<EditRounded/>}
+    //             variant="contained"
+    //             sx={classes.editCoursesButton}
+    //             onClick={handleReadOnlyTrue}
+    //         >
+    //             Finish Editing Courses Taken
+    //         </Button>
+    //         )
+    //     }
+    //     else {
+    //         return(
+    //             <Button
+    //             startIcon={<EditRounded/>}
+    //             variant="contained"
+    //             sx={classes.editCoursesButton}
+    //             onClick={handleReadOnlyFalse}
+    //         >
+    //             Edit Courses Taken
+    //         </Button>
+    //         )
+    //     }                
+    // }
+
+    function CourseCard({data:{course, description}}: CourseData) {
+        return(
+            <CustomTooltip arrow title={course + ' - ' + description} placement="top">
+                <Card sx={classes.courseCard}>
+                    <Grid container direction="row" justifyContent="space-between" alignItems="center" sx={classes.courseCardGrid}>
+                        <Grid item>
+                            <Typography sx={classes.courseText}>{course}</Typography>
+                        </Grid>
+                        <Grid item>
+                            <IconButton size="small" sx={classes.courseDeleteIcon}><CloseRounded/></IconButton>
+                        </Grid>
+                    </Grid>
+                </Card>
+            </CustomTooltip>
         )
     }
 
@@ -55,6 +123,7 @@ export default function Profile() {
                         </Grid>
 
                         <Grid item>
+                            {/* <ReadOnlyButton/> */}
                             <AddButton/>
                         </Grid>
 
@@ -74,9 +143,27 @@ export default function Profile() {
 
                         <Divider/>
                         
-                        <Grid container direction="column" alignContent='center' justifyContent="center" sx={classes.coursesContainer}>
-                            <Typography>Nothing here yet... :(</Typography>
-                            <AddButton/>
+                        <Grid container direction="row" alignContent='center' justifyContent="center" sx={classes.coursesContainer}>
+                            {/* <Typography>Nothing here yet... :(</Typography>
+                            <AddButton/> */}
+                            {/* <Autocomplete
+                                multiple
+                                freeSolo
+                                fullWidth
+                                readOnly={readOnly}
+                                options={top100Films}
+                                getOptionLabel={(option) => option.title}
+                                filterSelectedOptions
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        placeholder={"No courses taken yet..."}
+                                    />
+                                )}
+                            /> */}
+                            {top100Films.map((film, index) => (
+                                <CourseCard key={index} data={{course: film.title, description: film.year.toString()}}/>
+                            ))}
                         </Grid>
                         
                     </Grid>
@@ -149,6 +236,26 @@ const useStyles = {
     addCoursesButton: {
         backgroundColor: 'primary.dark'
     },
+    editCoursesButton: {
+        backgroundColor: 'secondary.dark',
+        marginRight: 1,
+    },
+    courseCard: {
+        minWidth: '175px',
+        height: '45px',
+        margin: 0.5,
+        backgroundColor: grey[200],
+    },
+    courseCardGrid: {
+        height: '100%',
+        padding: '0 5px 0 10px'
+    },
+    courseText: {
+
+    },
+    courseDeleteIcon: {
+        marginLeft: 0.5,
+    },
     contentCard: {
         backgroundColor: 'secondary.light',
         padding: '15px',
@@ -157,8 +264,11 @@ const useStyles = {
     contentText: {
         padding: '2px 10px',
     },
+    takenBox: {
+
+    },
     coursesContainer: {
-        marginTop: 10
+        marginTop: 1.5,
     },
     modalGridMain: {
         width: '100%',
