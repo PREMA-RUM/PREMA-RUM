@@ -15,6 +15,21 @@ export function usePreEnrollments() {
     }
 }
 
+export function usePreEnrollment(preEnrollmentId: number | null) {
+    const { data, error } = useSWR('usePreEnrollments', async () => {
+        return await getStudentPreEnrollments(pca)
+    })
+
+    // noinspection TypeScriptValidateTypes
+    const filtered = data?.find( value => value.id === preEnrollmentId )
+    
+    return {
+        preEnrollment: filtered as IPreEnrollmentResponse | undefined,
+        isLoading: !error && !data,
+        isError: error
+    }
+}
+
 export function useMutatePreEnrollmentsCache() {
     const { cache, mutate } = useSWRConfig();
     return async (newPreEnrollment: IPreEnrollmentResponse) => {

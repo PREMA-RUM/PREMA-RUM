@@ -1,13 +1,27 @@
-import { Box, Button, Card, Divider, Grid, Tab, Tabs, TextField, Typography } from '@mui/material'
+import {Box, Button, Card, CircularProgress, Divider, Grid, Tab, Tabs, TextField, Typography} from '@mui/material'
 import { AddRounded } from '@mui/icons-material';
-import React from 'react';
+import React, {useEffect} from 'react';
 import CatalogGrid from '../../components/catalogGrid';
 import { grey } from '@mui/material/colors';
 import ScheduleCalendar from '../../components/scheduleCalendar';
 import ScheduleTable from '../../components/scheduleTable';
+import {useRouter} from "next/router";
+import {route} from "next/dist/server/router";
+import {usePreEnrollment} from "../../utility/hooks/usePreEnrollments";
+import {IPreEnrollmentResponse} from "../../utility/requests/responseTypes";
 
 export default function Preenrollment() {
     const [value, setValue] = React.useState(0);
+    const router = useRouter()
+    const [preEnrollmentId, setPreEnrollmentId] = React.useState<number | null>(null);
+    const {preEnrollment, isLoading, isError} = usePreEnrollment(preEnrollmentId) 
+    
+    useEffect(() => {
+        let pId = parseInt(router.query.preEnrollmentId as string)
+        if (isNaN(pId)) 
+            return
+        setPreEnrollmentId(pId)
+    }, [router.query])
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
       setValue(newValue);
@@ -57,6 +71,12 @@ export default function Preenrollment() {
               Remove Selection
           </Button>
         )
+    }
+    
+    if (isLoading || !preEnrollmentId) {
+        return <Grid alignItems="center" justifyContent="center" alignContent="center">
+            <CircularProgress />
+        </Grid>
     }
     
     return (
@@ -111,7 +131,7 @@ export default function Preenrollment() {
                     <ScheduleCalendar/>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                    <CatalogGrid/>
+                    <CatalogGrid semesterId={preEnrollment!.semester.id}/>
                 </TabPanel>
             </Card>
         </Grid>
