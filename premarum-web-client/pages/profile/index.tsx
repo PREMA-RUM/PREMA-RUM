@@ -162,7 +162,7 @@ export default function Profile() {
                                 )}
                             /> */}
                             {top100Films.map((film, index) => (
-                                <CourseCard data={{course: film.title, description: film.year.toString()}}/>
+                                <CourseCard key={index} data={{course: film.title, description: film.year.toString()}}/>
                             ))}
                         </Grid>
                         
