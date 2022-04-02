@@ -5,7 +5,7 @@ namespace PreEnrollmentMgmt.WebApi.Controllers.DTOS;
 
 public class CoursesTakenDTO
 {
-    [Required] public int CourseId { get; set; }
+    public int CourseId { get; set; }
     public int? SemesterId { get; set; }
-
+    
 }

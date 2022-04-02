@@ -28,5 +28,6 @@ public class DTOMapping : Profile
             .ForMember(dest => dest.EndTimeB,
                 opt => { opt.MapFrom(src => src.EndTimeB.ToString()); });
         CreateMap<Department, DepartmentDTO>();
+        CreateMap<CoursesTaken, CoursesTakenDTO>();
     }
 }

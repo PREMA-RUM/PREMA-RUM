@@ -17,7 +17,7 @@
       "applicationUrl": "https://localhost:7182;http://localhost:5171",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "DATABSE_URL": "//postgres:supersecretpassword@localhost:9001/premadb"
+        "DATABASE_URL": "//postgres:supersecretpassword@localhost:9001/premadb"
       }
     },
     "IIS Express": {

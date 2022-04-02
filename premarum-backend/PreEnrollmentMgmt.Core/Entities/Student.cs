@@ -34,7 +34,7 @@ public class Student
         CoursesTaken.Add(coursesTaken);
     }
     
-    public List<CoursesTaken> RemoveCoursesTaken(int[] CourseIds)
+    public IEnumerable<CoursesTaken> RemoveCoursesTaken(int[] CourseIds)
     {
         var deleted = new List<CoursesTaken>();
         foreach (var coursesTaken in CoursesTaken)
