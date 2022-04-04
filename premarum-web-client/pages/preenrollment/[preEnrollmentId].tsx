@@ -128,7 +128,7 @@ export default function Preenrollment() {
                 </Grid>
                 <TabPanel value={value} index={0}>
                     <ScheduleTable/>
-                    <ScheduleCalendar/>
+                    <ScheduleCalendar courseOfferings={preEnrollment!.selections}/>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
                     <CatalogGrid semesterId={preEnrollment!.semester.id}/>

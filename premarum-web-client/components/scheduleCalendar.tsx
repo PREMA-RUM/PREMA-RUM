@@ -1,8 +1,10 @@
 import { Paper } from "@mui/material";
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import moment from 'moment';
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import {IPreEnrollmentSelectionResponse} from "../utility/requests/responseTypes";
+import {convertToMilitaryTime} from "../utility/helpers/dateHelpers";
 
 
 const rows = [
@@ -14,49 +16,21 @@ const rows = [
 ]
 
 // [Sun: 20, Mon: 21, Tue: 22, Wed: 23, Thu: 24, Fri: 25, Sat: 26]
-const days = {Sun: '20', Mon: '21', Tue: '22', Wed: '23', Thu: '24', Fri: '25', Sat: '26'}
+const days = {Sunday: '20', Monday: '21', Tuesday: '22', Wednesday: '23', Thursday: '24', Friday: '25', Saturday: '26'}
 
-function ScheduleDates() {
-    let dates = []
-
-    for (let i in rows) {
-        let time = rows[i].timeslot.split(" - ")
-        let start = time[0]
-        let end = time[1]
-        let hour = 0
-
-        if (start.slice(-2) == "pm") {
-            start = start.slice(0, -2)
-            hour = parseInt(start.split(":")[0])
-            if (hour !== 12) {hour += 12}
-            start = hour + ":" + start.slice(-2)
-        } else {
-            start = start.slice(0, -2)
-        }
-
-        if (end.slice(-2) == "pm") {
-            end = end.slice(0, -2)
-            hour = parseInt(end.split(":")[0])
-            if (hour !== 12) {hour += 12}
-            end = hour + ":" + end.slice(-2)
-        } else {
-            end = end.slice(0, -2)
-        }
-
-        if (rows[i].days === "LWV") {
-            dates.push({'title': rows[i].course, 'start': new Date('03-' + days.Mon + '-2022 ' + start), 'end': new Date('03-' + days.Mon + '-2022 ' + end)})
-            dates.push({'title': rows[i].course, 'start': new Date('03-' + days.Wed + '-2022 ' + start), 'end': new Date('03-' + days.Wed + '-2022 ' + end)})
-            dates.push({'title': rows[i].course, 'start': new Date('03-' + days.Fri + '-2022 ' + start), 'end': new Date('03-' + days.Fri + '-2022 ' + end)})
-        }
-        else if (rows[i].days === "MJ") {
-            dates.push({'title': rows[i].course, 'start': new Date('03-' + days.Tue + '-2022 ' + start), 'end': new Date('03-' + days.Tue + '-2022 ' + end)})
-            dates.push({'title': rows[i].course, 'start': new Date('03-' + days.Thu + '-2022 ' + start), 'end': new Date('03-' + days.Thu + '-2022 ' + end)})
-        }
-        else {
-            dates.push({'title': rows[i].course, 'start': new Date('03-' + days.Mon + '-2022 ' + start), 'end': new Date('03-' + days.Mon + '-2022 ' + end)})
-        }
-    }
-    return dates
+async function ScheduleDates(courseOfferings: IPreEnrollmentSelectionResponse[]) {
+    return courseOfferings.flatMap((val, index) => {
+        let timeSlots = val.timeSlots
+        return timeSlots.map((ts, index) => {
+            let realStartTime = convertToMilitaryTime(ts.startTime)
+            let realEndTime = convertToMilitaryTime(ts.endTime)
+            return {
+                title: val.course.courseCode,
+                start: new Date(`03-${days[ts.day]}-2022 ${realStartTime}`),
+                end: new Date(`03-${days[ts.day]}-2022 ${realEndTime}`)
+            }
+        })
+    })
 }
 
 const localizer = momentLocalizer(moment);
@@ -68,8 +42,18 @@ const formats = {
     },
 }
 
-export default function ScheduleCalendar() {
-    const [dates, setDates] = useState(ScheduleDates());
+type ScheduleCalendarProps = {
+    courseOfferings: IPreEnrollmentSelectionResponse[]
+}
+
+export default function ScheduleCalendar({courseOfferings: courseOfferings}: ScheduleCalendarProps) {
+    const [dates, setDates] = useState([]);
+    
+    useEffect(() => {
+        console.log(courseOfferings)
+        ScheduleDates(courseOfferings)
+            .then(res => setDates(res))
+    }, [courseOfferings])
 
     return(
         <Paper elevation={0} sx={classes.containerBox}> 
