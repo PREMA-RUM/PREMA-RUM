@@ -5,6 +5,6 @@ namespace PreEnrollmentMgmt.WebApi.Controllers.DTOS.Requests;
 
 public class AddCoursesTakenRequest
 {
-    [Required] public CoursesTaken[] CoursesTaken { get; set; }
+    [Required] public SimpleCourseTaken[] CoursesTaken { get; set; }
 
 }

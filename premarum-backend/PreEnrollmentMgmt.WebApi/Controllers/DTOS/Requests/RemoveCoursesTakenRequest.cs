@@ -4,5 +4,5 @@ namespace PreEnrollmentMgmt.WebApi.Controllers.DTOS.Requests;
 
 public class RemoveCoursesTakenRequest
 {
-    [Required] [MaxLength(7)] public int[] CoursesTakenIds { get; set; }
+    [Required] [MaxLength(7)] public int[] CoursesIds { get; set; }
 }

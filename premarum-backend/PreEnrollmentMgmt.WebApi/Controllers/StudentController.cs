@@ -69,7 +69,7 @@ public class StudentController : ControllerBase
         [FromBody] RemoveCoursesTakenRequest newRemoveCoursesTakenRequest
     )
     {
-        var removed  = await _studentService.RemoveCoursesTaken(User.Identity?.Name!, newRemoveCoursesTakenRequest.CoursesTakenIds);
+        var removed  = await _studentService.RemoveCoursesTaken(User.Identity?.Name!, newRemoveCoursesTakenRequest.CoursesIds);
         await _transactionManager.Commit();
         return _mapper.Map<IEnumerable<CoursesTakenDTO>>(removed);
     }
