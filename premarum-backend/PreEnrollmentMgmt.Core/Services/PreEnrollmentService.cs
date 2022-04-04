@@ -89,6 +89,15 @@ public class PreEnrollmentService
             .GetByStudentIdComplete(student.Id);
         return preEnrollments;
     }
+    
+    public async Task<PreEnrollment> GetStudentPreEnrollmentById(string studentEmail, int preEnrollmentId)
+    {
+        var student = await _studentValidationService.ValidateStudentExists(studentEmail);
+        var preEnrollment = await ValidatePreEnrollmentExists(preEnrollmentId, true);
+        if (preEnrollment.CanBeChangedByStudent(student))
+            return preEnrollment;
+        throw new InvalidPreEnrollmentSelectionException("Student cannot change PreEnrollment");
+    }
 
     public async Task UpdateName(int preEnrollmentId, string studentEmail, string newName)
     {
