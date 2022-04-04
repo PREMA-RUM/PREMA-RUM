@@ -2,12 +2,12 @@
 
 public class Student
 {
-    
-     protected Student()
-     {
-         PreEnrollments = new HashSet<PreEnrollment>();
-         CoursesTaken = new HashSet<CoursesTaken>();
-     }
+    protected Student()
+    {
+        PreEnrollments = new HashSet<PreEnrollment>();
+        CoursesTaken = new HashSet<CoursesTaken>();
+    }
+
     public Student(string studentEmail)
     {
         Email = studentEmail;
@@ -27,5 +27,24 @@ public class Student
     public void AddPreEnrollment(PreEnrollment preEnrollment)
     {
         PreEnrollments.Add(preEnrollment);
+    }
+
+    public void AddCoursesTaken(CoursesTaken coursesTaken)
+    {
+        CoursesTaken.Add(coursesTaken);
+    }
+    
+    public IEnumerable<CoursesTaken> RemoveCoursesTaken(int[] CourseIds)
+    {
+        var deleted = new List<CoursesTaken>();
+        foreach (var coursesTaken in CoursesTaken)
+        {
+            if (CourseIds.Contains(coursesTaken.CourseId))
+                deleted.Add(coursesTaken);
+        }
+        
+        ((HashSet<CoursesTaken>) CoursesTaken).RemoveWhere(taken => CourseIds.Contains(taken.CourseId));
+        return deleted;
+
     }
 }

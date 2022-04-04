@@ -43,4 +43,34 @@ public class StudentController : ControllerBase
         await _studentService.UpdateDepartment(User.Identity?.Name!, newDepartmentRequest.DepartmentId);
         await _transactionManager.Commit();
     }
+    
+    [Authorize]
+    [HttpPost("CoursesTaken")]
+    public async Task<IEnumerable<CoursesTakenDTO>> AddCoursesTaken(
+        [FromBody] AddCoursesTakenRequest coursesTaken
+    )
+    {
+        var result = await _studentService.AddCoursesTaken(User.Identity?.Name!, coursesTaken.CoursesTaken);
+        await _transactionManager.Commit();
+        return _mapper.Map<IEnumerable<CoursesTakenDTO>>(result);
+    }
+
+    [Authorize]
+    [HttpGet("CoursesTaken")]
+    public async Task<IEnumerable<CoursesTakenDTO>> GetStudentCoursesTaken()
+    {
+        var result = await _studentService.GetCoursesTaken(User.Identity?.Name!);
+        return _mapper.Map<IEnumerable<CoursesTakenDTO>>(result);
+    }
+
+    [Authorize]
+    [HttpDelete("CoursesTaken")]
+    public async Task<IEnumerable<CoursesTakenDTO>> RemoveStudentCoursestaken(
+        [FromBody] RemoveCoursesTakenRequest newRemoveCoursesTakenRequest
+    )
+    {
+        var removed  = await _studentService.RemoveCoursesTaken(User.Identity?.Name!, newRemoveCoursesTakenRequest.CoursesIds);
+        await _transactionManager.Commit();
+        return _mapper.Map<IEnumerable<CoursesTakenDTO>>(removed);
+    }
 }

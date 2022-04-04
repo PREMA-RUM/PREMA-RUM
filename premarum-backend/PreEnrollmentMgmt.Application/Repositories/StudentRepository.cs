@@ -20,6 +20,24 @@ public class StudentRepository : IStudentRepository
         return await _context.Students.SingleOrDefaultAsync(st => st!.Email == email);
     }
 
+    public async Task<Student?> GetByEmailWithCoursesTaken(string email)
+    {
+        return await GetStudentWithCoursesQueryable()
+            .Where(st => st!.Email == email)
+            .FirstOrDefaultAsync();
+    }
+    
+    private IQueryable<Student> GetStudentWithCoursesQueryable()
+    {
+        return _context
+            .Students
+            .Include(st => st.CoursesTaken)
+            .ThenInclude(ct => ct.Course)
+            .Include(ct => ct.CoursesTaken).ThenInclude(ct => ct.SemesterTaken)
+            .Include("CoursesTaken.SemesterTaken.Term");
+            
+    }
+    
     public async Task Create(Student student)
     {
         await _context.Students.AddAsync(student);
