@@ -1,6 +1,8 @@
 import {Box, CircularProgress, Grid, Paper} from "@mui/material";
 import { GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, DataGrid, GridColDef } from "@mui/x-data-grid";
+import { useEffect } from "react";
 import {useSemesterOfferings} from "../utility/hooks/useSemesterOfferings";
+import {ICourseResponse, IPreEnrollmentSelectionResponse, IProfessorResponse} from "../utility/requests/responseTypes";
 
 
 const rows = [
@@ -10,6 +12,31 @@ const rows = [
     {id: 4, course: 'CIIC6000', section: '040', credits: 3, days: 'LMV', classroom: 'S125C', timeslot: '10:30am - 11:20am', professor: 'Bienvenido Velez'},
     {id: 5, course: 'CIIC7000', section: '050H', credits: 4, days: 'MJ', classroom: 'S113', timeslot: '3:30pm - 4:45pm', professor: 'Marko Schutz'},
 ]
+
+function GetRows(selections: IPreEnrollmentSelectionResponse[]) {
+    let result = []
+
+    for (let i in selections) {
+        let days = []
+        let times = []
+        let professors = []
+
+        for (let j in selections[i].timeSlots) {
+            days.push(selections[i].timeSlots[j].day)
+            times.push(selections[i].timeSlots[j].startTime + " - " + selections[i].timeSlots[j].endTime)
+        }
+
+        for (let k in selections[i].professors) {
+            professors.push(selections[i].professors[k].name)
+        }
+
+        result.push({id: i, course: selections[i].course.courseCode, section: selections[i].sectionName,
+            credits: selections[i].course.courseCredit, days: days.join(", "), classroom: selections[i].classRoom,
+            timeslot: times.join(", "), professor: professors.join(", ")})
+    }
+
+    return result
+}
 
 const columns: GridColDef[] = [
     {field: 'course', headerName: 'Course', minWidth: 100, description: ''},
@@ -51,7 +78,7 @@ export default function CatalogGrid({semesterId}: CatalogGridProps) {
         <Paper elevation={0} sx={classes.containerBox}>
             <DataGrid
                 checkboxSelection
-                rows={rows}
+                rows={GetRows(courseOfferings)}
                 columns={columns}
                 autoHeight
                 components={{
@@ -69,7 +96,7 @@ const useStyles = {
     },
     containerBox: {
 
-    }
+    },
 };
   
 const classes = useStyles;
