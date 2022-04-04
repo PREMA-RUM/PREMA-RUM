@@ -1,7 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PreEnrollmentMgmt.Core.Entities.ComputedEntities;
 using PreEnrollmentMgmt.Core.Repositories;
 using PreEnrollmentMgmt.Core.Services;
 using PreEnrollmentMgmt.WebApi.Controllers.DTOS;
@@ -95,5 +94,13 @@ public class PreEnrollmentController : ControllerBase
     {
         await _preEnrollmentService.DeletePreEnrollment(preEnrollmentId, User.Identity?.Name!);
         await _transactionManager.Commit();
+    }
+
+    [Authorize]
+    [HttpGet("{preEnrollmentId}")]
+    public async Task<PreEnrollmentDTO> GetPreEnrollmentById([FromRoute] int preEnrollmentId)
+    {
+        var result = await _preEnrollmentService.GetStudentPreEnrollmentById(User.Identity?.Name!, preEnrollmentId);
+        return _mapper.Map<PreEnrollmentDTO>(result);
     }
 }
