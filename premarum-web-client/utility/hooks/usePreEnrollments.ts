@@ -1,7 +1,8 @@
 import useSWR, {useSWRConfig} from "swr";
-import getStudentPreEnrollments from "../requests/getStudentPreEnrollments";
+import getStudentPreEnrollments, {getStudentPreEnrollmentById} from "../requests/getStudentPreEnrollments";
 import {pca} from "../../pages/_app";
 import {IPreEnrollmentResponse} from "../requests/responseTypes";
+import {getAuthToken} from "../helpers";
 
 export function usePreEnrollments() {
     const { data, error } = useSWR('usePreEnrollments', async () => {
@@ -16,15 +17,14 @@ export function usePreEnrollments() {
 }
 
 export function usePreEnrollment(preEnrollmentId: number | null) {
-    const { data, error } = useSWR('usePreEnrollments', async () => {
-        return await getStudentPreEnrollments(pca)
+    const { data, error } = useSWR(`usePreEnrollment-${preEnrollmentId}`, async () => {
+        if (preEnrollmentId != null) {
+            return await getStudentPreEnrollmentById(preEnrollmentId, pca)
+        }
     })
-
-    // noinspection TypeScriptValidateTypes
-    const filtered = data?.find( value => value.id === preEnrollmentId )
     
     return {
-        preEnrollment: filtered as IPreEnrollmentResponse | undefined,
+        preEnrollment: data as IPreEnrollmentResponse | undefined,
         isLoading: !error && !data,
         isError: error
     }

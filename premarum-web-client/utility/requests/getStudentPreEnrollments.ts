@@ -14,3 +14,13 @@ async function getStudentPreEnrollments(instance: IPublicClientApplication) {
     })
     return response.data as IPreEnrollmentResponse[]
 }
+
+export async function getStudentPreEnrollmentById(id: number, instance: IPublicClientApplication) {
+    const token = await getAuthToken(instance)
+    const response = await axios.get(`${HOST}/PreEnrollment/${id}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+    return response.data as IPreEnrollmentResponse
+}
