@@ -26,8 +26,8 @@ async function ScheduleDates(courseOfferings: IPreEnrollmentSelectionResponse[])
             let realEndTime = convertToMilitaryTime(ts.endTime)
             return {
                 title: val.course.courseCode,
-                start: new Date(`03-${days[ts.day]}-2022 ${realStartTime}`),
-                end: new Date(`03-${days[ts.day]}-2022 ${realEndTime}`)
+                start: new Date(`03-${(days as any)[ts.day] as string}-2022 ${realStartTime}`),
+                end: new Date(`03-${(days as any)[ts.day] as string}-2022 ${realEndTime}`)
             }
         })
     })
@@ -50,9 +50,8 @@ export default function ScheduleCalendar({courseOfferings: courseOfferings}: Sch
     const [dates, setDates] = useState([]);
     
     useEffect(() => {
-        console.log(courseOfferings)
         ScheduleDates(courseOfferings)
-            .then(res => setDates(res))
+            .then(res => setDates(res as never[]))
     }, [courseOfferings])
 
     return(
