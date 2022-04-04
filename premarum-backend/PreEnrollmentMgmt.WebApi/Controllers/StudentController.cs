@@ -47,10 +47,10 @@ public class StudentController : ControllerBase
     [Authorize]
     [HttpPost("CoursesTaken")]
     public async Task<IEnumerable<CoursesTakenDTO>> AddCoursesTaken(
-        [FromBody] AddCoursesTakenRequest newCoursesTakenRequest
+        [FromBody] AddCoursesTakenRequest coursesTaken
     )
     {
-        var result = await _studentService.AddCoursesTaken(User.Identity?.Name!, newCoursesTakenRequest.CoursesTaken);
+        var result = await _studentService.AddCoursesTaken(User.Identity?.Name!, coursesTaken.CoursesTaken);
         await _transactionManager.Commit();
         return _mapper.Map<IEnumerable<CoursesTakenDTO>>(result);
     }

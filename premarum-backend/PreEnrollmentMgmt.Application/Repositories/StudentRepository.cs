@@ -31,7 +31,11 @@ public class StudentRepository : IStudentRepository
     {
         return _context
             .Students
-            .Include(st => st.CoursesTaken);
+            .Include(st => st.CoursesTaken)
+            .ThenInclude(ct => ct.Course)
+            .Include(ct => ct.CoursesTaken).ThenInclude(ct => ct.SemesterTaken)
+            .Include("CoursesTaken.SemesterTaken.Term");
+            
     }
     
     public async Task Create(Student student)

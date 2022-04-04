@@ -13,11 +13,11 @@ public class CoursesTaken
     {
         StudentId = studentId;
         CourseId = courseId;
-        SemesterId = 0;
+        SemesterId = null;
     }
 
     public int CourseId { get; set; }
-    public int SemesterId { get; set; }
+    public int? SemesterId { get; set; }
     public int StudentId { get; set; }
     public Course? Course { get; set; }
     public Semester? SemesterTaken { get; set; }
