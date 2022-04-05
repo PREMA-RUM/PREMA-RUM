@@ -3,6 +3,8 @@ import { DataGrid, GridColDef, GridToolbarColumnsButton, GridToolbarContainer, G
 import React, {RefObject, useEffect, useState} from "react";
 import {IPreEnrollmentResponse, IPreEnrollmentSelectionResponse} from "../utility/requests/responseTypes";
 import {GetRows} from "../utility/helpers/selectionToRow";
+import {AddRounded} from "@mui/icons-material";
+import {usePreEnrollment} from "../utility/hooks/usePreEnrollments";
 
 
 const rows = [
@@ -14,12 +16,49 @@ const rows = [
 ]
 
 async function totalCredits(selections: IPreEnrollmentSelectionResponse[]) {
+    if (selections.length === 0) return 0;
+    console.log(selections)
     let sum = 0;
-    for (let i in selections) {
-        sum += selections[i].course.courseCredit
-    }
+    selections.forEach(val => {
+        sum += val.course?.courseCredit
+    })
     return sum
 }
+
+type AddSelectionProps = {
+    preEnrollmentId: number,
+    selectionsRef: any
+}
+
+export function RemoveSelectionButton({preEnrollmentId, selectionsRef}: AddSelectionProps) {
+    
+    const {removeSelectionsFn} = usePreEnrollment(preEnrollmentId)
+    const [isDisabled, setIsDisabled] = useState(false);
+    
+    async function removeSelections() {
+        setIsDisabled(true)
+        try {
+            await removeSelectionsFn([...selectionsRef.current])
+        } catch (err) {
+            alert(err)
+            setIsDisabled(false)
+        }
+        setIsDisabled(false)
+    }
+    
+    return (
+        <Button
+            startIcon={<AddRounded/>}
+            variant="contained"
+            sx={classes.removeSelection}
+            onClick={removeSelections}
+            disabled={isDisabled}
+        >
+            Remove Selection
+        </Button>
+    )
+}
+
 
 type ScheduleTableProps = {
     selections: IPreEnrollmentSelectionResponse[],
@@ -30,7 +69,7 @@ export default function ScheduleTable({selections, selectionRef}: ScheduleTableP
     
     const [creditSum, setCreditSum] = useState(0)
     const [rows, setRows] = useState([])
-    const columns: GridColDef[] = [
+    const [columns, setColumns] = useState([
         {field: 'course', headerName: 'Course', minWidth: 100, description: ''},
         {field: 'section', headerName: 'Section', minWidth: 100, description: ''},
         {field: 'credits', headerName: 'Credits [' + creditSum + ']', minWidth: 100, description: ''},
@@ -38,7 +77,7 @@ export default function ScheduleTable({selections, selectionRef}: ScheduleTableP
         {field: 'classroom', headerName: 'Classroom', minWidth: 100, description: ''},
         {field: 'timeslot', headerName: 'Timeslot', minWidth: 175, description: ''},
         {field: 'professor', headerName: 'Professor', minWidth: 175, description: ''},
-    ]
+    ])
     
     useEffect(() => {
         totalCredits(selections)
@@ -68,7 +107,10 @@ export default function ScheduleTable({selections, selectionRef}: ScheduleTableP
 const useStyles = {
     containerBox: {
         marginBottom: 2,
-    }
+    },
+    removeSelection: {
+        backgroundColor: 'primary.dark',
+    },
 };
   
 const classes = useStyles;

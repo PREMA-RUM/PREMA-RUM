@@ -4,7 +4,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import CatalogGrid, {AddSelectionButton} from '../../components/catalogGrid';
 import { grey } from '@mui/material/colors';
 import ScheduleCalendar from '../../components/scheduleCalendar';
-import ScheduleTable from '../../components/scheduleTable';
+import ScheduleTable, {RemoveSelectionButton} from '../../components/scheduleTable';
 import {useRouter} from "next/router";
 import {route} from "next/dist/server/router";
 import {usePreEnrollment} from "../../utility/hooks/usePreEnrollments";
@@ -50,18 +50,6 @@ export default function Preenrollment() {
                 )}
             </Box>
         );
-    }
-
-    function RemoveSelectionButton() {
-        return(
-            <Button
-                startIcon={<AddRounded/>}
-                variant="contained"
-                sx={classes.removeSelection}
-            >
-              Remove Selection
-          </Button>
-        )
     }
     
     if(isError) {
@@ -120,7 +108,10 @@ export default function Preenrollment() {
                         </Grid>
                     ):
                         <Grid item>
-                            <RemoveSelectionButton/>
+                            <RemoveSelectionButton
+                                preEnrollmentId={preEnrollmentId}
+                                selectionsRef={removeSelectionRef}
+                            />
                         </Grid>
                     }
 
@@ -172,9 +163,6 @@ const useStyles = {
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    removeSelection: {
-        backgroundColor: 'primary.dark',
     },
     tabContent: {
         marginTop: 2,

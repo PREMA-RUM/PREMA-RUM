@@ -3,6 +3,7 @@ import getStudentPreEnrollments, {getStudentPreEnrollmentById} from "../requests
 import {pca} from "../../pages/_app";
 import {IPreEnrollmentResponse} from "../requests/responseTypes";
 import addNewSelection from "../requests/addNewSelection";
+import removeSelections from "../requests/removeSelection";
 
 export function usePreEnrollments() {
     const { data, error } = useSWR('usePreEnrollments', async () => {
@@ -33,11 +34,27 @@ export function usePreEnrollment(preEnrollmentId: number | null) {
         })
     }
     
+    async function removeFromCache(selections: number[]) {
+        await mutate(async cachedData => {
+            await removeSelections(pca, cachedData as IPreEnrollmentResponse, selections)
+            return {
+                ...cachedData,
+                selections: [
+                    ...cachedData!
+                        .selections
+                        .filter(sel => 
+                            selections
+                                .filter(rs => rs === sel.id).length === 0)]
+            } as any
+        })
+    }
+    
     return {
         preEnrollment: data as IPreEnrollmentResponse | undefined,
         isLoading: !error && !data,
         isError: error,
-        addSelectionFn: updateCache
+        addSelectionFn: updateCache,
+        removeSelectionsFn: removeFromCache
     }
 }
 
