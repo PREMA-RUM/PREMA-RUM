@@ -2,7 +2,7 @@ import useSWR, {useSWRConfig} from "swr";
 import getStudentPreEnrollments, {getStudentPreEnrollmentById} from "../requests/getStudentPreEnrollments";
 import {pca} from "../../pages/_app";
 import {IPreEnrollmentResponse} from "../requests/responseTypes";
-import {getAuthToken} from "../helpers";
+import addNewSelection from "../requests/addNewSelection";
 
 export function usePreEnrollments() {
     const { data, error } = useSWR('usePreEnrollments', async () => {
@@ -17,16 +17,27 @@ export function usePreEnrollments() {
 }
 
 export function usePreEnrollment(preEnrollmentId: number | null) {
-    const { data, error } = useSWR(`usePreEnrollment-${preEnrollmentId}`, async () => {
+    const { data, error, mutate } = useSWR(`usePreEnrollment-${preEnrollmentId}`, async () => {
         if (preEnrollmentId != null) {
             return await getStudentPreEnrollmentById(preEnrollmentId, pca)
         }
     })
     
+    async function updateCache(selections: number[]) {
+        await mutate(async cachedData => {
+            let afterAdd = await addNewSelection(pca, cachedData as IPreEnrollmentResponse, selections)
+            return {
+                ...cachedData,
+                selections: [...cachedData!.selections, ...afterAdd]
+            } as any
+        })
+    }
+    
     return {
         preEnrollment: data as IPreEnrollmentResponse | undefined,
         isLoading: !error && !data,
-        isError: error
+        isError: error,
+        addSelectionFn: updateCache
     }
 }
 

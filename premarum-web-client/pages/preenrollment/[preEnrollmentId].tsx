@@ -1,7 +1,7 @@
 import {Box, Button, Card, CircularProgress, Divider, Grid, Tab, Tabs, TextField, Typography} from '@mui/material'
 import { AddRounded } from '@mui/icons-material';
-import React, {useEffect} from 'react';
-import CatalogGrid from '../../components/catalogGrid';
+import React, {useEffect, useRef, useState} from 'react';
+import CatalogGrid, {AddSelectionButton} from '../../components/catalogGrid';
 import { grey } from '@mui/material/colors';
 import ScheduleCalendar from '../../components/scheduleCalendar';
 import ScheduleTable from '../../components/scheduleTable';
@@ -15,6 +15,7 @@ export default function Preenrollment() {
     const router = useRouter()
     const [preEnrollmentId, setPreEnrollmentId] = React.useState<number | null>(null);
     const {preEnrollment, isLoading, isError} = usePreEnrollment(preEnrollmentId) 
+    const selectedAddCoursesRef = useRef([])
     
     useEffect(() => {
         let pId = parseInt(router.query.preEnrollmentId as string)
@@ -49,24 +50,12 @@ export default function Preenrollment() {
         );
     }
 
-    function AddSelectionButton() {
-        return(
-            <Button
-                startIcon={<AddRounded/>}
-                variant="contained"
-                sx={classes.addSelectionButton}
-            >
-              Add Selection
-          </Button>
-        )
-    }
-
     function RemoveSelectionButton() {
         return(
             <Button
                 startIcon={<AddRounded/>}
                 variant="contained"
-                sx={classes.addSelectionButton}
+                sx={classes.removeSelection}
             >
               Remove Selection
           </Button>
@@ -122,7 +111,10 @@ export default function Preenrollment() {
 
                     {value === 1?(
                         <Grid item>
-                            <AddSelectionButton/>
+                            <AddSelectionButton 
+                                changeTab = {()=>{setValue(0)}}
+                                selectionsRef={selectedAddCoursesRef} 
+                                preEnrollmentId={preEnrollmentId}/>
                         </Grid>
                     ):
                         <Grid item>
@@ -136,7 +128,7 @@ export default function Preenrollment() {
                     <ScheduleCalendar courseOfferings={preEnrollment!.selections}/>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                    <CatalogGrid semesterId={preEnrollment!.semester.id}/>
+                    <CatalogGrid selectionsRef={selectedAddCoursesRef} exclude={preEnrollment!.selections.map(sel => sel.id)} semesterId={preEnrollment!.semester.id}/>
                 </TabPanel>
             </Card>
         </Grid>
@@ -171,9 +163,6 @@ const useStyles = {
         backgroundColor: 'white',
         minWidth: '300px'
     },
-    addSelectionButton: {
-        backgroundColor: 'primary.dark',
-    },
     contentCard: {
         backgroundColor: grey[200],
         padding: '25px',
@@ -181,6 +170,9 @@ const useStyles = {
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    removeSelection: {
+        backgroundColor: 'primary.dark',
     },
     tabContent: {
         marginTop: 2,

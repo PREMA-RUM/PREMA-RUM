@@ -1,36 +1,19 @@
-import {Box, CircularProgress, Grid, Paper, styled} from "@mui/material";
-import { GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, DataGrid, GridColDef, DataGridProps } from "@mui/x-data-grid";
-import { useEffect } from "react";
+import {Box, Button, Paper} from "@mui/material";
+import {
+    DataGrid,
+    GridColDef,
+    GridToolbarColumnsButton,
+    GridToolbarContainer,
+    GridToolbarDensitySelector,
+    GridToolbarFilterButton
+} from "@mui/x-data-grid";
+import React, {useEffect, useState} from "react";
 import {useSemesterOfferings} from "../utility/hooks/useSemesterOfferings";
-import {ICourseResponse, IPreEnrollmentSelectionResponse, IProfessorResponse} from "../utility/requests/responseTypes";
+import {IPreEnrollmentSelectionResponse} from "../utility/requests/responseTypes";
+import {AddRounded} from "@mui/icons-material";
+import {usePreEnrollment} from "../utility/hooks/usePreEnrollments";
 
-
-// const StyledDataGrid = styled(DataGrid)<DataGridProps>(({theme}) => ({
-//     root: {
-//         ".MuiDataGrid-cellContent": {
-//         height: '100%',
-//         whiteSpace: 'nowrap',
-//         },
-//         ".MuiDataGrid-cell": {
-//         lineHeight: "unset",
-//         height: "100%",
-//         whiteSpace: "nowrap"
-//         },
-//         ".MuiDataGrid-row": {
-//         height: "100%"
-//         }
-//     }
-// })); 
-
-// const rows = [
-//     {id: 1, course: 'CIIC3000', section: '010', credits: 3, days: 'LMV', classroom: 'S121', timeslot: '3:30pm - 4:20pm', professor: 'Kejie Lu'},
-//     {id: 2, course: 'CIIC4000', section: '020H', credits: 4, days: 'LMV', classroom: 'S121', timeslot: '12:30pm - 1:20pm', professor: 'Manuel Rodriguez'},
-//     {id: 3, course: 'CIIC5000', section: '030', credits: 3, days: 'MJ', classroom: 'S113', timeslot: '2:00pm - 3:15pm', professor: 'Wilson Rivera'},
-//     {id: 4, course: 'CIIC6000', section: '040', credits: 3, days: 'LMV', classroom: 'S125C', timeslot: '10:30am - 11:20am', professor: 'Bienvenido Velez'},
-//     {id: 5, course: 'CIIC7000', section: '050H', credits: 4, days: 'MJ', classroom: 'S113', timeslot: '3:30pm - 4:45pm', professor: 'Marko Schutz'},
-// ]
-
-function GetRows(selections: IPreEnrollmentSelectionResponse[]) {
+async function GetRows(selections: IPreEnrollmentSelectionResponse[]) {
     let result = []
 
     for (let i in selections) {
@@ -47,7 +30,7 @@ function GetRows(selections: IPreEnrollmentSelectionResponse[]) {
             professors.push(selections[i].professors[k].name)
         }
 
-        result.push({id: i, course: selections[i].course.courseCode, section: selections[i].sectionName,
+        result.push({id: parseInt(i), entryId: selections[i].id, course: selections[i].course.courseCode, section: selections[i].sectionName,
             credits: selections[i].course.courseCredit, days: days.join(", "), classroom: selections[i].classRoom,
             timeslot: times.join(", "), professor: professors.join(", ")})
     }
@@ -65,16 +48,6 @@ const columns: GridColDef[] = [
     {field: 'professor', headerName: 'Professor', minWidth: 175, flex: 1, description: ''},
 ]
 
-// const columns: GridColDef[] = [
-//     {field: 'course', headerName: 'Course', minWidth: 100, flex: 0.25, description: ''},
-//     {field: 'section', headerName: 'Section', minWidth: 100, flex: 0.25, description: ''},
-//     {field: 'credits', headerName: 'Credits', minWidth: 100, flex: 0.25, description: ''},
-//     {field: 'days', headerName: 'Days', minWidth: 100, flex: 0.8, description: ''},
-//     {field: 'classroom', headerName: 'Classroom', minWidth: 100, flex: 0.25, description: ''},
-//     {field: 'timeslot', headerName: 'Timeslot', minWidth: 175, flex: 0.8, description: ''},
-//     {field: 'professor', headerName: 'Professor', minWidth: 175, flex: 0.8, description: ''},
-// ]
-
 function CustomToolbar() {
     return(
         <Box sx={classes.toolbarBox}>
@@ -87,25 +60,76 @@ function CustomToolbar() {
     )
 }
 
-type CatalogGridProps = {
-    semesterId: number,
-    exclude?: number[] // Ids to exclude
+type AddSelectionProps = {
+    preEnrollmentId: number,
+    changeTab: () => void,
+    selectionsRef: any
 }
 
-export default function CatalogGrid({semesterId}: CatalogGridProps) {
+export function AddSelectionButton({preEnrollmentId, selectionsRef, changeTab}: AddSelectionProps) {
+    const { addSelectionFn } = usePreEnrollment(preEnrollmentId)
+    const [isLoading, setIsLoading] = useState(false)
+    
+    return(
+        <Button
+            startIcon={<AddRounded/>}
+            variant="contained"
+            sx={classes.addSelectionButton}
+            onClick={async () => {
+                setIsLoading(true)
+                if (selectionsRef.current.length === 0) {
+                    setIsLoading(false)
+                    return
+                }
+                try {
+                    await addSelectionFn(selectionsRef.current)
+                } catch (err) {
+                    alert(err)
+                    selectionsRef.current = []
+                    changeTab()
+                    return
+                }
+                selectionsRef.current = []
+                changeTab()
+            }}
+            disabled={isLoading}
+        >
+            Add Selection
+        </Button>
+    )
+}
+
+type CatalogGridProps = {
+    semesterId: number,
+    exclude: number[],
+    selectionsRef: any// Ids to exclude
+}
+
+export default function CatalogGrid({semesterId, exclude, selectionsRef}: CatalogGridProps) {
     const {courseOfferings, isLoading, isError} = useSemesterOfferings(semesterId);
-    console.log(courseOfferings)
-    if (isLoading) {
-        return <Grid container alignItems="center" justifyContent="center" >
-            <CircularProgress />
-        </Grid> 
+    const [rows, setRows] = useState([])
+    
+    useEffect(() => {
+        if (!isLoading)  {
+            console.log(courseOfferings)
+            GetRows(courseOfferings.filter(co => !exclude.includes(co.id)))
+                .then(res => {setRows(res as any)})   
+        }
+    }, [courseOfferings])
+    
+    if (!rows || isLoading) {
+        return <>...</>
     }
     
     return(
         <Paper elevation={0} sx={classes.containerBox}>
             <DataGrid
+                onSelectionModelChange={async (selectionModel) => {
+                    selectionsRef.current = selectionModel.map(
+                        sel =>  (rows[sel as number] as any).entryId )
+                }}
                 checkboxSelection
-                rows={GetRows(courseOfferings)}
+                rows={rows}
                 columns={columns}
                 autoHeight
                 components={{
@@ -123,6 +147,9 @@ const useStyles = {
     },
     containerBox: {
 
+    },
+    addSelectionButton: {
+        backgroundColor: 'primary.dark',
     },
 };
   
