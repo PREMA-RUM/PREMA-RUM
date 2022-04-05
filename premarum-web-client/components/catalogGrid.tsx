@@ -9,34 +9,9 @@ import {
 } from "@mui/x-data-grid";
 import React, {useEffect, useState} from "react";
 import {useSemesterOfferings} from "../utility/hooks/useSemesterOfferings";
-import {IPreEnrollmentSelectionResponse} from "../utility/requests/responseTypes";
 import {AddRounded} from "@mui/icons-material";
 import {usePreEnrollment} from "../utility/hooks/usePreEnrollments";
-
-async function GetRows(selections: IPreEnrollmentSelectionResponse[]) {
-    let result = []
-
-    for (let i in selections) {
-        let days = []
-        let times = []
-        let professors = []
-
-        for (let j in selections[i].timeSlots) {
-            days.push(selections[i].timeSlots[j].day)
-            times.push(selections[i].timeSlots[j].startTime + " - " + selections[i].timeSlots[j].endTime)
-        }
-
-        for (let k in selections[i].professors) {
-            professors.push(selections[i].professors[k].name)
-        }
-
-        result.push({id: parseInt(i), entryId: selections[i].id, course: selections[i].course.courseCode, section: selections[i].sectionName,
-            credits: selections[i].course.courseCredit, days: days.join(", "), classroom: selections[i].classRoom,
-            timeslot: times.join(", "), professor: professors.join(", ")})
-    }
-
-    return result
-}
+import {GetRows} from "../utility/helpers/selectionToRow";
 
 const columns: GridColDef[] = [
     {field: 'course', headerName: 'Course', minWidth: 100, description: ''},
