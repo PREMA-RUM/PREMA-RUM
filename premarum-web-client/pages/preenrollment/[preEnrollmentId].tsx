@@ -15,7 +15,9 @@ export default function Preenrollment() {
     const router = useRouter()
     const [preEnrollmentId, setPreEnrollmentId] = React.useState<number | null>(null);
     const {preEnrollment, isLoading, isError} = usePreEnrollment(preEnrollmentId) 
+    // To keep track of selected cells without re-rendering
     const selectedAddCoursesRef = useRef([])
+    const removeSelectionRef = useRef([])
     
     useEffect(() => {
         let pId = parseInt(router.query.preEnrollmentId as string)
@@ -124,7 +126,7 @@ export default function Preenrollment() {
 
                 </Grid>
                 <TabPanel value={value} index={0}>
-                    <ScheduleTable/>
+                    <ScheduleTable selections={preEnrollment!.selections} selectionRef={removeSelectionRef} />
                     <ScheduleCalendar courseOfferings={preEnrollment!.selections}/>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
