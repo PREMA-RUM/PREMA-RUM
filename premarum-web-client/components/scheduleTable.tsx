@@ -59,7 +59,6 @@ export function RemoveSelectionButton({preEnrollmentId, selectionsRef}: AddSelec
     )
 }
 
-
 type ScheduleTableProps = {
     selections: IPreEnrollmentSelectionResponse[],
     selectionRef: any
@@ -69,7 +68,8 @@ export default function ScheduleTable({selections, selectionRef}: ScheduleTableP
     
     const [creditSum, setCreditSum] = useState(0)
     const [rows, setRows] = useState([])
-    const [columns, setColumns] = useState([
+
+    const columns = [
         {field: 'course', headerName: 'Course', minWidth: 100, description: ''},
         {field: 'section', headerName: 'Section', minWidth: 100, description: ''},
         {field: 'credits', headerName: 'Credits [' + creditSum + ']', minWidth: 100, description: ''},
@@ -77,7 +77,7 @@ export default function ScheduleTable({selections, selectionRef}: ScheduleTableP
         {field: 'classroom', headerName: 'Classroom', minWidth: 100, description: ''},
         {field: 'timeslot', headerName: 'Timeslot', minWidth: 175, description: ''},
         {field: 'professor', headerName: 'Professor', minWidth: 175, description: ''},
-    ])
+    ]
     
     useEffect(() => {
         totalCredits(selections)
