@@ -71,7 +71,7 @@ export default function Profile({courses}: ProfileProps) {
 
     function CourseCard({course}: CourseCardProps) {
         return(
-            <CustomTooltip arrow title={course.courseCode} placement="top">
+            <CustomTooltip arrow title={`${course.courseCode} - ${course.courseName}`} placement="top">
                 <Card sx={classes.courseCard}>
                     <Grid container direction="row" justifyContent="space-between" alignItems="center" sx={classes.courseCardGrid}>
                         <Grid item>
