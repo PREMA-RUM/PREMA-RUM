@@ -18,8 +18,8 @@ import {
     TooltipProps,
     CircularProgress
 } from '@mui/material'
-import { AddRounded, CloseRounded, EditRounded } from '@mui/icons-material'
-import React, { useEffect } from 'react';
+import {Add, AddRounded, CloseRounded, EditRounded} from '@mui/icons-material'
+import React, {useEffect, useRef, useState} from 'react';
 import { grey } from '@mui/material/colors';
 import {getAllCourses} from "../../utility/requests/getAllCourses";
 import {ICourseResponse, ICoursesTakenResponse} from "../../utility/requests/responseTypes";
@@ -40,9 +40,10 @@ type ProfileProps = {
 
 export default function Profile({courses}: ProfileProps) {
     const [open, setOpen] = React.useState(false);
-    const [readOnly, setReadOnly] = React.useState(false);
-    const {coursesTaken, isLoading} = useCoursesTaken()
+    const {coursesTaken, isLoading, addCoursesTakenToCache} = useCoursesTaken()
     const {student, isLoading:studentLoading} = useStudent()
+    const [selectedCourses, setSelectedCourses] = useState([])
+    const [coursesAdditionInProgress, setCoursesAdditionInProgress] = useState(false)
     
     const handleModalOpen = () => {
         setOpen(true);
@@ -50,7 +51,23 @@ export default function Profile({courses}: ProfileProps) {
     
     const handleModalClose = () => {
         setOpen(false);
+        setSelectedCourses([])
     };
+    
+    async function handleSubmit() {
+        setCoursesAdditionInProgress(true)
+        try {
+            await addCoursesTakenToCache(
+                selectedCourses.map(sc => (sc as ICourseResponse).id)
+            )
+        } catch(err) {
+            alert(err)
+            setCoursesAdditionInProgress(false)
+            return
+        }
+        handleModalClose()
+        setCoursesAdditionInProgress(false)
+    } 
 
     function AddButton() {
         return(
@@ -165,6 +182,10 @@ export default function Profile({courses}: ProfileProps) {
                                 }
                                 getOptionLabel={(option) => option.courseCode}
                                 filterSelectedOptions
+                                onChange={(event:any, newValue:any) => {
+                                    setSelectedCourses(newValue)
+                                }}
+                                value={selectedCourses}
                                 renderInput={(params) => (
                                 <TextField
                                     {...params}
@@ -178,8 +199,8 @@ export default function Profile({courses}: ProfileProps) {
                         <Divider/>
 
                         <CardActions sx={classes.cardActions}>
-                            <Button onClick={handleModalClose}>Cancel</Button>
-                            <Button onClick={handleModalClose}>Submit</Button>
+                            <Button disabled={coursesAdditionInProgress} onClick={handleModalClose}>Cancel</Button>
+                            <Button disabled={coursesAdditionInProgress || selectedCourses.length === 0} onClick={handleSubmit}>Submit</Button>
                         </CardActions>
                     </Card>
                 </Grid>

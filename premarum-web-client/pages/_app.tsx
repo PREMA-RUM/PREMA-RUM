@@ -12,21 +12,11 @@ import createEmotionCache from '../utility/createEmotionCache';
 import lightThemeOptions from '../styles/theme/lightThemeOptions';
 import Navbars from '../components/navbars';
 import Head from 'next/head';
-import {Configuration, PublicClientApplication} from "@azure/msal-browser";
-import {AuthenticatedTemplate, MsalProvider} from '@azure/msal-react';
+import {MsalProvider} from '@azure/msal-react';
 import AuthDefaultLayout from '../components/DefaultLayout'
 import {NextPage} from "next";
 import {ReactElement, ReactNode} from "react";
-
-// MSAL configuration
-const configuration: Configuration = {
-  auth: {
-    clientId: "83c3cbe7-f00e-4ea8-87d8-bf4d75690f17",
-    authority: "https://login.microsoftonline.com/0dfa5dc0-036f-4615-99e4-94af822f2b84",
-  }
-};
-
-export const pca = new PublicClientApplication(configuration);
+import {pca} from "../utility/constants";
 
 const clientSideEmotionCache = createEmotionCache();
 

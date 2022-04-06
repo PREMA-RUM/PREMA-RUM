@@ -1,7 +1,6 @@
 import {IPublicClientApplication} from "@azure/msal-browser";
 import {getAuthToken} from "../helpers";
-import {pca} from "../../pages/_app";
-import {HOST} from "../constants";
+import {HOST, pca} from "../constants";
 import axios from "axios";
 
 
