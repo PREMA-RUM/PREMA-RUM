@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PreEnrollmentMgmt.DataAcces
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PreEnrollmentMgmt.Application", "PreEnrollmentMgmt.Application\PreEnrollmentMgmt.Application.csproj", "{9EA385A9-98B7-408F-9431-64DFF5C0BFB8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PreEnrollmentMgmt.CourseParserLib", "PreEnrollmentMgmt.CourseParserLib\PreEnrollmentMgmt.CourseParserLib.csproj", "{6D9FE606-C458-4DEB-B5A3-2B9F657B1B85}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,11 +42,16 @@ Global
 		{9EA385A9-98B7-408F-9431-64DFF5C0BFB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9EA385A9-98B7-408F-9431-64DFF5C0BFB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9EA385A9-98B7-408F-9431-64DFF5C0BFB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D9FE606-C458-4DEB-B5A3-2B9F657B1B85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D9FE606-C458-4DEB-B5A3-2B9F657B1B85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D9FE606-C458-4DEB-B5A3-2B9F657B1B85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D9FE606-C458-4DEB-B5A3-2B9F657B1B85}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8910DADE-DB21-496F-ACEB-3F3A8E3313C4} = {AE8B0569-5A70-483C-B421-70FA47022E24}
 		{8FFF5181-5831-41BB-B4EC-8F9DB94C11C0} = {AE8B0569-5A70-483C-B421-70FA47022E24}
 		{C1999095-F9C0-4FDE-9161-891344D86060} = {AE8B0569-5A70-483C-B421-70FA47022E24}
 		{9EA385A9-98B7-408F-9431-64DFF5C0BFB8} = {AE8B0569-5A70-483C-B421-70FA47022E24}
+		{6D9FE606-C458-4DEB-B5A3-2B9F657B1B85} = {AE8B0569-5A70-483C-B421-70FA47022E24}
 	EndGlobalSection
 EndGlobal
