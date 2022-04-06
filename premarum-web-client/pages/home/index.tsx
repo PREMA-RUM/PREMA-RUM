@@ -98,7 +98,7 @@ export default function Home(props: HomeProps) {
                                         sx={classes.semesterSelect}
                                         id="tags-outlined"
                                         options={props.semesters}
-                                        getOptionLabel={(option) => `${option.term}-${option.year}`}
+                                        getOptionLabel={(option) => `${option.term} - ${option.year}`}
                                         filterSelectedOptions
                                         size="small"
                                         renderInput={(params) => (
