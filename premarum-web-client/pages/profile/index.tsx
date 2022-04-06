@@ -1,25 +1,30 @@
-import { Autocomplete, Button, Card, CardActions, CardContent, CardHeader, Divider, Fade, Grid, Modal, TextField, Typography, IconButton, Tooltip, styled, tooltipClasses, TooltipProps } from '@mui/material'
+import {
+    Autocomplete,
+    Button,
+    Card,
+    CardActions,
+    CardContent,
+    CardHeader,
+    Divider,
+    Fade,
+    Grid,
+    Modal,
+    TextField,
+    Typography,
+    IconButton,
+    Tooltip,
+    styled,
+    tooltipClasses,
+    TooltipProps,
+    CircularProgress
+} from '@mui/material'
 import { AddRounded, CloseRounded, EditRounded } from '@mui/icons-material'
 import React, { useEffect } from 'react';
 import { grey } from '@mui/material/colors';
-
-// Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
-const top100Films = [
-    { title: 'The Shawshank Redemption', year: 1994 },
-    { title: 'The Godfather', year: 1972 },
-    { title: 'The Godfather: Part II', year: 1974 },
-    { title: 'The Dark Knight', year: 2008 },
-    { title: '12 Angry Men', year: 1957 },
-    { title: "Schindler's List", year: 1993 },
-    { title: 'Pulp Fiction', year: 1994 },
-]
-
-type CourseData = {
-    data: {
-        course: string,
-        description: string,
-    }
-}
+import {getAllCourses} from "../../utility/requests/getAllCourses";
+import {ICourseResponse, ICoursesTakenResponse} from "../../utility/requests/responseTypes";
+import {useCoursesTaken} from "../../utility/hooks/useCoursesTaken";
+import {useStudent} from "../../utility/hooks/useStudent";
 
 const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
     <Tooltip {...props} classes={{ popper: className }} />
@@ -29,25 +34,23 @@ const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
     },
 });
 
-export default function Profile() {
+type ProfileProps = {
+    courses: ICourseResponse[]
+}
+
+export default function Profile({courses}: ProfileProps) {
     const [open, setOpen] = React.useState(false);
     const [readOnly, setReadOnly] = React.useState(false);
-
+    const {coursesTaken, isLoading} = useCoursesTaken()
+    const {student, isLoading:studentLoading} = useStudent()
+    
     const handleModalOpen = () => {
         setOpen(true);
     };
     
     const handleModalClose = () => {
         setOpen(false);
-    };   
-
-    // const handleReadOnlyTrue = () => {
-    //     setReadOnly(true);
-    // };
-    
-    // const handleReadOnlyFalse = () => {
-    //     setReadOnly(false);
-    // };
+    };
 
     function AddButton() {
         return(
@@ -61,41 +64,18 @@ export default function Profile() {
             </Button>
         )
     }
+    
+    type CourseCardProps = {
+        course: ICourseResponse
+    }
 
-    // function ReadOnlyButton() {
-    //     if (!readOnly) {
-    //         return(
-    //             <Button
-    //             startIcon={<EditRounded/>}
-    //             variant="contained"
-    //             sx={classes.editCoursesButton}
-    //             onClick={handleReadOnlyTrue}
-    //         >
-    //             Finish Editing Courses Taken
-    //         </Button>
-    //         )
-    //     }
-    //     else {
-    //         return(
-    //             <Button
-    //             startIcon={<EditRounded/>}
-    //             variant="contained"
-    //             sx={classes.editCoursesButton}
-    //             onClick={handleReadOnlyFalse}
-    //         >
-    //             Edit Courses Taken
-    //         </Button>
-    //         )
-    //     }                
-    // }
-
-    function CourseCard({data:{course, description}}: CourseData) {
+    function CourseCard({course}: CourseCardProps) {
         return(
-            <CustomTooltip arrow title={course + ' - ' + description} placement="top">
+            <CustomTooltip arrow title={course.courseCode} placement="top">
                 <Card sx={classes.courseCard}>
                     <Grid container direction="row" justifyContent="space-between" alignItems="center" sx={classes.courseCardGrid}>
                         <Grid item>
-                            <Typography sx={classes.courseText}>{course}</Typography>
+                            <Typography sx={classes.courseText}>{course.courseCode}</Typography>
                         </Grid>
                         <Grid item>
                             <IconButton size="small" sx={classes.courseDeleteIcon}><CloseRounded/></IconButton>
@@ -104,6 +84,12 @@ export default function Profile() {
                 </Card>
             </CustomTooltip>
         )
+    }
+    
+    if (isLoading || studentLoading) {
+        return <>
+            <CircularProgress />
+        </>
     }
 
     return (
@@ -123,7 +109,6 @@ export default function Profile() {
                         </Grid>
 
                         <Grid item>
-                            {/* <ReadOnlyButton/> */}
                             <AddButton/>
                         </Grid>
 
@@ -138,31 +123,14 @@ export default function Profile() {
 
                         <Grid container direction="row" justifyContent="space-between">
                             <Typography sx={classes.contentText}>Courses Taken</Typography>
-                            <Typography sx={classes.contentText}>nombre.apedillo@upr.edu</Typography>
+                            <Typography sx={classes.contentText}>{student!.email}</Typography>
                         </Grid>
 
                         <Divider/>
                         
                         <Grid container direction="row" alignContent='center' justifyContent="center" sx={classes.coursesContainer}>
-                            {/* <Typography>Nothing here yet... :(</Typography>
-                            <AddButton/> */}
-                            {/* <Autocomplete
-                                multiple
-                                freeSolo
-                                fullWidth
-                                readOnly={readOnly}
-                                options={top100Films}
-                                getOptionLabel={(option) => option.title}
-                                filterSelectedOptions
-                                renderInput={(params) => (
-                                    <TextField
-                                        {...params}
-                                        placeholder={"No courses taken yet..."}
-                                    />
-                                )}
-                            /> */}
-                            {top100Films.map((film, index) => (
-                                <CourseCard key={index} data={{course: film.title, description: film.year.toString()}}/>
+                            {coursesTaken!.map((ct: ICoursesTakenResponse, index: number) => (
+                                <CourseCard key={index} course={ct.course}/>
                             ))}
                         </Grid>
                         
@@ -190,8 +158,12 @@ export default function Profile() {
                             <Autocomplete
                                 multiple
                                 id="tags-outlined"
-                                options={top100Films}
-                                getOptionLabel={(option) => option.title}
+                                options={courses.filter(
+                                    c => coursesTaken!
+                                        .filter(ct => 
+                                            ct.course.courseCode === c.courseCode).length === 0)
+                                }
+                                getOptionLabel={(option) => option.courseCode}
                                 filterSelectedOptions
                                 renderInput={(params) => (
                                 <TextField
@@ -215,6 +187,15 @@ export default function Profile() {
         </Modal>
         </>
     )
+}
+
+// Get courses
+export async function getStaticProps() {
+    return {
+        props: {
+            courses: await getAllCourses()
+        }
+    }
 }
 
 const useStyles = {
