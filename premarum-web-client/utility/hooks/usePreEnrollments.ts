@@ -1,9 +1,9 @@
 import useSWR, {useSWRConfig} from "swr";
 import getStudentPreEnrollments, {getStudentPreEnrollmentById} from "../requests/getStudentPreEnrollments";
-import {pca} from "../../pages/_app";
 import {IPreEnrollmentResponse} from "../requests/responseTypes";
 import addNewSelection from "../requests/addNewSelection";
 import removeSelections from "../requests/removeSelection";
+import {pca} from "../constants";
 
 export function usePreEnrollments() {
     const { data, error } = useSWR('usePreEnrollments', async () => {

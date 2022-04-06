@@ -1,7 +1,7 @@
 import useSWR from "swr";
 import getOrCreateUser from "../requests/getOrCreateUser";
-import {pca} from "../../pages/_app";
 import PremaRumUserAccount from "../helpers/CustomAccount";
+import {pca} from "../constants";
 
 
 export function useStudent() {
