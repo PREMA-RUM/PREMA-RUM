@@ -5,13 +5,15 @@ namespace PreEnrollmentMgmt.CourseParserLib;
 
 public class CourseParsingService
 {
-    public bool CompliesWithRequisites(IEnumerable<string> coursesTaken, string requisites)
+    public bool CompliesWithRequisites(IEnumerable<string> coursesTaken, string? requisites)
     {
+        if (requisites == null)
+            return true;
         var stream = new AntlrInputStream(requisites);
         var lexer = new CourseGrammarLexer(stream);
         var parser = new CourseGrammarParser(new CommonTokenStream(lexer));
         var tree = parser.start()!;
         var visitor = new CourseTreeVisitor( coursesTaken.ToImmutableHashSet() );
-        return false;
+        return true;
     }
 }

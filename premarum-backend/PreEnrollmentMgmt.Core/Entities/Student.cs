@@ -33,7 +33,7 @@ public class Student
     {
         CoursesTaken.Add(coursesTaken);
     }
-    
+
     public IEnumerable<CoursesTaken> RemoveCoursesTaken(int[] CourseIds)
     {
         var deleted = new List<CoursesTaken>();
@@ -42,9 +42,21 @@ public class Student
             if (CourseIds.Contains(coursesTaken.CourseId))
                 deleted.Add(coursesTaken);
         }
-        
+
         ((HashSet<CoursesTaken>) CoursesTaken).RemoveWhere(taken => CourseIds.Contains(taken.CourseId));
         return deleted;
 
+    }
+
+    public IEnumerable<string> GetCoursesTaken()
+    {
+        var coursesTaken = new HashSet<string>();
+        foreach (var courseTaken in CoursesTaken)
+        {
+            if (courseTaken.Course != null)
+                coursesTaken.Add(courseTaken.Course.CourseName);
+        }
+
+        return coursesTaken;
     }
 }
