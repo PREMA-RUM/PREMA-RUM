@@ -1,7 +1,6 @@
 import {Box, Button, Paper} from "@mui/material";
 import {
     DataGrid,
-    GridColDef,
     GridToolbarColumnsButton,
     GridToolbarContainer,
     GridToolbarDensitySelector,
@@ -13,7 +12,7 @@ import {AddRounded} from "@mui/icons-material";
 import {usePreEnrollment} from "../utility/hooks/usePreEnrollments";
 import {GetRows} from "../utility/helpers/selectionToRow";
 
-const columns: GridColDef[] = [
+const columns = [
     {field: 'course', headerName: 'Course', minWidth: 100, description: ''},
     {field: 'section', headerName: 'Section', minWidth: 100, description: ''},
     {field: 'credits', headerName: 'Credits', minWidth: 100, description: ''},
