@@ -42,3 +42,8 @@ export interface IPreEnrollmentResponse {
     semester: ISemesterResponse
     selections: IPreEnrollmentSelectionResponse[]
 }
+
+export interface ICoursesTakenResponse {
+    course: ICourseResponse,
+    semester: ISemesterResponse | null
+}
