@@ -6,19 +6,28 @@ import {
     IPreEnrollmentSelectionResponse,
     ISemesterResponse
 } from "../../utility/requests/responseTypes";
+import {usePreEnrollments} from "../../utility/hooks/usePreEnrollments";
+import {useEffect, useState} from "react";
 
 export type OptionsButtonProps = {
-    preEnrollmentId: number
+    preEnrollment: IPreEnrollmentResponse
 }
 
-function OptionsButton({preEnrollmentId}: OptionsButtonProps) {
+function OptionsButton({preEnrollment}: OptionsButtonProps) {
     const router = useRouter();
+    const {removePreEnrollmentFromCache} = usePreEnrollments()
+    
+    async function handleDelete() {
+        if (confirm(`Are your sure you want to delete pre enrollment ${preEnrollment.name}?`)) {
+            await removePreEnrollmentFromCache(preEnrollment.id)
+        }
+    }
 
     return(
         <ButtonGroup variant="contained" disableElevation sx={classes.buttonGroup}>
-            <Button onClick={() => {router.push(`/preenrollment/${preEnrollmentId}`)}}>Edit</Button>
+            <Button onClick={() => {router.push(`/preenrollment/${preEnrollment.id}`)}}>Edit</Button>
             <Button size="small">
-                <DeleteRounded/>
+                <DeleteRounded onClick={handleDelete} />
             </Button>
         </ButtonGroup>
     )
@@ -29,16 +38,19 @@ export type PreEnrollmentCardItemProps = {
 }
 
 function PreEnrollmentCardItem({preEnrollment}: PreEnrollmentCardItemProps) {
-
-    function getTotalCredits(): number {
+    
+    const [totalCredits, setTotalCredits] = useState(0)
+    const [courseStringList, setCourseStringList] = useState("")
+    
+    async function getTotalCredits(): Promise<number> {
         return preEnrollment
             .selections
             .reduce((currCredits: number, currentVal: IPreEnrollmentSelectionResponse) => {
                 return currCredits + currentVal.course.courseCredit
             }, 0);
     }
-
-    function getCourseStringList(): string {
+    
+    async function getCourseStringList(): Promise<string> {
         let finalString = ""
         if (preEnrollment.selections.length === 0) {
             return finalString
@@ -55,6 +67,13 @@ function PreEnrollmentCardItem({preEnrollment}: PreEnrollmentCardItemProps) {
         }
         return finalString;
     }
+    
+    useEffect(() => {
+        getTotalCredits()
+            .then(res => setTotalCredits(res))
+        getCourseStringList()
+            .then(res => setCourseStringList(res))
+    })
 
     return (
         <>
@@ -66,10 +85,10 @@ function PreEnrollmentCardItem({preEnrollment}: PreEnrollmentCardItemProps) {
                         </Avatar>
                     }
                     action={
-                        <OptionsButton preEnrollmentId={preEnrollment.id}/>
+                        <OptionsButton preEnrollment={preEnrollment}/>
                     }
-                    title={`${preEnrollment.name} - ${getTotalCredits()} Credits`}
-                    subheader={getCourseStringList()}
+                    title={`${preEnrollment.name} - ${totalCredits} Credits`}
+                    subheader={courseStringList}
                 />
             </Card>
             <Divider/>
@@ -83,7 +102,6 @@ export type PreEnrollmentCardProps = {
 }
 
 export default function PreEnrollmentCard({group, semester}: PreEnrollmentCardProps) {
-    console.log(group, semester)
     return (
         <Card sx={classes.containerCard}>
             <CardHeader
