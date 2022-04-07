@@ -25,6 +25,7 @@ import {getAllCourses} from "../../utility/requests/getAllCourses";
 import {ICourseResponse, ICoursesTakenResponse} from "../../utility/requests/responseTypes";
 import {useCoursesTaken} from "../../utility/hooks/useCoursesTaken";
 import {useStudent} from "../../utility/hooks/useStudent";
+import axios, {AxiosError} from "axios";
 
 const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
     <Tooltip {...props} classes={{ popper: className }} />
@@ -40,7 +41,7 @@ type ProfileProps = {
 
 export default function Profile({courses}: ProfileProps) {
     const [open, setOpen] = React.useState(false);
-    const {coursesTaken, isLoading, addCoursesTakenToCache} = useCoursesTaken()
+    const {coursesTaken, isLoading, addCoursesTakenToCache, removeCoursesTakenFromCache} = useCoursesTaken()
     const {student, isLoading:studentLoading} = useStudent()
     const [selectedCourses, setSelectedCourses] = useState([])
     const [coursesAdditionInProgress, setCoursesAdditionInProgress] = useState(false)
@@ -87,6 +88,18 @@ export default function Profile({courses}: ProfileProps) {
     }
 
     function CourseCard({course}: CourseCardProps) {
+        
+        async function handleDelete() {
+            try {
+                await removeCoursesTakenFromCache([course.id])
+            } catch (err) {
+                if (axios.isAxiosError(err)){
+                    console.log((err as AxiosError).response)
+                }
+                alert(err)
+            }
+        }
+        
         return(
             <CustomTooltip arrow title={`${course.courseCode} - ${course.courseName}`} placement="top">
                 <Card sx={classes.courseCard}>
@@ -95,7 +108,7 @@ export default function Profile({courses}: ProfileProps) {
                             <Typography sx={classes.courseText}>{course.courseCode}</Typography>
                         </Grid>
                         <Grid item>
-                            <IconButton size="small" sx={classes.courseDeleteIcon}><CloseRounded/></IconButton>
+                            <IconButton onClick={handleDelete} size="small" sx={classes.courseDeleteIcon}><CloseRounded/></IconButton>
                         </Grid>
                     </Grid>
                 </Card>
