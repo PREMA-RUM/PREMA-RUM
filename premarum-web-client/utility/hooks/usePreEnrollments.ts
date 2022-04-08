@@ -4,15 +4,24 @@ import {IPreEnrollmentResponse} from "../requests/responseTypes";
 import addNewSelection from "../requests/addNewSelection";
 import removeSelections from "../requests/removeSelection";
 import {pca} from "../constants";
+import deletePreEnrollment from "../requests/deletePreEnrollment";
 
 export function usePreEnrollments() {
-    const { data, error } = useSWR('usePreEnrollments', async () => {
+    const { data, error, mutate } = useSWR('usePreEnrollments', async () => {
         return await getStudentPreEnrollments(pca)
     })
+    
+    async function removePreEnrollmentFromCache(pId: number) {
+        await mutate( async (cachedData:any) => {
+            await deletePreEnrollment(pca, pId)
+            return cachedData.filter((cd: any) => cd.id !== pId)
+        })
+    }
     
     return {
         preEnrollments: data,
         isLoading: !error && !data,
+        removePreEnrollmentFromCache,
         isError: error
     }
 }
