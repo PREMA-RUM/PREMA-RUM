@@ -12,7 +12,7 @@ type DeptProps = {
 
 export function StudentDepartmentModal(props: DeptProps) {
     const [open, setOpen] = React.useState(props.openModal);
-    const {student, isLoading:studentLoading} = useStudent()
+    const {student, isLoading:studentLoading, updateStudentDepartment} = useStudent()
     const [modalLoading, setModalLoading] = React.useState(false);
     const [studentDept, setStudentDept] = React.useState(student?.departmentId)
 
@@ -26,6 +26,19 @@ export function StudentDepartmentModal(props: DeptProps) {
 
     const handleDepartmentChange = (id: any) => {
         setStudentDept(id)
+    }
+
+    async function handleUpdateDepartment() {
+        setModalLoading(true)
+        try {
+            await updateStudentDepartment(studentDept!)
+        }
+        catch(err) {
+            alert(err)
+            setModalLoading(false);
+            return;
+        }
+        handleModalClose()
     }
 
     return(
@@ -74,7 +87,7 @@ export function StudentDepartmentModal(props: DeptProps) {
                         <CardActions sx={classes.cardActions}>
                             <Button
                                 disabled={modalLoading || !studentDept}
-                                onClick={handleModalClose}
+                                onClick={handleUpdateDepartment}
                             >
                                     Submit
                             </Button>
@@ -98,6 +111,7 @@ const useStyles = {
     },
     cardContent: {
         width: '100%',
+        minHeight: '150px',
         height: '100%',
         padding: '20px',
     },
@@ -107,6 +121,7 @@ const useStyles = {
     cardActions: {
         justifyContent: 'flex-end',
         alignItems: 'flex-end',
+
     },
 };
 

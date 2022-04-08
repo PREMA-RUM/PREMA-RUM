@@ -27,6 +27,7 @@ import {useMsal} from "@azure/msal-react";
 import PreEnrollmentCardSection from "../../components/PreEnrollmentCardSection";
 import { StudentDepartmentModal } from '../../components/departmentChoiceModal';
 import getAllDepartments from '../../utility/requests/getAllDepartments';
+import { useStudent } from '../../utility/hooks/useStudent';
 
 type HomeProps = {
     semesters: ISemesterResponse[],
@@ -40,6 +41,7 @@ export default function Home(props: HomeProps) {
     const [newPreEnrollmentName, setNewPreEnrollmentName] = useState("");
     const [newPreEnrollmentSemester, setNewPreEnrollmentSemester] = useState<ISemesterResponse | null>(null)
     const mutatePreEnrollmentCache = useMutatePreEnrollmentsCache();
+    const {student, isLoading:studentLoading} = useStudent()
 
     const router = useRouter();
 
@@ -86,7 +88,12 @@ export default function Home(props: HomeProps) {
 
     return (
         <>
-            <StudentDepartmentModal departments={props.departments} openModal={true} />
+            {!studentLoading?
+                <StudentDepartmentModal departments={props.departments} openModal={!student?.departmentId} />
+            :
+                <></>
+            }
+            
             <Grid container direction="column" sx={classes.mainGrid}>
 
                 <Grid item>
