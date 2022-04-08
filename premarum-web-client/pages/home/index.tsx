@@ -91,7 +91,7 @@ export default function Home(props: HomeProps) {
 
                             <Grid item>
                                 <Grid container direction="row" alignItems="center">
-                                    <Typography sx={classes.title}>Pre-Enrollment</Typography>
+                                    <Typography sx={classes.title}>Your Pre-Enrollments</Typography>
                                     <Divider orientation="vertical" variant='middle' light flexItem
                                              sx={classes.dividerItem}/>
                                     <Autocomplete

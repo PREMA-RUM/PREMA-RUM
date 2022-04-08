@@ -73,7 +73,7 @@ export default function Preenrollment() {
                     
                     <Grid item>
                         <Grid container direction="row" alignItems="center">
-                            <Typography sx={classes.title}>Course Selection</Typography>
+                            <Typography sx={classes.title}>{preEnrollment?.name}: {preEnrollment?.semester.term}-{preEnrollment?.semester.year}</Typography>
                             <Divider orientation="vertical" variant='middle' light flexItem sx={classes.dividerItem}/>
                             <TextField size="small" variant="outlined" placeholder="Search Courses..." sx={classes.searchInput}/>
                         </Grid>
