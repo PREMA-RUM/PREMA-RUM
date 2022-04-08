@@ -18,16 +18,19 @@ import {grey} from '@mui/material/colors';
 import React, {useState} from 'react';
 import {useRouter} from 'next/router';
 import getAllSemesters from "../../utility/requests/getAllSemesters";
-import {IPreEnrollmentResponse, ISemesterResponse} from "../../utility/requests/responseTypes";
+import {IDepartmentResponse, IPreEnrollmentResponse, ISemesterResponse} from "../../utility/requests/responseTypes";
 import {
     useMutatePreEnrollmentsCache,
 } from "../../utility/hooks/usePreEnrollments";
 import createPreEnrollment from "../../utility/requests/createPreEnrollment";
 import {useMsal} from "@azure/msal-react";
 import PreEnrollmentCardSection from "../../components/PreEnrollmentCardSection";
+import { StudentDepartmentModal } from '../../components/departmentChoiceModal';
+import getAllDepartments from '../../utility/requests/getAllDepartments';
 
 type HomeProps = {
-    semesters: ISemesterResponse[]
+    semesters: ISemesterResponse[],
+    departments: IDepartmentResponse[],
 }
 
 export default function Home(props: HomeProps) {
@@ -83,6 +86,7 @@ export default function Home(props: HomeProps) {
 
     return (
         <>
+            <StudentDepartmentModal departments={props.departments} openModal={true} />
             <Grid container direction="column" sx={classes.mainGrid}>
 
                 <Grid item>
@@ -264,7 +268,8 @@ const classes = useStyles;
 export async function getStaticProps() {
     return {
         props: {
-            semesters: await getAllSemesters()
+            semesters: await getAllSemesters(),
+            departments: await getAllDepartments()
         }, // will be passed to the page component as props
     }
 }
