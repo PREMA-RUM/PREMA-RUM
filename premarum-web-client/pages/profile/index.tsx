@@ -22,10 +22,12 @@ import {Add, AddRounded, CloseRounded, EditRounded} from '@mui/icons-material'
 import React, {useEffect, useRef, useState} from 'react';
 import { grey } from '@mui/material/colors';
 import {getAllCourses} from "../../utility/requests/getAllCourses";
-import {ICourseResponse, ICoursesTakenResponse} from "../../utility/requests/responseTypes";
+import {ICourseResponse, ICoursesTakenResponse, IDepartmentResponse} from "../../utility/requests/responseTypes";
 import {useCoursesTaken} from "../../utility/hooks/useCoursesTaken";
 import {useStudent} from "../../utility/hooks/useStudent";
 import axios, {AxiosError} from "axios";
+import { StudentDepartmentModal } from '../../components/departmentChoiceModal';
+import getAllDepartments from '../../utility/requests/getAllDepartments';
 
 const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
     <Tooltip {...props} classes={{ popper: className }} />
@@ -36,12 +38,14 @@ const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
 });
 
 type ProfileProps = {
-    courses: ICourseResponse[]
+    courses: ICourseResponse[],
+    departments: IDepartmentResponse[],
 }
 
-export default function Profile({courses}: ProfileProps) {
+export default function Profile({courses, departments}: ProfileProps) {
     const [open, setOpen] = React.useState(false);
     const {coursesTaken, isLoading, addCoursesTakenToCache, removeCoursesTakenFromCache} = useCoursesTaken()
+    const [deptOpen, setDeptOpen] = React.useState(false);
     const {student, isLoading:studentLoading} = useStudent()
     const [selectedCourses, setSelectedCourses] = useState([])
     const [coursesAdditionInProgress, setCoursesAdditionInProgress] = useState(false)
@@ -53,6 +57,14 @@ export default function Profile({courses}: ProfileProps) {
     const handleModalClose = () => {
         setOpen(false);
         setSelectedCourses([])
+    };
+
+    const handleDeptOpen = () => {
+        setDeptOpen(true);
+    };
+    
+    const handleDeptClose = () => {
+        setDeptOpen(false);
     };
     
     async function handleSubmit() {
@@ -79,6 +91,19 @@ export default function Profile({courses}: ProfileProps) {
                 onClick={handleModalOpen}
             >
                 Add Courses Taken
+            </Button>
+        )
+    }
+
+    function EditDepartmentButton() {
+        return(
+            <Button
+                startIcon={<AddRounded/>}
+                variant="contained"
+                sx={classes.addCoursesButton}
+                onClick={handleDeptOpen}
+            >
+                Edit Department
             </Button>
         )
     }
@@ -124,6 +149,8 @@ export default function Profile({courses}: ProfileProps) {
 
     return (
         <>
+        <StudentDepartmentModal departments={departments} openModal={deptOpen} />
+
         <Grid container direction="column">
 
             <Grid item>
@@ -139,6 +166,7 @@ export default function Profile({courses}: ProfileProps) {
                         </Grid>
 
                         <Grid item>
+                            <EditDepartmentButton/>
                             <AddButton/>
                         </Grid>
 
@@ -227,7 +255,8 @@ export default function Profile({courses}: ProfileProps) {
 export async function getStaticProps() {
     return {
         props: {
-            courses: await getAllCourses()
+            courses: await getAllCourses(),
+            departments: await getAllDepartments()
         }
     }
 }

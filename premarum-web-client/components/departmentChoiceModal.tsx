@@ -69,6 +69,7 @@ export function StudentDepartmentModal(props: DeptProps) {
                                         options={props.departments}
                                         getOptionLabel={(option) => `${option.departmentName}`}
                                         filterSelectedOptions
+                                        defaultValue={props.departments.find(b => b.departmentId === student?.departmentId)}
                                         onChange={(event, newValue) => {handleDepartmentChange(newValue?.departmentId)}}
                                         renderInput={(params) => (
                                             <TextField
