@@ -45,7 +45,7 @@ type ProfileProps = {
 export default function Profile({courses, departments}: ProfileProps) {
     const [open, setOpen] = React.useState(false);
     const {coursesTaken, isLoading, addCoursesTakenToCache, removeCoursesTakenFromCache} = useCoursesTaken()
-    const [deptOpen, setDeptOpen] = React.useState(false);
+    const [deptOpen, setDeptOpen] = useState(false);
     const {student, isLoading:studentLoading} = useStudent()
     const [selectedCourses, setSelectedCourses] = useState([])
     const [coursesAdditionInProgress, setCoursesAdditionInProgress] = useState(false)
@@ -61,6 +61,7 @@ export default function Profile({courses, departments}: ProfileProps) {
 
     const handleDeptOpen = () => {
         setDeptOpen(true);
+        console.log("deptOpen:", deptOpen)
     };
     
     const handleDeptClose = () => {
@@ -98,9 +99,9 @@ export default function Profile({courses, departments}: ProfileProps) {
     function EditDepartmentButton() {
         return(
             <Button
-                startIcon={<AddRounded/>}
+                startIcon={<EditRounded/>}
                 variant="contained"
-                sx={classes.addCoursesButton}
+                sx={classes.editDepartmentButton}
                 onClick={handleDeptOpen}
             >
                 Edit Department
@@ -149,8 +150,12 @@ export default function Profile({courses, departments}: ProfileProps) {
 
     return (
         <>
-        <StudentDepartmentModal departments={departments} openModal={deptOpen} />
-
+        <StudentDepartmentModal
+            departments={departments}
+            openModal={true}
+            allowClose={true}
+        />    
+        
         <Grid container direction="column">
 
             <Grid item>
@@ -280,7 +285,7 @@ const useStyles = {
     addCoursesButton: {
         backgroundColor: 'primary.dark'
     },
-    editCoursesButton: {
+    editDepartmentButton: {
         backgroundColor: 'secondary.dark',
         marginRight: 1,
     },

@@ -1,4 +1,5 @@
-import { Modal, Fade, Grid, Card, CardHeader, Divider, CardContent, Stack, CircularProgress, Autocomplete, TextField, CardActions, Button } from "@mui/material";
+import { CloseRounded } from "@mui/icons-material";
+import { Modal, Fade, Grid, Card, CardHeader, Divider, CardContent, Stack, CircularProgress, Autocomplete, TextField, CardActions, Button, IconButton } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import React from "react";
 import { useStudent } from "../utility/hooks/useStudent";
@@ -8,6 +9,7 @@ import { IDepartmentResponse } from "../utility/requests/responseTypes";
 type DeptProps = {
     departments: IDepartmentResponse[],
     openModal: boolean,
+    allowClose: boolean,
 }
 
 export function StudentDepartmentModal(props: DeptProps) {
@@ -46,14 +48,24 @@ export function StudentDepartmentModal(props: DeptProps) {
             open={open}
             onClose={handleModalClose}
             closeAfterTransition
+            disableEscapeKeyDown
         >
             <Fade in={open}>
-                <Grid container direction="row" justifyContent="center" alignItems="center"
-                    sx={classes.modalGridMain}>
+                <Grid container direction="row" justifyContent="center" alignItems="center" sx={classes.modalGridMain}>
                     <Card sx={classes.modalCard}>
-                        <CardHeader
-                            title="Please Select Your Department"
-                        />
+                        <Grid container direction="row" justifyContent="space-between" alignItems="center">
+                            <CardHeader
+                                title="Please Select Your Department"
+                            />
+                            {props.allowClose?
+                                <IconButton
+                                    disabled={modalLoading || !studentDept}
+                                    onClick={handleModalClose}
+                                    sx={classes.closeButton}>
+                                    <CloseRounded sx={classes.closeButtonIcon}/>
+                                </IconButton>
+                            :<></>}
+                        </Grid>
 
                         <Divider/>
 
@@ -103,18 +115,23 @@ export function StudentDepartmentModal(props: DeptProps) {
 const useStyles = {
     modalGridMain: {
         width: '100%',
-        height: '90%',
+        height: '100%',
     },
     modalCard: {
         width: '60%',
         minHeight: '30%',
         backgroundColor: grey[50],
     },
+    closeButton: {
+        marginRight: 1,
+    },
+    closeButtonIcon: {
+        fontSize: '30px',
+    },
     cardContent: {
         width: '100%',
-        minHeight: '150px',
         height: '100%',
-        padding: '20px',
+        padding: '60px 20px',
     },
     titleInput: {
         marginBottom: 1,
@@ -122,7 +139,6 @@ const useStyles = {
     cardActions: {
         justifyContent: 'flex-end',
         alignItems: 'flex-end',
-
     },
 };
 

@@ -89,7 +89,11 @@ export default function Home(props: HomeProps) {
     return (
         <>
             {!studentLoading?
-                <StudentDepartmentModal departments={props.departments} openModal={!student?.departmentId} />
+                <StudentDepartmentModal
+                    departments={props.departments}
+                    openModal={!student?.departmentId}
+                    allowClose={false}
+                />
             :
                 <></>
             }
