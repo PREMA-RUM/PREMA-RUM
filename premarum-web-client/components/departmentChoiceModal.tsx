@@ -140,11 +140,3 @@ const useStyles = {
 };
 
 const classes = useStyles;
-
-export async function getStaticProps() {
-    return {
-        props: {
-            departments: await getAllDepartments()
-        }, // will be passed to the page component as props
-    }
-}
