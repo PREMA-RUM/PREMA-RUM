@@ -27,7 +27,7 @@ export default function PreEnrollmentCardSection(): JSX.Element {
                 semester:groupedPreEnrollments[i][0].semester
             })
         }
-        result.sort((a, b) => a.semester.id - b.semester.id)
+        result.sort((a, b) => b.semester.id - a.semester.id)
         return result
     }
     
