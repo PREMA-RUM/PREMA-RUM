@@ -1,5 +1,5 @@
 import { CloseRounded } from "@mui/icons-material";
-import { Modal, Fade, Grid, Card, CardHeader, Divider, CardContent, Stack, CircularProgress, Autocomplete, TextField, CardActions, Button, IconButton } from "@mui/material";
+import { Modal, Fade, Grid, Card, CardHeader, Divider, CardContent, Stack, CircularProgress, Autocomplete, TextField, CardActions, Button, IconButton, StyledEngineProvider } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import React from "react";
 import { useStudent } from "../utility/hooks/useStudent";
@@ -8,22 +8,18 @@ import { IDepartmentResponse } from "../utility/requests/responseTypes";
 
 type DeptProps = {
     departments: IDepartmentResponse[],
-    openModal: boolean,
+    openModalState: boolean,
     allowClose: boolean,
+    setOpenModalState: any,
 }
 
 export function StudentDepartmentModal(props: DeptProps) {
-    const [open, setOpen] = React.useState(props.openModal);
     const {student, isLoading:studentLoading, updateStudentDepartment} = useStudent()
     const [modalLoading, setModalLoading] = React.useState(false);
     const [studentDept, setStudentDept] = React.useState(student?.departmentId)
 
-    const handleModalOpen = () => {
-        setOpen(true);
-    };
-
     const handleModalClose = () => {
-        setOpen(false);
+        props.setOpenModalState(false);
     };
 
     const handleDepartmentChange = (id: any) => {
@@ -41,16 +37,17 @@ export function StudentDepartmentModal(props: DeptProps) {
             return;
         }
         handleModalClose()
+        setModalLoading(false);
     }
 
     return(
         <Modal
-            open={open}
+            open={props.openModalState}
             onClose={handleModalClose}
             closeAfterTransition
             disableEscapeKeyDown
         >
-            <Fade in={open}>
+            <Fade in={props.openModalState}>
                 <Grid container direction="row" justifyContent="center" alignItems="center" sx={classes.modalGridMain}>
                     <Card sx={classes.modalCard}>
                         <Grid container direction="row" justifyContent="space-between" alignItems="center">

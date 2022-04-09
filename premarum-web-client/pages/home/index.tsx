@@ -15,7 +15,7 @@ import {
 } from '@mui/material'
 import {AddRounded} from '@mui/icons-material';
 import {grey} from '@mui/material/colors';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useRouter} from 'next/router';
 import getAllSemesters from "../../utility/requests/getAllSemesters";
 import {IDepartmentResponse, IPreEnrollmentResponse, ISemesterResponse} from "../../utility/requests/responseTypes";
@@ -37,6 +37,7 @@ type HomeProps = {
 export default function Home(props: HomeProps) {
     const {instance} = useMsal();
     const [open, setOpen] = React.useState(false);
+    const [deptOpen, setDeptOpen] = useState(false);
     const [modalLoading, setModalLoading] = React.useState(false);
     const [newPreEnrollmentName, setNewPreEnrollmentName] = useState("");
     const [newPreEnrollmentSemester, setNewPreEnrollmentSemester] = useState<ISemesterResponse | null>(null)
@@ -86,17 +87,20 @@ export default function Home(props: HomeProps) {
         )
     }
 
+    useEffect(() => {
+        if (!studentLoading) {
+            setDeptOpen(!student?.departmentId)
+        }
+    }, [student])
+
     return (
         <>
-            {!studentLoading?
-                <StudentDepartmentModal
-                    departments={props.departments}
-                    openModal={!student?.departmentId}
-                    allowClose={false}
-                />
-            :
-                <></>
-            }
+            <StudentDepartmentModal
+                departments={props.departments}
+                openModalState={deptOpen}
+                allowClose={false}
+                setOpenModalState={setDeptOpen}
+            />
             
             <Grid container direction="column" sx={classes.mainGrid}>
 

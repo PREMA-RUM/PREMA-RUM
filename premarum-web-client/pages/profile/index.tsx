@@ -19,7 +19,7 @@ import {
     CircularProgress
 } from '@mui/material'
 import {Add, AddRounded, CloseRounded, EditRounded} from '@mui/icons-material'
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useState} from 'react';
 import { grey } from '@mui/material/colors';
 import {getAllCourses} from "../../utility/requests/getAllCourses";
 import {ICourseResponse, ICoursesTakenResponse, IDepartmentResponse} from "../../utility/requests/responseTypes";
@@ -61,11 +61,6 @@ export default function Profile({courses, departments}: ProfileProps) {
 
     const handleDeptOpen = () => {
         setDeptOpen(true);
-        console.log("deptOpen:", deptOpen)
-    };
-    
-    const handleDeptClose = () => {
-        setDeptOpen(false);
     };
     
     async function handleSubmit() {
@@ -149,13 +144,7 @@ export default function Profile({courses, departments}: ProfileProps) {
     }
 
     return (
-        <>
-        <StudentDepartmentModal
-            departments={departments}
-            openModal={true}
-            allowClose={true}
-        />    
-        
+        <> 
         <Grid container direction="column">
 
             <Grid item>
@@ -202,6 +191,13 @@ export default function Profile({courses, departments}: ProfileProps) {
             </Grid>
           
         </Grid>
+
+        <StudentDepartmentModal
+            departments={departments}
+            openModalState={deptOpen}
+            allowClose={true}
+            setOpenModalState={setDeptOpen}
+        />   
 
         <Modal
             open={open}
