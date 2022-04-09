@@ -36,6 +36,7 @@ const LoginButton: React.FunctionComponent<ButtonProps> = () => {
         } catch(err: any) {
             alert("Login Failed. Try Again.");
             console.error(err);
+            setLoginLoading(false)
             return
         }
 
