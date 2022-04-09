@@ -15,28 +15,34 @@ import {
 } from '@mui/material'
 import {AddRounded} from '@mui/icons-material';
 import {grey} from '@mui/material/colors';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useRouter} from 'next/router';
 import getAllSemesters from "../../utility/requests/getAllSemesters";
-import {IPreEnrollmentResponse, ISemesterResponse} from "../../utility/requests/responseTypes";
+import {IDepartmentResponse, IPreEnrollmentResponse, ISemesterResponse} from "../../utility/requests/responseTypes";
 import {
     useMutatePreEnrollmentsCache,
 } from "../../utility/hooks/usePreEnrollments";
 import createPreEnrollment from "../../utility/requests/createPreEnrollment";
 import {useMsal} from "@azure/msal-react";
 import PreEnrollmentCardSection from "../../components/PreEnrollmentCardSection";
+import { StudentDepartmentModal } from '../../components/departmentChoiceModal';
+import getAllDepartments from '../../utility/requests/getAllDepartments';
+import { useStudent } from '../../utility/hooks/useStudent';
 
 type HomeProps = {
-    semesters: ISemesterResponse[]
+    semesters: ISemesterResponse[],
+    departments: IDepartmentResponse[],
 }
 
 export default function Home(props: HomeProps) {
     const {instance} = useMsal();
     const [open, setOpen] = React.useState(false);
+    const [deptOpen, setDeptOpen] = useState(false);
     const [modalLoading, setModalLoading] = React.useState(false);
     const [newPreEnrollmentName, setNewPreEnrollmentName] = useState("");
     const [newPreEnrollmentSemester, setNewPreEnrollmentSemester] = useState<ISemesterResponse | null>(null)
     const mutatePreEnrollmentCache = useMutatePreEnrollmentsCache();
+    const {student, isLoading:studentLoading} = useStudent()
 
     const router = useRouter();
 
@@ -81,8 +87,21 @@ export default function Home(props: HomeProps) {
         )
     }
 
+    useEffect(() => {
+        if (!studentLoading) {
+            setDeptOpen(!student?.departmentId)
+        }
+    }, [student])
+
     return (
         <>
+            <StudentDepartmentModal
+                departments={props.departments}
+                openModalState={deptOpen}
+                allowClose={false}
+                setOpenModalState={setDeptOpen}
+            />
+            
             <Grid container direction="column" sx={classes.mainGrid}>
 
                 <Grid item>
@@ -264,7 +283,8 @@ const classes = useStyles;
 export async function getStaticProps() {
     return {
         props: {
-            semesters: await getAllSemesters()
+            semesters: await getAllSemesters(),
+            departments: await getAllDepartments()
         }, // will be passed to the page component as props
     }
 }

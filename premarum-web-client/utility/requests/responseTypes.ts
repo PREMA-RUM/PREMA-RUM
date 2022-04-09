@@ -14,6 +14,11 @@ export interface ICourseResponse {
     courseName: string
 }
 
+export interface IDepartmentResponse {
+    departmentId: number
+    departmentName: string
+}
+
 export interface IProfessorResponse {
     id: number
     name: string
