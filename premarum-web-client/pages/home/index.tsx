@@ -286,5 +286,6 @@ export async function getStaticProps() {
             semesters: await getAllSemesters(),
             departments: await getAllDepartments()
         }, // will be passed to the page component as props
+        revalidate: 3600*2 // revalidate every 2 hours
     }
 }
