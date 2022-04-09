@@ -1,9 +1,8 @@
 import { CloseRounded } from "@mui/icons-material";
-import { Modal, Fade, Grid, Card, CardHeader, Divider, CardContent, Stack, CircularProgress, Autocomplete, TextField, CardActions, Button, IconButton, StyledEngineProvider } from "@mui/material";
+import { Modal, Fade, Grid, Card, CardHeader, Divider, CardContent, Stack, CircularProgress, Autocomplete, TextField, CardActions, Button, IconButton } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import React from "react";
 import { useStudent } from "../utility/hooks/useStudent";
-import getAllDepartments from "../utility/requests/getAllDepartments";
 import { IDepartmentResponse } from "../utility/requests/responseTypes";
 
 type DeptProps = {
