@@ -159,5 +159,6 @@ export async function getStaticProps() {
         props: {
             semesters: await getAllSemesters()
         }, // will be passed to the page component as props
+        revalidate: 3600*2 // revalidate every hour
     }
 }
