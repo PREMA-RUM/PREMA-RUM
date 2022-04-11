@@ -86,7 +86,7 @@ public class PreEnrollmentService
         if (student == null)
             throw new StudentNotFoundException("No student found with specified email");
         var preEnrollments = await _preEnrollmentRepository
-            .GetByStudentIdComplete(student.Id);
+            .GetByStudentIdPartial(student.Id);
         return preEnrollments;
     }
     

@@ -18,6 +18,14 @@ public class PreEnrollmentRepository : IPreEnrollmentRepository
     public async Task<IEnumerable<PreEnrollment>> GetByStudentIdComplete(int studentId)
     {
         return await
+            GetCompletePreEnrollmentQueryable()
+                .Where(pe => pe.StudentId == studentId)
+                .ToListAsync();
+    }
+
+    public async Task<IEnumerable<PreEnrollment>> GetByStudentIdPartial(int studentId)
+    {
+        return await
             GetPartialPreEnrollmentQueryable()
                 .Where(pe => pe.StudentId == studentId)
                 .ToListAsync();
