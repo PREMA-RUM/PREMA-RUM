@@ -78,8 +78,7 @@ public class PreEnrollmentRepository : IPreEnrollmentRepository
             .PreEnrollments
             .Include(pe => pe.Semester).ThenInclude(s => s.Term)
             .OrderByDescending(pe => pe.Semester.Id)
-            .Include(pe => pe.Selections).ThenInclude(so => so.Course)
-            .Include("Selections.TimeSlots.WeekDay");
+            .Include(pe => pe.Selections).ThenInclude(so => so.Course);
     }
 
     public async Task<IEnumerable<OverlappingPreEnrollmentSelections>> GetConflictingSelections(int preEnrollmentId)
