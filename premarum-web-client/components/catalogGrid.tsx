@@ -103,6 +103,7 @@ export default function CatalogGrid({semesterId, exclude, selectionsRef}: Catalo
                         sel =>  (rows[sel as number] as any).entryId )
                 }}
                 checkboxSelection
+                pageSize={25}
                 rows={rows}
                 columns={columns}
                 autoHeight

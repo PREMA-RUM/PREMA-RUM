@@ -102,6 +102,7 @@ export default function Catalog({semesters}: SemesterProps) {
                     <Paper elevation={0} sx={classes.dataContainer}>
                         <DataGrid
                             autoHeight
+                            pageSize={25}
                             rows={rows}
                             columns={columns}
                             components={{
