@@ -65,6 +65,7 @@ public class PreEnrollmentRepository : IPreEnrollmentRepository
         return _context
             .PreEnrollments
             .Include(pe => pe.Semester).ThenInclude(s => s.Term)
+            .OrderByDescending(pe => pe.Semester.Id)
             .Include(pe => pe.Selections).ThenInclude(so => so.Course)
             .Include(pe => pe.Selections).ThenInclude(so => so.Professors)
             .Include(pe => pe.Selections).ThenInclude(so => so.TimeSlots)
