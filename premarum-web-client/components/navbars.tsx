@@ -127,9 +127,11 @@ export default function Navbars({children}:any) {
             >
                 <Menu />
             </IconButton>
-            <Typography variant="h6" noWrap component="div">
+            <Button disableRipple onClick={() => {router.push('/home')}} style={{color: 'white', marginLeft: -8}}>
+              <Typography variant="h6" noWrap component="div">
                 PREMARUM
-            </Typography>
+              </Typography>
+            </Button>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>

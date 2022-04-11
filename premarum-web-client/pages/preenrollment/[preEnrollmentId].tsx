@@ -73,9 +73,10 @@ export default function Preenrollment() {
                     
                     <Grid item>
                         <Grid container direction="row" alignItems="center">
-                            <Typography sx={classes.title}>{preEnrollment?.name}: {preEnrollment?.semester.term}-{preEnrollment?.semester.year}</Typography>
+                            <Typography sx={classes.title}>Pre-Enrollments</Typography>
                             <Divider orientation="vertical" variant='middle' light flexItem sx={classes.dividerItem}/>
-                            <TextField size="small" variant="outlined" placeholder="Search Courses..." sx={classes.searchInput}/>
+                            <Typography sx={classes.title2}>{preEnrollment?.name}: {preEnrollment?.semester.term} - {preEnrollment?.semester.year}</Typography>
+                            {/* <TextField size="small" variant="outlined" placeholder="Search Courses..." sx={classes.searchInput}/> */}
                         </Grid>
                     </Grid>
 
@@ -143,7 +144,11 @@ const useStyles = {
         marginBottom: 1.5
     },
     title: {
-
+        padding: '8px 0',
+    },
+    title2: {
+        padding: '8px 0',
+        // fontWeight: 'bold',
     },
     dividerItem: {
         marginLeft: 2,
