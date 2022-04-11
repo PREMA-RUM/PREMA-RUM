@@ -18,7 +18,7 @@ public class PreEnrollmentRepository : IPreEnrollmentRepository
     public async Task<IEnumerable<PreEnrollment>> GetByStudentIdComplete(int studentId)
     {
         return await
-            GetCompletePreEnrollmentQueryable()
+            GetPartialPreEnrollmentQueryable()
                 .Where(pe => pe.StudentId == studentId)
                 .ToListAsync();
     }
@@ -69,6 +69,16 @@ public class PreEnrollmentRepository : IPreEnrollmentRepository
             .Include(pe => pe.Selections).ThenInclude(so => so.Course)
             .Include(pe => pe.Selections).ThenInclude(so => so.Professors)
             .Include(pe => pe.Selections).ThenInclude(so => so.TimeSlots)
+            .Include("Selections.TimeSlots.WeekDay");
+    }
+    
+    private IQueryable<PreEnrollment> GetPartialPreEnrollmentQueryable()
+    {
+        return _context
+            .PreEnrollments
+            .Include(pe => pe.Semester).ThenInclude(s => s.Term)
+            .OrderByDescending(pe => pe.Semester.Id)
+            .Include(pe => pe.Selections).ThenInclude(so => so.Course)
             .Include("Selections.TimeSlots.WeekDay");
     }
     
