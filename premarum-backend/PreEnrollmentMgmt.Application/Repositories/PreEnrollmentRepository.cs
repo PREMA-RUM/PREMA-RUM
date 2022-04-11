@@ -15,14 +15,6 @@ public class PreEnrollmentRepository : IPreEnrollmentRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<PreEnrollment>> GetByStudentIdComplete(int studentId)
-    {
-        return await
-            GetCompletePreEnrollmentQueryable()
-                .Where(pe => pe.StudentId == studentId)
-                .ToListAsync();
-    }
-
     public async Task<IEnumerable<PreEnrollment>> GetByStudentIdPartial(int studentId)
     {
         return await
@@ -52,7 +44,7 @@ public class PreEnrollmentRepository : IPreEnrollmentRepository
 
     public async Task<bool> ContainsWithNameStudentAndSemesterId(string name, int studentId, int semesterId)
     {
-        int id = await _context
+        var id = await _context
             .PreEnrollments
             .Where(pe =>
                 pe.StudentId == studentId &&
@@ -79,7 +71,7 @@ public class PreEnrollmentRepository : IPreEnrollmentRepository
             .Include(pe => pe.Selections).ThenInclude(so => so.TimeSlots)
             .Include("Selections.TimeSlots.WeekDay");
     }
-    
+
     private IQueryable<PreEnrollment> GetPartialPreEnrollmentQueryable()
     {
         return _context
@@ -89,13 +81,13 @@ public class PreEnrollmentRepository : IPreEnrollmentRepository
             .Include(pe => pe.Selections).ThenInclude(so => so.Course)
             .Include("Selections.TimeSlots.WeekDay");
     }
-    
+
     public async Task<IEnumerable<OverlappingPreEnrollmentSelections>> GetConflictingSelections(int preEnrollmentId)
     {
         return await _context
             .OverlappingSemesterOffers
             .FromSqlRaw(
-                "select * from sp_conflicting_selections({0})", 
+                "select * from sp_conflicting_selections({0})",
                 preEnrollmentId
             ).ToListAsync();
     }
