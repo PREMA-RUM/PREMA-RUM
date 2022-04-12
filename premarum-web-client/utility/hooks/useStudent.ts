@@ -8,7 +8,7 @@ import addStudentDepartment from "../requests/addStudentDepartment";
 export function useStudent() {
     const { data, error, mutate } = useSWR('useStudent', async () => {
         return await getOrCreateUser(pca)
-    })
+    }, {revalidateIfStale: false})
 
     async function updateStudentDepartment(departmentId: number) {
         await mutate(async cachedData => {

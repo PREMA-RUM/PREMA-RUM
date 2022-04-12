@@ -31,7 +31,7 @@ export function usePreEnrollment(preEnrollmentId: number | null) {
         if (preEnrollmentId != null) {
             return await getStudentPreEnrollmentById(preEnrollmentId, pca)
         }
-    })
+    }, {revalidateIfStale:false})
     
     async function updateCache(selections: number[]) {
         await mutate(async cachedData => {
