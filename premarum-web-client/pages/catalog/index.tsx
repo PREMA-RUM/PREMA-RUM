@@ -33,11 +33,12 @@ function CustomToolbar() {
 const columns = [
     {field: 'course', headerName: 'Course', minWidth: 100, description: ''},
     {field: 'section', headerName: 'Section', minWidth: 100, description: ''},
-    {field: 'credits', headerName: 'Credits', minWidth: 100, description: ''},
-    {field: 'days', headerName: 'Days', minWidth: 100, flex: 1, description: ''},
+    {field: 'credits', headerName: `Credits`, minWidth: 100, description: ''},
     {field: 'classroom', headerName: 'Classroom', minWidth: 100, description: ''},
-    {field: 'timeslot', headerName: 'Timeslot', minWidth: 175, flex: 1, description: ''},
-    {field: 'professor', headerName: 'Professor', minWidth: 175, flex: 1, description: ''},
+    {field: 'timeslot', headerName: 'Timeslot', minWidth: 150, flex: 1, description: ''},
+    {field: 'professor', headerName: 'Professor', minWidth: 150, flex: 1, description: ''},
+    {field: 'prerequisites', headerName: 'Pre-requisites', minWidth: 150, flex: 1, description: ''},
+    {field: 'corequisites', headerName: 'Co-requisites', minWidth: 150, flex: 1, description: ''},
 ]
 
 export default function Catalog({semesters}: SemesterProps) {

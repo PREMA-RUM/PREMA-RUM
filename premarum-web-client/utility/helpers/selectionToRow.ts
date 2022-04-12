@@ -17,9 +17,24 @@ export async function GetRows(selections: IPreEnrollmentSelectionResponse[]) {
             professors.push(selections[i].professors[k].name)
         }
 
-        result.push({id: parseInt(i), entryId: selections[i].id, course: selections[i].course.courseCode, section: selections[i].sectionName,
-            credits: selections[i].course.courseCredit, days: days.join(", "), classroom: selections[i].classRoom,
-            timeslot: times.join(", "), professor: professors.join(", ")})
+        // result.push({id: parseInt(i), entryId: selections[i].id, course: selections[i].course.courseCode, section: selections[i].sectionName,
+        //     credits: selections[i].course.courseCredit, days: days.join(", "), classroom: selections[i].classRoom,
+        //     timeslot: times.join(", "), professor: professors.join(", ")})
+
+        times = [...new Set(times)]; // remove duplicates
+
+        result.push({
+            id: parseInt(i), 
+            entryId: selections[i].id, 
+            course: selections[i].course.courseCode, 
+            section: selections[i].sectionName,
+            credits: selections[i].course.courseCredit, 
+            classroom: selections[i].classRoom,
+            timeslot: days.join(", ") + "\n" + times.join(", "), 
+            professor: professors.join(", "), 
+            prerequisites: "test1",
+            corequisites: "test2",
+        })
     }
 
     return result
