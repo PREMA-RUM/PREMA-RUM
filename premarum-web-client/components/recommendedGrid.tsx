@@ -1,4 +1,4 @@
-import {Box, Button, Paper} from "@mui/material";
+import {Box, Button, CircularProgress, Grid, Paper} from "@mui/material";
 import {
     DataGrid,
     GridToolbarColumnsButton,
@@ -93,7 +93,11 @@ export default function RecommendedGrid({semesterId, exclude, selectionsRef}: Re
     }, [courseOfferings])
     
     if (!rows || isLoading) {
-        return <>...</>
+        return(
+            <Grid container direction="column" justifyContent="center" alignContent="center">
+                <CircularProgress />
+            </Grid>
+        )
     }
     
     return(

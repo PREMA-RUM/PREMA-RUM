@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Card, Divider, Grid, Paper, TextField, Typography } from '@mui/material'
+import { Autocomplete, Box, Card, CircularProgress, Divider, Grid, Paper, TextField, Typography } from '@mui/material'
 import React, { SyntheticEvent, useEffect, useState } from 'react';
 import { grey } from '@mui/material/colors';
 import { DataGrid, GridColumns, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton } from '@mui/x-data-grid';
@@ -58,7 +58,11 @@ export default function Catalog({semesters}: SemesterProps) {
     }, [courseOfferings])
 
     if (!rows || isLoading) {
-        return <>...</>
+        return(
+            <Grid container direction="column" justifyContent="center" alignContent="center">
+                <CircularProgress />
+            </Grid>
+        )
     }
 
     return (
