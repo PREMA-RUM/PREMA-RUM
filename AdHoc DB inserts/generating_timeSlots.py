@@ -14,7 +14,8 @@ class TimeSlotGenerator:
     def getStartTime(self):
         startTime = self.startTime[0:5]
         PMIndicator = self.endTime[11:12]
-        if PMIndicator == 'p' and int(startTime[0:2]) != 12:
+        if PMIndicator == 'p' and (int(self.endTime[6:8]) + 12) < 24 and int(startTime[0:2]) != 12 and (
+                int(startTime[0:2]) + 12 < int(self.endTime[6:8]) + 12):
             startTime = str(int(startTime[0:2]) + 12) + (startTime[2:len(startTime)])
         return startTime
 
@@ -36,12 +37,4 @@ class TimeSlotGenerator:
         for i in self.trimAndSelectDays(self.days):
             print(
                 "insert into \"TimeSlot\" ( 'ts_start_time', 'ts_end_time' , so_id, d_id) VALUES ('%s','%s',%d,%d);" % (
-                self.getStartTime(), self.getEndTime(), self.so_id, i))
-
-
-inserts = [(1, '12:00- 1:15p', 'MJ     ', '66'),
-           (1848, ' 3:30- 5:20p', 'LW     ', '90')]
-
-for insert in inserts:
-    TSG = TimeSlotGenerator(insert)
-    TSG.timeSlotInsert()
+                    self.getStartTime(), self.getEndTime(), self.so_id, i))
