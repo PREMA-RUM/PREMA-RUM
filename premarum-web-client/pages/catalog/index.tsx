@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Card, CircularProgress, Divider, Grid, Paper, TextField, Typography } from '@mui/material'
+import { Autocomplete, Box, Card, CircularProgress, Divider, Grid, Paper, styled, TextField, Tooltip, tooltipClasses, TooltipProps, Typography } from '@mui/material'
 import React, { SyntheticEvent, useEffect, useState } from 'react';
 import { grey } from '@mui/material/colors';
 import { DataGrid, GridColumns, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton } from '@mui/x-data-grid';
@@ -18,6 +18,55 @@ type CatalogGridProps = {
     selectionsRef: any// Ids to exclude
 }
 
+const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))({
+    [`& .${tooltipClasses.tooltip}`]: {
+      maxWidth: 200,
+    },
+  });
+
+  const columns = [
+    {field: 'course', headerName: 'Course', minWidth: 100, description: '',
+        renderCell: (params: any) => (
+            <CustomTooltip title={params.value} placement="right" arrow>
+                <Box>{params.value}</Box>
+            </CustomTooltip>
+        )
+    },
+    {field: 'section', headerName: 'Section', minWidth: 100, description: ''},
+    {field: 'credits', headerName: `Credits`, minWidth: 100, description: ''},
+    {field: 'classroom', headerName: 'Classroom', minWidth: 100, description: ''},
+    {field: 'timeslot', headerName: 'Timeslot', minWidth: 150, flex: 1, description: '',
+        renderCell: (params: any) => (
+            <Box sx={{ whiteSpace: 'normal', overflowY: 'auto', maxHeight: 50}}>
+                <Typography sx={{fontSize: '0.875rem'}}>{params.value}</Typography>
+            </Box>
+        )
+    },
+    {field: 'professor', headerName: 'Professor', minWidth: 150, flex: 1, description: '',
+        renderCell: (params: any) => (
+            <Box sx={{ whiteSpace: 'normal', overflowY: 'auto', maxHeight: 50}}>
+                <Typography sx={{fontSize: '0.875rem'}}>{params.value}</Typography>
+            </Box>
+        )
+    },
+    {field: 'prerequisites', headerName: 'Pre-requisites', minWidth: 150, flex: 1, description: '',
+        renderCell: (params: any) => (
+            <Box sx={{ whiteSpace: 'normal', overflowY: 'auto', maxHeight: 50}}>
+                <Typography sx={{fontSize: '0.875rem'}}>{params.value}</Typography>
+            </Box>
+        )
+    },
+    {field: 'corequisites', headerName: 'Co-requisites', minWidth: 150, flex: 1, description: '',
+        renderCell: (params: any) => (
+            <Box sx={{ whiteSpace: 'normal', overflowY: 'auto', maxHeight: 50}}>
+                <Typography sx={{fontSize: '0.875rem'}}>{params.value}</Typography>
+            </Box>
+        )
+    },
+]
+
 function CustomToolbar() {
     return(
         <Box sx={classes.toolbarBox}>
@@ -29,17 +78,6 @@ function CustomToolbar() {
         </Box>
     )
 }
-
-const columns = [
-    {field: 'course', headerName: 'Course', minWidth: 100, description: ''},
-    {field: 'section', headerName: 'Section', minWidth: 100, description: ''},
-    {field: 'credits', headerName: `Credits`, minWidth: 100, description: ''},
-    {field: 'classroom', headerName: 'Classroom', minWidth: 100, description: ''},
-    {field: 'timeslot', headerName: 'Timeslot', minWidth: 150, flex: 1, description: ''},
-    {field: 'professor', headerName: 'Professor', minWidth: 150, flex: 1, description: ''},
-    {field: 'prerequisites', headerName: 'Pre-requisites', minWidth: 150, flex: 1, description: ''},
-    {field: 'corequisites', headerName: 'Co-requisites', minWidth: 150, flex: 1, description: ''},
-]
 
 export default function Catalog({semesters}: SemesterProps) {
     const [semesterID, setSemesterID] = useState(0)
@@ -107,6 +145,7 @@ export default function Catalog({semesters}: SemesterProps) {
                     <Paper elevation={0} sx={classes.dataContainer}>
                         <DataGrid
                             autoHeight
+                            disableSelectionOnClick
                             pageSize={25}
                             rows={rows}
                             columns={columns}

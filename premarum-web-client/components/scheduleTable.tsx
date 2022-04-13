@@ -1,10 +1,30 @@
-import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,  } from "@mui/material";
-import { DataGrid, GridColDef, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton } from "@mui/x-data-grid";
-import React, {RefObject, useEffect, useState} from "react";
-import {IPreEnrollmentResponse, IPreEnrollmentSelectionResponse} from "../utility/requests/responseTypes";
+import { Box, Button, Paper, styled, Tooltip, tooltipClasses, TooltipProps, Typography } from "@mui/material";
+import { DataGrid, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton } from "@mui/x-data-grid";
+import React, {useEffect, useState} from "react";
+import {IPreEnrollmentSelectionResponse} from "../utility/requests/responseTypes";
 import {GetRows} from "../utility/helpers/selectionToRow";
 import {RemoveRounded} from "@mui/icons-material";
 import {usePreEnrollment} from "../utility/hooks/usePreEnrollments";
+
+const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))({
+    [`& .${tooltipClasses.tooltip}`]: {
+      maxWidth: 200,
+    },
+});
+
+function CustomToolbar() {
+    return(
+        <Box sx={classes.toolbarBox}>
+            <GridToolbarContainer>
+                <GridToolbarColumnsButton />
+                <GridToolbarFilterButton />
+                <GridToolbarDensitySelector />
+            </GridToolbarContainer>
+        </Box>
+    )
+}
 
 async function totalCredits(selections: IPreEnrollmentSelectionResponse[]) {
     if (selections.length === 0) return 0;
@@ -61,14 +81,44 @@ export default function ScheduleTable({selections, selectionRef}: ScheduleTableP
     const [rows, setRows] = useState([])
 
     const columns = [
-        {field: 'course', headerName: 'Course', minWidth: 100, description: ''},
+        {field: 'course', headerName: 'Course', minWidth: 100, description: '',
+            renderCell: (params: any) => (
+                <CustomTooltip title={params.value} placement="right" arrow>
+                    <Box>{params.value}</Box>
+                </CustomTooltip>
+            )
+        },
         {field: 'section', headerName: 'Section', minWidth: 100, description: ''},
-        {field: 'credits', headerName: `Credits [${creditSum}]`, minWidth: 100, description: ''},
+        {field: 'credits', headerName: `Credits`, minWidth: 100, description: ''},
         {field: 'classroom', headerName: 'Classroom', minWidth: 100, description: ''},
-        {field: 'timeslot', headerName: 'Timeslot', minWidth: 150, flex: 1, description: ''},
-        {field: 'professor', headerName: 'Professor', minWidth: 150, flex: 1, description: ''},
-        {field: 'prerequisites', headerName: 'Pre-requisites', minWidth: 150, flex: 1, description: ''},
-        {field: 'corequisites', headerName: 'Co-requisites', minWidth: 150, flex: 1, description: ''},
+        {field: 'timeslot', headerName: 'Timeslot', minWidth: 150, flex: 1, description: '',
+            renderCell: (params: any) => (
+                <Box sx={{ whiteSpace: 'normal', overflowY: 'auto', maxHeight: 50}}>
+                    <Typography sx={{fontSize: '0.875rem'}}>{params.value}</Typography>
+                </Box>
+            )
+        },
+        {field: 'professor', headerName: 'Professor', minWidth: 150, flex: 1, description: '',
+            renderCell: (params: any) => (
+                <Box sx={{ whiteSpace: 'normal', overflowY: 'auto', maxHeight: 50}}>
+                    <Typography sx={{fontSize: '0.875rem'}}>{params.value}</Typography>
+                </Box>
+            )
+        },
+        {field: 'prerequisites', headerName: 'Pre-requisites', minWidth: 150, flex: 1, description: '',
+            renderCell: (params: any) => (
+                <Box sx={{ whiteSpace: 'normal', overflowY: 'auto', maxHeight: 50}}>
+                    <Typography sx={{fontSize: '0.875rem'}}>{params.value}</Typography>
+                </Box>
+            )
+        },
+        {field: 'corequisites', headerName: 'Co-requisites', minWidth: 150, flex: 1, description: '',
+            renderCell: (params: any) => (
+                <Box sx={{ whiteSpace: 'normal', overflowY: 'auto', maxHeight: 50}}>
+                    <Typography sx={{fontSize: '0.875rem'}}>{params.value}</Typography>
+                </Box>
+            )
+        },
     ]
     
     useEffect(() => {
@@ -91,12 +141,19 @@ export default function ScheduleTable({selections, selectionRef}: ScheduleTableP
                 rows={rows}
                 columns={columns}
                 autoHeight
+                components={{
+                    Toolbar: CustomToolbar,
+                }}
             />
         </Paper>
     )
 }
 
 const useStyles = {
+    toolbarBox: {
+        marginTop: 1,
+        marginLeft: 1,
+    },
     containerBox: {
         marginBottom: 2,
     },
