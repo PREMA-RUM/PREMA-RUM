@@ -150,7 +150,7 @@ export default function Navbars({children}:any) {
         <Divider />
 
           <List>
-              <Tooltip title="Home" placement="right">
+              <Tooltip title="Home" placement="right" arrow>
                 <ListItemButton key="Home" onClick={() => {router.push('/home')}}>
                     <ListItemIcon>
                         <HomeRounded/>
@@ -159,7 +159,7 @@ export default function Navbars({children}:any) {
                 </ListItemButton>
               </Tooltip>
 
-              <Tooltip title="Course Catalog" placement="right">  
+              <Tooltip title="Course Catalog" placement="right" arrow>  
                 <ListItemButton key="Course Catalog" onClick={() => {router.push('/catalog')}}>
                     <ListItemIcon>
                         <ListAltRounded/>
@@ -168,7 +168,7 @@ export default function Navbars({children}:any) {
                 </ListItemButton>
               </Tooltip>
               
-              <Tooltip title="Profile" placement="right">
+              <Tooltip title="Profile" placement="right" arrow>
                 <ListItemButton key="Profile" onClick={() => {router.push('/profile')}}>
                     <ListItemIcon>
                         <AccountBoxRounded/>
@@ -179,7 +179,7 @@ export default function Navbars({children}:any) {
 
               <Divider />
 
-              <Tooltip title="Log Out" placement="right">
+              <Tooltip title="Log Out" placement="right" arrow>
                 <ListItemButton key="Log Out" onClick={handleLogoutOpen}>
                     <ListItemIcon>
                         <LogoutRounded/>
@@ -189,7 +189,7 @@ export default function Navbars({children}:any) {
               </Tooltip>
           </List>
           
-          <Tooltip title="UPRM" placement="right">
+          <Tooltip title="UPRM" placement="right" arrow>
             <Button sx={classes.logoComponent} onClick={() => router.push('/')}>
                 <Box
                   sx={classes.boxSize}

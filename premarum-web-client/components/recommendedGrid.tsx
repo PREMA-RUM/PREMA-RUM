@@ -1,4 +1,4 @@
-import {Box, Button, CircularProgress, Grid, Paper} from "@mui/material";
+import {Box, Button, CircularProgress, Grid, Paper, styled, Tooltip, tooltipClasses, TooltipProps, Typography} from "@mui/material";
 import {
     DataGrid,
     GridToolbarColumnsButton,
@@ -11,17 +11,7 @@ import {useSemesterOfferings} from "../utility/hooks/useSemesterOfferings";
 import {AddRounded} from "@mui/icons-material";
 import {usePreEnrollment} from "../utility/hooks/usePreEnrollments";
 import {GetRows} from "../utility/helpers/selectionToRow";
-
-const columns = [
-    {field: 'course', headerName: 'Course', minWidth: 100, description: ''},
-    {field: 'section', headerName: 'Section', minWidth: 100, description: ''},
-    {field: 'credits', headerName: `Credits`, minWidth: 100, description: ''},
-    {field: 'classroom', headerName: 'Classroom', minWidth: 100, description: ''},
-    {field: 'timeslot', headerName: 'Timeslot', minWidth: 150, flex: 1, description: ''},
-    {field: 'professor', headerName: 'Professor', minWidth: 150, flex: 1, description: ''},
-    {field: 'prerequisites', headerName: 'Pre-requisites', minWidth: 150, flex: 1, description: ''},
-    {field: 'corequisites', headerName: 'Co-requisites', minWidth: 150, flex: 1, description: ''},
-]
+import { GetColumnFormat } from "../utility/helpers/ColumnFormat";
 
 function CustomToolbar() {
     return(
@@ -109,8 +99,9 @@ export default function RecommendedGrid({semesterId, exclude, selectionsRef}: Re
                 }}
                 checkboxSelection
                 pageSize={25}
+                rowHeight={75}
                 rows={rows}
-                columns={columns}
+                columns={GetColumnFormat({creditSum: null})}
                 autoHeight
                 components={{
                     Toolbar: CustomToolbar,

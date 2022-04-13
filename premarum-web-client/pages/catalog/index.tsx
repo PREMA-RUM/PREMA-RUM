@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Card, CircularProgress, Divider, Grid, Paper, TextField, Typography } from '@mui/material'
+import { Autocomplete, Box, Card, CircularProgress, Divider, Grid, Paper, styled, TextField, Tooltip, tooltipClasses, TooltipProps, Typography } from '@mui/material'
 import React, { SyntheticEvent, useEffect, useState } from 'react';
 import { grey } from '@mui/material/colors';
 import { DataGrid, GridColumns, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton } from '@mui/x-data-grid';
@@ -7,6 +7,7 @@ import getAllSemesters from '../../utility/requests/getAllSemesters';
 import { ISemesterResponse } from '../../utility/requests/responseTypes';
 import { useSemesterOfferings } from '../../utility/hooks/useSemesterOfferings';
 import { GetRows } from '../../utility/helpers/selectionToRow';
+import { GetColumnFormat } from '../../utility/helpers/ColumnFormat';
 
 type SemesterProps = {
     semesters: ISemesterResponse[]
@@ -29,17 +30,6 @@ function CustomToolbar() {
         </Box>
     )
 }
-
-const columns = [
-    {field: 'course', headerName: 'Course', minWidth: 100, description: ''},
-    {field: 'section', headerName: 'Section', minWidth: 100, description: ''},
-    {field: 'credits', headerName: `Credits`, minWidth: 100, description: ''},
-    {field: 'classroom', headerName: 'Classroom', minWidth: 100, description: ''},
-    {field: 'timeslot', headerName: 'Timeslot', minWidth: 150, flex: 1, description: ''},
-    {field: 'professor', headerName: 'Professor', minWidth: 150, flex: 1, description: ''},
-    {field: 'prerequisites', headerName: 'Pre-requisites', minWidth: 150, flex: 1, description: ''},
-    {field: 'corequisites', headerName: 'Co-requisites', minWidth: 150, flex: 1, description: ''},
-]
 
 export default function Catalog({semesters}: SemesterProps) {
     const [semesterID, setSemesterID] = useState(0)
@@ -107,9 +97,11 @@ export default function Catalog({semesters}: SemesterProps) {
                     <Paper elevation={0} sx={classes.dataContainer}>
                         <DataGrid
                             autoHeight
+                            disableSelectionOnClick
                             pageSize={25}
+                            rowHeight={75}
                             rows={rows}
-                            columns={columns}
+                            columns={GetColumnFormat({creditSum: null})}
                             components={{
                                 Toolbar: CustomToolbar,
                             }}

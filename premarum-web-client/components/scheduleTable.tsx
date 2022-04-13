@@ -1,10 +1,23 @@
-import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,  } from "@mui/material";
-import { DataGrid, GridColDef, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton } from "@mui/x-data-grid";
-import React, {RefObject, useEffect, useState} from "react";
-import {IPreEnrollmentResponse, IPreEnrollmentSelectionResponse} from "../utility/requests/responseTypes";
+import { Box, Button, Paper, styled, Tooltip, tooltipClasses, TooltipProps, Typography } from "@mui/material";
+import { DataGrid, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton } from "@mui/x-data-grid";
+import React, {useEffect, useState} from "react";
+import {IPreEnrollmentSelectionResponse} from "../utility/requests/responseTypes";
 import {GetRows} from "../utility/helpers/selectionToRow";
 import {RemoveRounded} from "@mui/icons-material";
 import {usePreEnrollment} from "../utility/hooks/usePreEnrollments";
+import { GetColumnFormat } from "../utility/helpers/ColumnFormat";
+
+function CustomToolbar() {
+    return(
+        <Box sx={classes.toolbarBox}>
+            <GridToolbarContainer>
+                <GridToolbarColumnsButton />
+                <GridToolbarFilterButton />
+                <GridToolbarDensitySelector />
+            </GridToolbarContainer>
+        </Box>
+    )
+}
 
 async function totalCredits(selections: IPreEnrollmentSelectionResponse[]) {
     if (selections.length === 0) return 0;
@@ -59,17 +72,6 @@ export default function ScheduleTable({selections, selectionRef}: ScheduleTableP
     
     const [creditSum, setCreditSum] = useState(0)
     const [rows, setRows] = useState([])
-
-    const columns = [
-        {field: 'course', headerName: 'Course', minWidth: 100, description: ''},
-        {field: 'section', headerName: 'Section', minWidth: 100, description: ''},
-        {field: 'credits', headerName: `Credits [${creditSum}]`, minWidth: 100, description: ''},
-        {field: 'classroom', headerName: 'Classroom', minWidth: 100, description: ''},
-        {field: 'timeslot', headerName: 'Timeslot', minWidth: 150, flex: 1, description: ''},
-        {field: 'professor', headerName: 'Professor', minWidth: 150, flex: 1, description: ''},
-        {field: 'prerequisites', headerName: 'Pre-requisites', minWidth: 150, flex: 1, description: ''},
-        {field: 'corequisites', headerName: 'Co-requisites', minWidth: 150, flex: 1, description: ''},
-    ]
     
     useEffect(() => {
         totalCredits(selections)
@@ -88,15 +90,24 @@ export default function ScheduleTable({selections, selectionRef}: ScheduleTableP
                     console.log(selectionRef.current)
                 }}
                 hideFooterPagination
+                pageSize={25}
+                rowHeight={75}
                 rows={rows}
-                columns={columns}
+                columns={GetColumnFormat({creditSum})}
                 autoHeight
+                components={{
+                    Toolbar: CustomToolbar,
+                }}
             />
         </Paper>
     )
 }
 
 const useStyles = {
+    toolbarBox: {
+        marginTop: 1,
+        marginLeft: 1,
+    },
     containerBox: {
         marginBottom: 2,
     },
