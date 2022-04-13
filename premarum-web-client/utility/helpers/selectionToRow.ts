@@ -9,17 +9,13 @@ export async function GetRows(selections: IPreEnrollmentSelectionResponse[]) {
         let professors = []
 
         for (let j in selections[i].timeSlots) {
-            days.push(selections[i].timeSlots[j].day)
+            days.push(selections[i].timeSlots[j].day.slice(0, 3))
             times.push(selections[i].timeSlots[j].startTime + " - " + selections[i].timeSlots[j].endTime)
         }
 
         for (let k in selections[i].professors) {
             professors.push(selections[i].professors[k].name)
         }
-
-        // result.push({id: parseInt(i), entryId: selections[i].id, course: selections[i].course.courseCode, section: selections[i].sectionName,
-        //     credits: selections[i].course.courseCredit, days: days.join(", "), classroom: selections[i].classRoom,
-        //     timeslot: times.join(", "), professor: professors.join(", ")})
 
         times = [...new Set(times)]; // remove duplicates
 

@@ -5,14 +5,7 @@ import {IPreEnrollmentSelectionResponse} from "../utility/requests/responseTypes
 import {GetRows} from "../utility/helpers/selectionToRow";
 import {RemoveRounded} from "@mui/icons-material";
 import {usePreEnrollment} from "../utility/hooks/usePreEnrollments";
-
-const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
-    <Tooltip {...props} classes={{ popper: className }} />
-  ))({
-    [`& .${tooltipClasses.tooltip}`]: {
-      maxWidth: 200,
-    },
-});
+import { GetColumnFormat } from "../utility/helpers/ColumnFormat";
 
 function CustomToolbar() {
     return(
@@ -79,47 +72,6 @@ export default function ScheduleTable({selections, selectionRef}: ScheduleTableP
     
     const [creditSum, setCreditSum] = useState(0)
     const [rows, setRows] = useState([])
-
-    const columns = [
-        {field: 'course', headerName: 'Course', minWidth: 100, description: '',
-            renderCell: (params: any) => (
-                <CustomTooltip title={params.value} placement="right" arrow>
-                    <Box>{params.value}</Box>
-                </CustomTooltip>
-            )
-        },
-        {field: 'section', headerName: 'Section', minWidth: 100, description: ''},
-        {field: 'credits', headerName: `Credits [${creditSum}]`, minWidth: 100, description: ''},
-        {field: 'classroom', headerName: 'Classroom', minWidth: 100, description: ''},
-        {field: 'timeslot', headerName: 'Timeslot', minWidth: 150, flex: 1, description: '',
-            renderCell: (params: any) => (
-                <Box sx={{ whiteSpace: 'normal', overflowY: 'auto', maxHeight: 50}}>
-                    <Typography sx={{fontSize: '0.875rem'}}>{params.value}</Typography>
-                </Box>
-            )
-        },
-        {field: 'professor', headerName: 'Professor', minWidth: 150, flex: 1, description: '',
-            renderCell: (params: any) => (
-                <Box sx={{ whiteSpace: 'normal', overflowY: 'auto', maxHeight: 50}}>
-                    <Typography sx={{fontSize: '0.875rem'}}>{params.value}</Typography>
-                </Box>
-            )
-        },
-        {field: 'prerequisites', headerName: 'Pre-requisites', minWidth: 150, flex: 1, description: '',
-            renderCell: (params: any) => (
-                <Box sx={{ whiteSpace: 'normal', overflowY: 'auto', maxHeight: 50}}>
-                    <Typography sx={{fontSize: '0.875rem'}}>{params.value}</Typography>
-                </Box>
-            )
-        },
-        {field: 'corequisites', headerName: 'Co-requisites', minWidth: 150, flex: 1, description: '',
-            renderCell: (params: any) => (
-                <Box sx={{ whiteSpace: 'normal', overflowY: 'auto', maxHeight: 50}}>
-                    <Typography sx={{fontSize: '0.875rem'}}>{params.value}</Typography>
-                </Box>
-            )
-        },
-    ]
     
     useEffect(() => {
         totalCredits(selections)
@@ -139,7 +91,7 @@ export default function ScheduleTable({selections, selectionRef}: ScheduleTableP
                 }}
                 hideFooterPagination
                 rows={rows}
-                columns={columns}
+                columns={GetColumnFormat({creditSum})}
                 autoHeight
                 components={{
                     Toolbar: CustomToolbar,
