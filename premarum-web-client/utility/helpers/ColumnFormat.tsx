@@ -13,8 +13,8 @@ export function GetColumnFormat(props: {creditSum: number | null}) {
     const columns = [
         {field: 'course', headerName: 'Course', minWidth: 100, description: '',
             renderCell: (params: any) => (
-                <CustomTooltip title={params.value} placement="right" arrow>
-                    <Box>{params.value}</Box>
+                <CustomTooltip title={`${params.value.courseCode} - ${params.value.courseName}`} placement="right" arrow>
+                    <Box>{params.value.courseCode}</Box>
                 </CustomTooltip>
             )
         },
