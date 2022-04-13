@@ -8,7 +8,7 @@ import removeCourseTaken from "../requests/removeCoursesTaken";
 export function useCoursesTaken() {
     const { data, error, mutate } = useSWR('CoursesTaken', async () => {
         return (await getCoursesTaken(pca)).data
-    })
+    }, {revalidateIfStale:false})
     
     async function addCoursesTakenToCache(courseIds: number[]) {
         await mutate(async (cachedData:any) => {
