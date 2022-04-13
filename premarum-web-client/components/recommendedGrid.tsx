@@ -99,6 +99,7 @@ export default function RecommendedGrid({semesterId, exclude, selectionsRef}: Re
                 }}
                 checkboxSelection
                 pageSize={25}
+                rowHeight={75}
                 rows={rows}
                 columns={GetColumnFormat({creditSum: null})}
                 autoHeight

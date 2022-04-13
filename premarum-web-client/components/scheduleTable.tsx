@@ -90,6 +90,8 @@ export default function ScheduleTable({selections, selectionRef}: ScheduleTableP
                     console.log(selectionRef.current)
                 }}
                 hideFooterPagination
+                pageSize={25}
+                rowHeight={75}
                 rows={rows}
                 columns={GetColumnFormat({creditSum})}
                 autoHeight

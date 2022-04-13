@@ -105,6 +105,7 @@ export default function CatalogGrid({semesterId, exclude, selectionsRef}: Catalo
                 }}
                 checkboxSelection
                 pageSize={25}
+                rowHeight={75}
                 rows={rows}
                 columns={GetColumnFormat({creditSum: null})}
                 autoHeight

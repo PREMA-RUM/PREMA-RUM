@@ -99,6 +99,7 @@ export default function Catalog({semesters}: SemesterProps) {
                             autoHeight
                             disableSelectionOnClick
                             pageSize={25}
+                            rowHeight={75}
                             rows={rows}
                             columns={GetColumnFormat({creditSum: null})}
                             components={{
