@@ -72,6 +72,18 @@ public class PreEnrollmentRepository : IPreEnrollmentRepository
             .Include("Selections.TimeSlots.WeekDay");
     }
 
+    public async Task<IEnumerable<SemesterOffer>> GetRecommendationsForPreEnrollment(int preEnrollmentId)
+    {
+        return await _context
+            .SemesterOffers
+            .FromSqlRaw("select * from top_100_courses_for_pre_enrollment({0})", preEnrollmentId)
+            .Include(so => so.Semester).ThenInclude(s => s.Term)
+            .Include(so => so.Course)
+            .Include(so => so.Professors)
+            .Include(so => so.TimeSlots).ThenInclude(ts => ts.WeekDay)
+            .ToListAsync();
+    }
+
     private IQueryable<PreEnrollment> GetPartialPreEnrollmentQueryable()
     {
         return _context

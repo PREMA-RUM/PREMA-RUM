@@ -137,4 +137,14 @@ public class PreEnrollmentService
             throw new CoreException("Student cannot modify pre enrollment");
         _preEnrollmentRepository.DeletePreEnrollment(preEnrollment);
     }
+
+    public async Task<IEnumerable<SemesterOffer>> GetPreEnrollmentRecommendations(int preEnrollmentId,
+        string studentEmail)
+    {
+        var preEnrollment = await ValidatePreEnrollmentExists(preEnrollmentId);
+        var student = await _studentValidationService.ValidateStudentExists(studentEmail);
+        if (!preEnrollment.CanBeChangedByStudent(student))
+            throw new CoreException("Student cannot modify pre enrollment");
+        return await _preEnrollmentRepository.GetRecommendationsForPreEnrollment(preEnrollmentId);
+    }
 }
