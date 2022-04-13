@@ -181,4 +181,166 @@ begin
                                         A.so_id < B.so_id AND
                                         (A.ts_start_time, A.ts_end_time) OVERLAPS (B.ts_start_time, B.ts_end_time)
                  where A.pe_id = pre_enrollment_id;
-end;$$
+end;
+$$;
+
+create or replace function top_100_courses_for_pre_enrollment(_pre_enrollment_id integer)
+    returns TABLE(so_id integer, so_capacity integer, so_section_name character varying, c_id integer, s_id integer, so_classroom character varying, rank numeric)
+    language plpgsql
+as
+$$
+    #variable_conflict use_column
+begin
+    return query
+        with
+            -- Student Data
+            current_preenrollment_selections as
+                (
+                    -- Get the pre-enrollment of interest
+                    SELECT c_id selection
+                    FROM "PreEnrollment"
+                             natural inner join "PreEnrollmentSelection"
+                             natural inner join "SemesterOffer"
+                             natural inner join "Course"
+                    WHERE pe_id = _pre_enrollment_id
+                ),
+            student_department as (
+                SELECT dept_id
+                FROM "Student"
+                         natural inner join "PreEnrollment"
+                where pe_id = _pre_enrollment_id LIMIT 1
+            ),
+            --- Statistics
+            global_selected_courses as
+                (
+                    -- Simple join to get all selections of all pre enrollments
+                    -- not filtering by dept_id will output global scores
+                    SELECT "PreEnrollment".pe_id, "Course".c_id, "Student".dept_id
+                    FROM
+                        "PreEnrollment"
+                            inner join "Student" on "PreEnrollment".st_id = "Student".st_id
+                            inner join "PreEnrollmentSelection" on "PreEnrollment".pe_id = "PreEnrollmentSelection".pe_id
+                            inner join "SemesterOffer" on "PreEnrollmentSelection".so_id = "SemesterOffer".so_id
+                            inner join "Course" on "SemesterOffer".c_id = "Course".c_id
+                ),
+            department_selected_courses as
+                (
+                    select * from global_selected_courses
+                    where dept_id = (select dept_id from student_department)
+                ),
+            -- VECTORS
+            course_vector_global as
+                (
+                    -- Compute how many a times a course has been selected with another
+                    -- In all pre-enrollments
+                    SELECT sc1.c_id c_id_a, sc2.c_id c_id_b, count(*) frequency
+                    FROM global_selected_courses sc1, global_selected_courses sc2
+                    WHERE sc1.pe_id = sc2.pe_id -- In the same pre enrollment
+                      AND sc1.c_id != sc2.c_id
+                    GROUP BY sc1.c_id, sc2.c_id
+                ),
+            course_vector_dept as
+                (
+                    SELECT sc1.c_id c_id_a, sc2.c_id c_id_b, count(*) frequency
+                    FROM department_selected_courses sc1, global_selected_courses sc2
+                    WHERE sc1.pe_id = sc2.pe_id -- In the same pre enrollment
+                      AND sc1.c_id != sc2.c_id
+                    GROUP BY sc1.c_id, sc2.c_id
+                ),
+            course_vector_courses_taken as
+                (
+                    SELECT ct1.c_id c_id_a, ct2.c_id c_id_b, count(*) frequency
+                    FROM ("CoursesTaken" natural inner join "Student") ct1, "CoursesTaken" ct2
+                    WHERE ct1.c_id != ct2.c_id
+                      AND ct1.st_id = ct2.st_id
+                      AND ct1.dept_id = (select dept_id from student_department) -- SHOULD BE A PARAMETER
+                    group by ct1.c_id, ct2.c_id
+                ),
+            -- SCORING
+            global_scores as
+                (
+                    -- Compute dot product by pairing target pre-enrollment
+                    -- selections with course x vector component
+                    SELECT c_id_a c_id, sum(frequency) score
+                    from course_vector_global cv
+                             inner join current_preenrollment_selections cp
+                                        on cv.c_id_b = cp.selection
+                    group by c_id_a
+                    order by c_id_a
+                ),
+            dept_scores as
+                (
+                    SELECT c_id_a c_id, sum(frequency) score
+                    from course_vector_dept cv
+                             inner join current_preenrollment_selections cp
+                                        on cv.c_id_b = cp.selection
+                    group by c_id_a
+                    order by c_id_a
+                ),
+            courses_taken_scores as
+                (
+                    SELECT c_id_a c_id, sum(frequency) score
+                    from course_vector_courses_taken cv
+                             inner join current_preenrollment_selections cp
+                                        on cv.c_id_b = cp.selection
+                    group by c_id_a
+                    order by c_id_a
+                ),
+            all_stats as (
+                select dept_scores.c_id,
+                       dept_scores.score
+                           / (
+                           SELECT max(score)
+                           FROM dept_scores
+                       )* 0.75
+                           dept_score,
+                       coalesce(global_scores.score, 0)
+                           /(
+                           SELECT max(score)
+                           FROM global_scores
+                       ) * 0.20
+                           global_score,
+                       coalesce(courses_taken_scores.score, 0)
+                           /(
+                           SELECT max(courses_taken_scores.score)
+                           FROM courses_taken_scores
+                       ) *0.05
+                           course_taken_score
+                from dept_scores
+                         left join global_scores on dept_scores.c_id = global_scores.c_id
+                         left join courses_taken_scores on dept_scores.c_id = courses_taken_scores.c_id
+            ),
+            final_scores as
+                (
+                    select c_id,
+                           coalesce(dept_score, 0) final_dept_score,
+                           coalesce(global_score, 0) final_global_score,
+                           coalesce(course_taken_score, 0) final_course_taken_score
+                    from all_stats natural right join "Course"
+                ),
+            aggregate_rank as
+                (
+                    SELECT c_id, (final_dept_score + final_global_score + final_course_taken_score) rank
+                    FROM final_scores
+                ),
+            -- SELECT ONLY COURSES in current semester
+            semester_courses as
+                (
+                    SELECT
+                        so_id, so_capacity, so_section_name, c_id, s_id, so_classroom, round(rank, 3) as rank
+                    FROM aggregate_rank
+                             natural inner join "SemesterOffer"
+                    WHERE s_id = (
+                        (
+                            SELECT s_id
+                            FROM "PreEnrollment"
+                            WHERE pe_id = _pre_enrollment_id
+                            LIMIT 1
+                        )
+                    ) AND
+                            c_id not in (select selection from current_preenrollment_selections)
+                    order by rank desc
+                )
+        select * FROM semester_courses LIMIT 100;
+end;
+$$;
