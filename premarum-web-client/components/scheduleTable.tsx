@@ -89,7 +89,7 @@ export default function ScheduleTable({selections, selectionRef}: ScheduleTableP
             )
         },
         {field: 'section', headerName: 'Section', minWidth: 100, description: ''},
-        {field: 'credits', headerName: `Credits`, minWidth: 100, description: ''},
+        {field: 'credits', headerName: `Credits [${creditSum}]`, minWidth: 100, description: ''},
         {field: 'classroom', headerName: 'Classroom', minWidth: 100, description: ''},
         {field: 'timeslot', headerName: 'Timeslot', minWidth: 150, flex: 1, description: '',
             renderCell: (params: any) => (
