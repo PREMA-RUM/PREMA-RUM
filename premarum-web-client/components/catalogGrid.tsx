@@ -44,12 +44,12 @@ type AddSelectionProps = {
 export function AddSelectionButton({preEnrollmentId, selectionsRef, changeTab}: AddSelectionProps) {
     const { addSelectionFn } = usePreEnrollment(preEnrollmentId)
     const [isLoading, setIsLoading] = useState(false)
-    const [selected, setSelected] = useState(false)
+    // const [selected, setSelected] = useState(false)
 
-    useEffect(() => {
-        selectionsRef.current.length === 0? setSelected(false) : setSelected(true)
-        console.log(selectionsRef.current.length)
-    })
+    // useEffect(() => {
+    //     selectionsRef.current.length === 0? setSelected(false) : setSelected(true)
+    //     console.log(selectionsRef.current.length)
+    // })
     
     return(
         <Button

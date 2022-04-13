@@ -32,8 +32,8 @@ export async function GetRows(selections: IPreEnrollmentSelectionResponse[]) {
             classroom: selections[i].classRoom,
             timeslot: days.join(", ") + "\n" + times.join(", "), 
             professor: professors.join(", "), 
-            prerequisites: "test1",
-            corequisites: "test2",
+            prerequisites: selections[i].course.coursePrerequisites,
+            corequisites: selections[i].course.courseCorequisites,
         })
     }
 
