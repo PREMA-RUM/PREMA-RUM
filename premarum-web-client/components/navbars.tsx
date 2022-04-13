@@ -6,6 +6,7 @@ import MuiDrawer from '@mui/material/Drawer';
 import {Menu, ChevronLeft, ChevronRight, AccountBoxRounded, HomeRounded, ListAltRounded, AccountCircle, ManageAccountsRounded, SchoolRounded, LogoutRounded} from '@mui/icons-material'
 import { useRouter } from 'next/router';
 import {useMsal} from "@azure/msal-react";
+import { LogoutModal } from './logoutModal';
 
 const drawerWidth = 240;
 
@@ -97,10 +98,15 @@ const useStyles = {
 export default function Navbars({children}:any) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [openLogout, setOpenLogout] = React.useState(false);
   const router = useRouter();
   const classes = useStyles;
 
   const { instance } = useMsal();
+
+  const handleLogoutOpen = () => {
+    setOpenLogout(true);
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -111,6 +117,7 @@ export default function Navbars({children}:any) {
   };
 
   return (
+    <>
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
@@ -127,9 +134,11 @@ export default function Navbars({children}:any) {
             >
                 <Menu />
             </IconButton>
-            <Typography variant="h6" noWrap component="div">
+            <Button disableRipple onClick={() => {router.push('/home')}} style={{color: 'white', marginLeft: -8}}>
+              <Typography variant="h6" noWrap component="div">
                 PREMARUM
-            </Typography>
+              </Typography>
+            </Button>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
@@ -171,13 +180,7 @@ export default function Navbars({children}:any) {
               <Divider />
 
               <Tooltip title="Log Out" placement="right">
-                <ListItemButton key="Log Out" onClick={async () => {
-                  console.log(instance.getActiveAccount())
-                    await router.push('/')
-                    await instance.logoutPopup({
-                      account: instance.getActiveAccount()
-                    })
-                }}>
+                <ListItemButton key="Log Out" onClick={handleLogoutOpen}>
                     <ListItemIcon>
                         <LogoutRounded/>
                     </ListItemIcon> 
@@ -205,5 +208,7 @@ export default function Navbars({children}:any) {
 
       </Box>
     </Box>
+    <LogoutModal openModalState={openLogout} setOpenModalState={setOpenLogout} />
+    </>
   );
 }

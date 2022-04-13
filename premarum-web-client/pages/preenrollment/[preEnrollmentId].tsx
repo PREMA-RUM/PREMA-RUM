@@ -9,6 +9,7 @@ import {useRouter} from "next/router";
 import {route} from "next/dist/server/router";
 import {usePreEnrollment} from "../../utility/hooks/usePreEnrollments";
 import {IPreEnrollmentResponse} from "../../utility/requests/responseTypes";
+import RecommendedGrid from '../../components/recommendedGrid';
 
 export default function Preenrollment() {
     const [value, setValue] = React.useState(0);
@@ -73,9 +74,9 @@ export default function Preenrollment() {
                     
                     <Grid item>
                         <Grid container direction="row" alignItems="center">
-                            <Typography sx={classes.title}>{preEnrollment?.name}: {preEnrollment?.semester.term}-{preEnrollment?.semester.year}</Typography>
+                            <Typography sx={classes.title}>Pre-Enrollments</Typography>
                             <Divider orientation="vertical" variant='middle' light flexItem sx={classes.dividerItem}/>
-                            <TextField size="small" variant="outlined" placeholder="Search Courses..." sx={classes.searchInput}/>
+                            <Typography sx={classes.title2}>{preEnrollment?.name}: {preEnrollment?.semester.term} - {preEnrollment?.semester.year}</Typography>
                         </Grid>
                     </Grid>
 
@@ -87,6 +88,7 @@ export default function Preenrollment() {
         <Grid item>
             <Card sx={classes.contentCard}>
                 <Grid container direction="row" justifyContent="space-between">
+
                     <Grid item>
                         <Tabs
                             value={value}
@@ -96,21 +98,23 @@ export default function Preenrollment() {
                         >
                             <Tab label='Schedule' />
                             <Tab label='Courses'/>
+                            <Tab label='Recommended'/>
                         </Tabs>
                     </Grid>
 
-                    {value === 1?(
-                        <Grid item>
-                            <AddSelectionButton 
-                                changeTab = {()=>{setValue(0)}}
-                                selectionsRef={selectedAddCoursesRef} 
-                                preEnrollmentId={preEnrollmentId}/>
-                        </Grid>
-                    ):
+                    {(value === 0)?(
                         <Grid item>
                             <RemoveSelectionButton
                                 preEnrollmentId={preEnrollmentId}
                                 selectionsRef={removeSelectionRef}
+                            />
+                        </Grid>
+                    ):
+                        <Grid item>
+                            <AddSelectionButton 
+                                changeTab = {()=>{setValue(0)}}
+                                selectionsRef={selectedAddCoursesRef} 
+                                preEnrollmentId={preEnrollmentId}
                             />
                         </Grid>
                     }
@@ -122,6 +126,9 @@ export default function Preenrollment() {
                 </TabPanel>
                 <TabPanel value={value} index={1}>
                     <CatalogGrid selectionsRef={selectedAddCoursesRef} exclude={preEnrollment!.selections.map(sel => sel.id)} semesterId={preEnrollment!.semester.id}/>
+                </TabPanel>
+                <TabPanel value={value} index={2}>
+                    <RecommendedGrid selectionsRef={selectedAddCoursesRef} exclude={preEnrollment!.selections.map(sel => sel.id)} semesterId={preEnrollment!.semester.id}/>
                 </TabPanel>
             </Card>
         </Grid>
@@ -143,7 +150,11 @@ const useStyles = {
         marginBottom: 1.5
     },
     title: {
-
+        padding: '8px 0',
+    },
+    title2: {
+        padding: '8px 0',
+        // fontWeight: 'bold',
     },
     dividerItem: {
         marginLeft: 2,

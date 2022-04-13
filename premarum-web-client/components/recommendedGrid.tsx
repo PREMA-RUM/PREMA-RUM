@@ -44,12 +44,6 @@ type AddSelectionProps = {
 export function AddSelectionButton({preEnrollmentId, selectionsRef, changeTab}: AddSelectionProps) {
     const { addSelectionFn } = usePreEnrollment(preEnrollmentId)
     const [isLoading, setIsLoading] = useState(false)
-    // const [selected, setSelected] = useState(false)
-
-    // useEffect(() => {
-    //     selectionsRef.current.length === 0? setSelected(false) : setSelected(true)
-    //     console.log(selectionsRef.current.length)
-    // })
     
     return(
         <Button
@@ -80,13 +74,13 @@ export function AddSelectionButton({preEnrollmentId, selectionsRef, changeTab}: 
     )
 }
 
-type CatalogGridProps = {
+type RecommendedGridProps = {
     semesterId: number,
     exclude: number[],
     selectionsRef: any// Ids to exclude
 }
 
-export default function CatalogGrid({semesterId, exclude, selectionsRef}: CatalogGridProps) {
+export default function RecommendedGrid({semesterId, exclude, selectionsRef}: RecommendedGridProps) {
     const {courseOfferings, isLoading, isError} = useSemesterOfferings(semesterId);
     const [rows, setRows] = useState([])
     

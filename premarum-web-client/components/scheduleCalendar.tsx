@@ -1,4 +1,4 @@
-import { Paper } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import React, {useEffect, useState} from "react";
 import moment from 'moment';
 import { Calendar, momentLocalizer } from 'react-big-calendar'
@@ -55,37 +55,43 @@ export default function ScheduleCalendar({courseOfferings: courseOfferings}: Sch
     }, [courseOfferings])
 
     return(
-        <Paper elevation={0} sx={classes.containerBox}> 
-            <Calendar
-                localizer={localizer}
-                startAccessor="start"
-                endAccessor="end"
-                view="week"
-                toolbar={false}
-                formats={formats}
-                defaultDate={new Date('03-20-2022 00:00')} // default date to make week static on this time
-                events={dates}
-                eventPropGetter={(event, start, end, isSelected) => ({
-                    event,
-                    start,
-                    end,
-                    isSelected,
-                    style: {
-                        backgroundColor: "rgba(152, 0, 78, 0.8)",
-                        border: 'none',
-                        padding: '10px 0 10px 10px'
-                    },
-                    
-                })}
-            />
-        </Paper>
+        <Box sx={classes.containerBox}> 
+            <Paper elevation={0} sx={classes.containerBoxInner}>
+                <Calendar
+                    localizer={localizer}
+                    startAccessor="start"
+                    endAccessor="end"
+                    view="week"
+                    toolbar={false}
+                    formats={formats}
+                    defaultDate={new Date('03-20-2022 00:00')} // default date to make week static on this time
+                    events={dates}
+                    eventPropGetter={(event, start, end, isSelected) => ({
+                        event,
+                        start,
+                        end,
+                        isSelected,
+                        style: {
+                            backgroundColor: "rgba(152, 0, 78, 0.7)",
+                            border: 'none',
+                            padding: '10px 0 10px 10px'
+                        },
+                        
+                    })}
+                />  
+            </Paper>
+        </Box>
     )
 }
 
 const useStyles = {
     containerBox: {
-
+        // maxWidth: '100%',  // play with breakpoint
+        // overflowX: 'scroll'
     },
+    containerBoxInner: {
+        // minWidth: '1000px'
+    }
 };
   
 const classes = useStyles;

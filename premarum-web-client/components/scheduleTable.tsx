@@ -3,7 +3,7 @@ import { DataGrid, GridColDef, GridToolbarColumnsButton, GridToolbarContainer, G
 import React, {RefObject, useEffect, useState} from "react";
 import {IPreEnrollmentResponse, IPreEnrollmentSelectionResponse} from "../utility/requests/responseTypes";
 import {GetRows} from "../utility/helpers/selectionToRow";
-import {AddRounded} from "@mui/icons-material";
+import {RemoveRounded} from "@mui/icons-material";
 import {usePreEnrollment} from "../utility/hooks/usePreEnrollments";
 
 async function totalCredits(selections: IPreEnrollmentSelectionResponse[]) {
@@ -39,7 +39,7 @@ export function RemoveSelectionButton({preEnrollmentId, selectionsRef}: AddSelec
     
     return (
         <Button
-            startIcon={<AddRounded/>}
+            startIcon={<RemoveRounded/>}
             variant="contained"
             sx={classes.removeSelection}
             onClick={removeSelections}
@@ -63,11 +63,12 @@ export default function ScheduleTable({selections, selectionRef}: ScheduleTableP
     const columns = [
         {field: 'course', headerName: 'Course', minWidth: 100, description: ''},
         {field: 'section', headerName: 'Section', minWidth: 100, description: ''},
-        {field: 'credits', headerName: 'Credits', minWidth: 100, description: ''},
-        {field: 'days', headerName: 'Days', minWidth: 100, flex: 1, description: ''},
+        {field: 'credits', headerName: `Credits [${creditSum}]`, minWidth: 100, description: ''},
         {field: 'classroom', headerName: 'Classroom', minWidth: 100, description: ''},
-        {field: 'timeslot', headerName: 'Timeslot', minWidth: 175, flex: 1, description: ''},
-        {field: 'professor', headerName: 'Professor', minWidth: 175, flex: 1, description: ''},
+        {field: 'timeslot', headerName: 'Timeslot', minWidth: 150, flex: 1, description: ''},
+        {field: 'professor', headerName: 'Professor', minWidth: 150, flex: 1, description: ''},
+        {field: 'prerequisites', headerName: 'Pre-requisites', minWidth: 150, flex: 1, description: ''},
+        {field: 'corequisites', headerName: 'Co-requisites', minWidth: 150, flex: 1, description: ''},
     ]
     
     useEffect(() => {
@@ -100,7 +101,7 @@ const useStyles = {
         marginBottom: 2,
     },
     removeSelection: {
-        backgroundColor: 'primary.dark',
+        backgroundColor: 'secondary.main',
     },
 };
   
