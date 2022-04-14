@@ -18,8 +18,8 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<PremaRumDbContext>(opt =>
 {
-    var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL") ??
-                      throw new InvalidOperationException("DATABASE_URL needed");
+    var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_SERVER_URL") ??
+                      throw new InvalidOperationException("DATABASE_SERVER_URL needed");
     var databaseUri = new Uri(databaseUrl);
     var userInfo = databaseUri.UserInfo.Split(':');
 

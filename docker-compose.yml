@@ -20,7 +20,7 @@ services:
       dockerfile: Dockerfile.dev
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - DATABASE_URL=postgresql://postgres:supersecretpassword@db:5432/premadb
+      - DATABASE_SERVER_URL=postgresql://postgres:supersecretpassword@db:5432/premadb
     ports:
       - '8888:80'
     volumes:
