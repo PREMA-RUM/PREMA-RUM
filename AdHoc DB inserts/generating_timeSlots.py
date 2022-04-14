@@ -35,6 +35,30 @@ class TimeSlotGenerator:
 
     def timeSlotInsert(self):
         for i in self.trimAndSelectDays(self.days):
-            print(
-                "insert into \"TimeSlot\" ( 'ts_start_time', 'ts_end_time' , so_id, d_id) VALUES ('%s','%s',%d,%d);" % (
-                    self.getStartTime(), self.getEndTime(), self.so_id, i))
+            return ",('%s','%s',%d,%d)" % (
+                self.getStartTime(), self.getEndTime(), self.so_id, i)
+
+    def timeSlotInsertTuple(self):
+        for i in self.trimAndSelectDays(self.days):
+            return self.getStartTime(), self.getEndTime(), self.so_id, i
+
+
+tuple_inserts = [
+    (1, '12:00- 1:15p', 'MJ     ', '66'),
+    (2, ' 1:30- 2:45p', 'MJ     ', '76'),
+    (3, ' 8:00- 9:50 ', 'LW     ', '20'),
+    (1844, ' 5:30- 8:20p', 'W      ', '110'),
+    (1845, ' 5:30- 8:20p', 'W      ', '110'),
+    (1846, '12:30- 1:20p', 'W      ', '60'),
+    (1847, '12:30- 1:20p', 'W      ', '61'),
+    (1848, ' 3:30- 5:20p', 'LW     ', '90')]
+
+insertString = "insert into \"TimeSlot\" ( 'ts_start_time', 'ts_end_time' , so_id, d_id) VALUES "
+insertSet = set()
+for insert in tuple_inserts:
+    TSG = TimeSlotGenerator(insert)
+    if TSG.timeSlotInsertTuple() not in insertSet:
+        insertString += "\n" + TSG.timeSlotInsert()
+        insertSet.add(TSG.timeSlotInsertTuple())
+
+print(insertString)
