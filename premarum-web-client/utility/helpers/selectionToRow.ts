@@ -13,7 +13,10 @@ export async function GetRows(selections: IPreEnrollmentSelectionResponse[]) {
         result.push({
             id: parseInt(i), 
             entryId: selections[i].id, 
-            course: JSON.stringify(selections[i].course), 
+            course: JSON.stringify({
+                courseCode:selections[i].course.courseCode, 
+                courseName: selections[i].course.courseName
+            }), 
             section: selections[i].sectionName,
             credits: selections[i].course.courseCredit, 
             classroom: selections[i].classRoom,
