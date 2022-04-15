@@ -1,6 +1,5 @@
 import {
     Box,
-    Button,
     Card,
     CircularProgress,
     Container,
@@ -8,21 +7,17 @@ import {
     Grid, Stack,
     Tab,
     Tabs,
-    TextField,
-    Typography
+    Typography, useMediaQuery
 } from '@mui/material'
-import { AddRounded } from '@mui/icons-material';
 import React, {useEffect, useRef, useState} from 'react';
 import CatalogGrid, {AddSelectionButton} from '../../components/catalogGrid';
 import { grey } from '@mui/material/colors';
 import ScheduleCalendar from '../../components/scheduleCalendar';
 import ScheduleTable, {RemoveSelectionButton} from '../../components/scheduleTable';
 import {useRouter} from "next/router";
-import {route} from "next/dist/server/router";
 import {usePreEnrollment} from "../../utility/hooks/usePreEnrollments";
-import {IPreEnrollmentResponse} from "../../utility/requests/responseTypes";
 import RecommendedGrid from '../../components/recommendedGrid';
-import {useWindowSize} from "../../utility/hooks/useWindowSize";
+import {useTheme} from "@mui/material/styles";
 
 export default function Preenrollment() {
     const [value, setValue] = React.useState(0);
@@ -32,7 +27,9 @@ export default function Preenrollment() {
     // To keep track of selected cells without re-rendering
     const selectedAddCoursesRef = useRef([])
     const removeSelectionRef = useRef([])
-    const {width, height} = useWindowSize()
+    const theme = useTheme()
+    const matches = useMediaQuery(theme.breakpoints.down('sm'), {noSsr:true});
+    
     
     useEffect(() => {
         let pId = parseInt(router.query.preEnrollmentId as string)
@@ -79,7 +76,7 @@ export default function Preenrollment() {
     }
     
     function ContainerComp({children}:any) {
-        if (width! < 500) {
+        if (matches) {
             return <Container sx={classes.mainGrid}>{children}</Container>
         } 
         return <Stack sx={classes.mainGrid}>{children}</Stack>

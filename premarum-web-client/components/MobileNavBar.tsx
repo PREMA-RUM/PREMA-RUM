@@ -1,11 +1,20 @@
-import {BottomNavigation, BottomNavigationAction, Box, Fab, IconButton, Paper, styled} from "@mui/material";
+import {
+    BottomNavigation,
+    BottomNavigationAction,
+    Box,
+    Fab,
+    IconButton,
+    Paper,
+    styled,
+    useMediaQuery
+} from "@mui/material";
 import {useEffect, useState} from "react";
 import {AccountBoxRounded, HomeRounded, ListAltRounded} from "@mui/icons-material";
 import * as React from "react";
 import {useRouter} from "next/router";
-import {useWindowSize} from "../utility/hooks/useWindowSize";
 import Navbars from "./navbars";
 import OverlayIcons from "./OverlayIcons";
+import {useTheme} from "@mui/material/styles";
 
 
 type MobileNavbarProps = {
@@ -14,7 +23,8 @@ type MobileNavbarProps = {
 
 export default function MobileNavbar({children}: MobileNavbarProps) {
     
-    const {width, height} = useWindowSize()
+    const theme = useTheme();
+    const matches = useMediaQuery(theme.breakpoints.down('sm'), {noSsr:true});
     const [value, setValue] = useState<number | null>(null);
     const router = useRouter();
     
@@ -34,7 +44,7 @@ export default function MobileNavbar({children}: MobileNavbarProps) {
         }
     }, [router.pathname])
 
-    if (width! > 500) {
+    if (!matches) {
         return <>
             <OverlayIcons />
             <Navbars>{children}</Navbars>

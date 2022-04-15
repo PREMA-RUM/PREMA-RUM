@@ -36,7 +36,7 @@ const formats = {
 const StyledOuterBox = styled(Box)(
     ({theme}) => ({
         [theme.breakpoints.down("sm")]: {
-            maxWidth: "100vw",
+            maxWidth: "100%",
             overflowX: "scroll",
             maxHeight: "1000px",
             overflowY: "scroll"
