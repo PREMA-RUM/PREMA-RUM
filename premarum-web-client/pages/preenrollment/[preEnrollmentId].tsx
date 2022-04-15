@@ -1,4 +1,16 @@
-import {Box, Button, Card, CircularProgress, Divider, Grid, Tab, Tabs, TextField, Typography} from '@mui/material'
+import {
+    Box,
+    Button,
+    Card,
+    CircularProgress,
+    Container,
+    Divider,
+    Grid, Stack,
+    Tab,
+    Tabs,
+    TextField,
+    Typography
+} from '@mui/material'
 import { AddRounded } from '@mui/icons-material';
 import React, {useEffect, useRef, useState} from 'react';
 import CatalogGrid, {AddSelectionButton} from '../../components/catalogGrid';
@@ -10,6 +22,7 @@ import {route} from "next/dist/server/router";
 import {usePreEnrollment} from "../../utility/hooks/usePreEnrollments";
 import {IPreEnrollmentResponse} from "../../utility/requests/responseTypes";
 import RecommendedGrid from '../../components/recommendedGrid';
+import {useWindowSize} from "../../utility/hooks/useWindowSize";
 
 export default function Preenrollment() {
     const [value, setValue] = React.useState(0);
@@ -19,6 +32,7 @@ export default function Preenrollment() {
     // To keep track of selected cells without re-rendering
     const selectedAddCoursesRef = useRef([])
     const removeSelectionRef = useRef([])
+    const {width, height} = useWindowSize()
     
     useEffect(() => {
         let pId = parseInt(router.query.preEnrollmentId as string)
@@ -64,11 +78,16 @@ export default function Preenrollment() {
         </Grid>
     }
     
+    function ContainerComp({children}:any) {
+        if (width! < 500) {
+            return <Container sx={classes.mainGrid}>{children}</Container>
+        } 
+        return <Stack sx={classes.mainGrid}>{children}</Stack>
+    }
+    
     return (
-        <>
-        <Grid container direction="column" sx={classes.mainGrid}>
-
-        <Grid item>
+        <ContainerComp>
+            
             <Card sx={classes.topCard}>
                 <Grid container direction="row" justifyContent="space-between" alignItems="center">
                     
@@ -82,12 +101,9 @@ export default function Preenrollment() {
 
                 </Grid>
             </Card>
-        </Grid>
-        
-
-        <Grid item>
+            
             <Card sx={classes.contentCard}>
-                <Grid container direction="row" justifyContent="space-between">
+                <Grid container direction="row" justifyContent={"space-between"}>
 
                     <Grid item>
                         <Tabs
@@ -131,18 +147,15 @@ export default function Preenrollment() {
                     <RecommendedGrid selectionsRef={selectedAddCoursesRef} exclude={preEnrollment!.selections.map(sel => sel.id)} semesterId={preEnrollment!.semester.id}/>
                 </TabPanel>
             </Card>
-        </Grid>
         
-        </Grid>
-
-        </>
+        
+        </ContainerComp>
     )
 }
 
 const useStyles = {
     mainGrid: {
-        width: '100%',
-        height: '100%',
+        padding: 0
     },
     topCard: {
         padding: '5px 25px',

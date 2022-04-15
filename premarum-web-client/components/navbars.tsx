@@ -7,6 +7,7 @@ import {Menu, ChevronLeft, ChevronRight, AccountBoxRounded, HomeRounded, ListAlt
 import { useRouter } from 'next/router';
 import {useMsal} from "@azure/msal-react";
 import { LogoutModal } from './logoutModal';
+import MobileNavbar from "./MobileNavBar";
 
 const drawerWidth = 240;
 
@@ -101,8 +102,6 @@ export default function Navbars({children}:any) {
   const [openLogout, setOpenLogout] = React.useState(false);
   const router = useRouter();
   const classes = useStyles;
-
-  const { instance } = useMsal();
 
   const handleLogoutOpen = () => {
     setOpenLogout(true);
