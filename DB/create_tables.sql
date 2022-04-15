@@ -210,6 +210,13 @@ begin
                          natural inner join "PreEnrollment"
                 where pe_id = _pre_enrollment_id LIMIT 1
             ),
+            stduent_courses_taken as (
+                SELECT c_id 
+                FROM "Student" 
+                    natural inner join "PreEnrollment"
+                    inner join "CoursesTaken" CT on "Student".st_id = CT.st_id
+                WHERE pe_id = _pre_enrollment_id
+            ),
             --- Statistics
             global_selected_courses as
                 (
@@ -331,14 +338,15 @@ begin
                     FROM aggregate_rank
                              natural inner join "SemesterOffer"
                     WHERE s_id = (
-                        (
-                            SELECT s_id
-                            FROM "PreEnrollment"
-                            WHERE pe_id = _pre_enrollment_id
-                            LIMIT 1
-                        )
-                    ) AND
-                            c_id not in (select selection from current_preenrollment_selections)
+                        SELECT s_id
+                        FROM "PreEnrollment"
+                        WHERE pe_id = _pre_enrollment_id
+                        LIMIT 1
+                    ) 
+                    -- Exclude courses being selected
+                        AND c_id not in (select selection from current_preenrollment_selections)
+                    -- Exclude courses already marked as taken
+                        AND c_id not in (select c_id from stduent_courses_taken)
                     order by rank desc
                 )
         select * FROM semester_courses LIMIT 100;
