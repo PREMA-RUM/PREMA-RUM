@@ -6,6 +6,7 @@ import { TOKEN_REQUEST } from "../../utility/constants";
 import {NextPage} from "next";
 import {useRouter} from "next/router";
 import React, {useState} from "react";
+import OverlayIcons from "../../components/OverlayIcons";
 
 type ButtonProps = {
     
@@ -66,7 +67,7 @@ export default function Landing() {
     return(
         // <Grid container direction="column" justifyContent="center" alignItems="center">
         <>
-        
+        <OverlayIcons />
         <Card elevation={0} square sx={classes.topCard}>
             <CardContent>
                 <Grid container direction="column" justifyContent="space-around" alignItems="center">

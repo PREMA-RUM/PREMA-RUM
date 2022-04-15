@@ -1,19 +1,10 @@
-import { Box, Paper } from "@mui/material";
+import {Box, Paper, styled} from "@mui/material";
 import React, {useEffect, useState} from "react";
 import moment from 'moment';
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import {IPreEnrollmentSelectionResponse} from "../utility/requests/responseTypes";
 import {convertToMilitaryTime} from "../utility/helpers/dateHelpers";
-
-
-const rows = [
-    {id: 1, course: 'CIIC3000', section: '010', credits: 3, days: 'LWV', classroom: 'S121', timeslot: '3:30pm - 4:20pm', professor: 'Kejie Lu'},
-    {id: 2, course: 'CIIC4000', section: '020H', credits: 4, days: 'LWV', classroom: 'S121', timeslot: '12:30pm - 1:20pm', professor: 'Manuel Rodriguez'},
-    {id: 3, course: 'CIIC5000', section: '030', credits: 3, days: 'MJ', classroom: 'S113', timeslot: '2:00pm - 3:15pm', professor: 'Wilson Rivera'},
-    {id: 4, course: 'CIIC6000', section: '040', credits: 3, days: 'LWV', classroom: 'S125C', timeslot: '10:30am - 11:20am', professor: 'Bienvenido Velez'},
-    {id: 5, course: 'CIIC7000', section: '050H', credits: 4, days: 'MJ', classroom: 'S113', timeslot: '3:30pm - 4:45pm', professor: 'Marko Schutz'},
-]
 
 // [Sun: 20, Mon: 21, Tue: 22, Wed: 23, Thu: 24, Fri: 25, Sat: 26]
 const days = {Sunday: '20', Monday: '21', Tuesday: '22', Wednesday: '23', Thursday: '24', Friday: '25', Saturday: '26'}
@@ -42,6 +33,24 @@ const formats = {
     },
 }
 
+const StyledOuterBox = styled(Box)(
+    ({theme}) => ({
+        [theme.breakpoints.down("sm")]: {
+            maxWidth: "100%",
+            overflowX: "scroll",
+            maxHeight: "1000px",
+            overflowY: "scroll"
+        }
+    })
+);
+const StyledInnerPaper = styled(Paper)(
+    ({theme}) => ({
+        [theme.breakpoints.down("sm")]: {
+            minWidth: "1000px"
+        }
+    })
+);
+
 type ScheduleCalendarProps = {
     courseOfferings: IPreEnrollmentSelectionResponse[]
 }
@@ -55,8 +64,8 @@ export default function ScheduleCalendar({courseOfferings: courseOfferings}: Sch
     }, [courseOfferings])
 
     return(
-        <Box sx={classes.containerBox}> 
-            <Paper elevation={0} sx={classes.containerBoxInner}>
+        <StyledOuterBox> 
+            <StyledInnerPaper>
                 <Calendar
                     localizer={localizer}
                     startAccessor="start"
@@ -79,8 +88,8 @@ export default function ScheduleCalendar({courseOfferings: courseOfferings}: Sch
                         
                     })}
                 />  
-            </Paper>
-        </Box>
+            </StyledInnerPaper>
+        </StyledOuterBox>
     )
 }
 
