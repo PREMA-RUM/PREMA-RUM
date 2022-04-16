@@ -192,12 +192,12 @@ const useStyles = (theme: Theme) => ({
         height: '100%',
     },
     contentCard: {
-        
         padding: '25px',
         minHeight: '80vh',
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: 'secondary.light',
         [theme.breakpoints.down("sm")] : {
             backgroundColor: 'transparent',
             padding: 0,
