@@ -103,4 +103,13 @@ public class PreEnrollmentController : ControllerBase
         var result = await _preEnrollmentService.GetStudentPreEnrollmentById(User.Identity?.Name!, preEnrollmentId);
         return _mapper.Map<PreEnrollmentDTO>(result);
     }
+
+    [Authorize]
+    [HttpGet("{preEnrollmentId}/Recommendations")]
+    public async Task<IEnumerable<PreEnrollmentSemesterOfferDTO>> GetRecommendations([FromRoute] int preEnrollmentId)
+    {
+        var result = await _preEnrollmentService.GetPreEnrollmentRecommendations(
+            preEnrollmentId, User.Identity?.Name!);
+        return _mapper.Map<IEnumerable<PreEnrollmentSemesterOfferDTO>>(result);
+    }
 }

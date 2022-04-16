@@ -12,4 +12,5 @@ public interface IPreEnrollmentRepository
     Task<bool> ContainsWithNameStudentAndSemesterId(string name, int studentId, int semesterId);
     Task<IEnumerable<OverlappingPreEnrollmentSelections>> GetConflictingSelections(int preEnrollmentId);
     void DeletePreEnrollment(PreEnrollment preEnrollment);
+    Task<IEnumerable<SemesterOffer>> GetRecommendationsForPreEnrollment(int preEnrollmentId);
 }
