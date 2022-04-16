@@ -44,7 +44,7 @@ export default function MobileNavbar({children}: MobileNavbarProps) {
                 setTitle("Profile")
                 break
             default:
-                router.pathname.startsWith("/preenrollment")?setTitle("Edit PreEnrollment"):null
+                router.pathname.startsWith("/preenrollment")?setTitle("Edit Pre-Enrollment"):null
                 setValue(null)
         }
     }, [router.pathname])
@@ -57,7 +57,7 @@ export default function MobileNavbar({children}: MobileNavbarProps) {
     }
     
     return (
-        <Box sx={{display: 'flex', p:1, pb: 10, pt:8}}>
+        <Box sx={classes.mainBox}>
             <AppBar position="fixed">
                 <Toolbar>
                     <Stack onClick={() => {router.push('/home')}} style={{color: 'white', marginLeft: -8}}>
@@ -104,5 +104,11 @@ export default function MobileNavbar({children}: MobileNavbarProps) {
 const useStyles = (theme: Theme) => ({
     subTitle: {
         marginTop: -1
+    },
+    mainBox: {
+        display: 'flex', 
+        p:1, 
+        pb: 10, 
+        pt:8
     }
 })

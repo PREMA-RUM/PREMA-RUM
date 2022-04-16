@@ -11,11 +11,9 @@ import {
     Grid,
     Modal, Stack,
     TextField,
-    Typography,
     useTheme,
     Theme, useMediaQuery, Box
 } from '@mui/material'
-import {AddRounded} from '@mui/icons-material';
 import {grey} from '@mui/material/colors';
 import React, {useEffect, useState} from 'react';
 import {useRouter} from 'next/router';
@@ -30,6 +28,8 @@ import PreEnrollmentCardSection from "../../components/PreEnrollmentCardSection"
 import { StudentDepartmentModal } from '../../components/departmentChoiceModal';
 import getAllDepartments from '../../utility/requests/getAllDepartments';
 import { useStudent } from '../../utility/hooks/useStudent';
+import {MobileTopArea} from "../../components/Home/MobileTopArea";
+import {WideScreenCard} from "../../components/Home/WideScreenCard";
 
 type HomeProps = {
     semesters: ISemesterResponse[],
@@ -81,19 +81,6 @@ export default function Home(props: HomeProps) {
         await router.push(`/preenrollment/${result.id}`)
     }
 
-    function AddButton() {
-        return (
-            <Button
-                startIcon={<AddRounded/>}
-                variant="contained"
-                sx={classes.addCoursesButton}
-                onClick={handleModalOpen}
-            >
-                Add Pre-Enrollment
-            </Button>
-        )
-    }
-
     useEffect(() => {
         if (!studentLoading) {
             setDeptOpen(!student?.departmentId)
@@ -112,61 +99,10 @@ export default function Home(props: HomeProps) {
             <Grid container direction="column" sx={classes.mainGrid}>
                 <Grid item>
                     {
-                        matches? 
-                            <Stack sx={classes.topCardMobile} spacing={1}>
-                                {
-                                    preEnrollments?.length === 0? <></>:
-                                        <>
-                                            <Autocomplete
-                                                sx={classes.semesterSelect}
-                                                id="tags-outlined"
-                                                options={props.semesters}
-                                                getOptionLabel={(option) => `${option.term} - ${option.year}`}
-                                                filterSelectedOptions
-                                                size="small"
-                                                renderInput={(params) => (
-                                                    <TextField
-                                                        {...params}
-                                                        label="Filter By Semester"
-                                                        placeholder="Filter By Semester"
-                                                    />
-                                                )}
-                                            />
-                                            <AddButton/>
-                                            <Divider />
-                                        </>
-                                }
-                            </Stack>:
-                            <Card sx={classes.topCard}>
-                                <Grid container direction="row" justifyContent="space-between" alignItems="center">
-                                    <Grid item>
-                                        <Grid container direction="row" alignItems="center">
-                                            <Typography sx={classes.title}>Your Pre-Enrollments</Typography>
-                                            <Divider orientation="vertical" variant='middle' light flexItem
-                                                     sx={classes.dividerItem}/>
-                                            <Autocomplete
-                                                sx={classes.semesterSelect}
-                                                id="tags-outlined"
-                                                options={props.semesters}
-                                                getOptionLabel={(option) => `${option.term} - ${option.year}`}
-                                                filterSelectedOptions
-                                                size="small"
-                                                renderInput={(params) => (
-                                                    <TextField
-                                                        {...params}
-                                                        label="Filter By Semester"
-                                                        placeholder="Filter By Semester"
-                                                    />
-                                                )}
-                                            />
-                                        </Grid>
-                                    </Grid>
-
-                                    <Grid item>
-                                        <AddButton/>
-                                    </Grid>
-                                </Grid>
-                            </Card>
+                        matches? <MobileTopArea 
+                            semesters={props.semesters} 
+                            handleModalOpen={handleModalOpen} 
+                        />: <WideScreenCard semesters={props.semesters} handleModalOpen={handleModalOpen} />
                     }
                 </Grid>
 
@@ -254,26 +190,6 @@ const useStyles = (theme: Theme) => ({
     mainGrid: {
         width: '100%',
         height: '100%',
-    },
-    topCard: {
-        padding: '5px 25px',
-        backgroundColor: 'primary.light',
-        marginBottom: 1.5
-    },
-    topCardMobile: {
-        marginBottom: 1
-    },
-    title: {},
-    dividerItem: {
-        marginLeft: 2,
-        marginRight: 2,
-    },
-    semesterSelect: {
-        backgroundColor: 'white',
-        minWidth: '300px'
-    },
-    addCoursesButton: {
-        backgroundColor: 'primary.dark',
     },
     contentCard: {
         backgroundColor: 'secondary.light',
