@@ -192,7 +192,7 @@ const useStyles = (theme: Theme) => ({
         height: '100%',
     },
     contentCard: {
-        backgroundColor: 'secondary.light',
+        
         padding: '25px',
         minHeight: '80vh',
         width: '100%',
@@ -209,6 +209,9 @@ const useStyles = (theme: Theme) => ({
         alignItems: 'center',
         minHeight: '80vh',
         width: '100%',
+        [theme.breakpoints.up("sm")] : {
+            backgroundColor: 'secondary.light',
+        }
     },
     contentText: {
         padding: '2px 10px',
