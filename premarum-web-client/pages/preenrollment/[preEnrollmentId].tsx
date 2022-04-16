@@ -125,45 +125,38 @@ export default function Preenrollment() {
             
             <Card sx={classes.contentCard}>
                 {matches?
-                    <Tabs
-                        value={value}
-                        onChange={handleChange}
-                        textColor="secondary"
-                        indicatorColor="secondary"
-                        variant="fullWidth"
-                        scrollButtons
-                        allowScrollButtonsMobile
-                        aria-label="scrollable auto tabs example"
-                    >
-                        <Tab wrapped label='Schedule' />
-                        <Tab wrapped label='Courses'/>
-                        <Tab wrapped label='Recommended'/>
-                    </Tabs>: <></>
-                }
-                <Grid container direction="row" justifyContent={matches?undefined:"space-between"}>
-                    {
-                        !matches?<>
+                    <>
+                        <Tabs
+                            value={value}
+                            onChange={handleChange}
+                            textColor="secondary"
+                            indicatorColor="secondary"
+                            variant="fullWidth"
+                            aria-label="scrollable auto tabs example"
+                        >
+                            <Tab wrapped label='Schedule' />
+                            <Tab wrapped label='Courses'/>
+                            <Tab wrapped label='Recommended'/>
+                        </Tabs>
+                        <Stack sx={{marginTop: 1}}><ActionButtons /></Stack>
+                    </>
+                    : <Grid container direction="row" justifyContent={"space-between"}>
                             <Grid item>
                                 <Tabs
                                     value={value}
                                     onChange={handleChange}
                                     textColor="secondary"
                                     indicatorColor="secondary"
-                                    variant="fullWidth"
-                                    scrollButtons
-                                    allowScrollButtonsMobile
                                     aria-label="scrollable auto tabs example"
                                 >
-                                    <Tab wrapped label='Schedule' />
-                                    <Tab wrapped label='Courses'/>
-                                    <Tab wrapped label='Recommended'/>
+                                    <Tab label='Schedule' />
+                                    <Tab label='Courses'/>
+                                    <Tab label='Recommended'/>
                                 </Tabs>
                             </Grid>
                             <ActionButtons />
-                        </>: <></>
-                    }
-                </Grid>
-                {matches? <Stack sx={{marginTop: 1}}><ActionButtons /></Stack>:<></>}
+                    </Grid>
+                }
                 <TabPanel value={value} index={0}>
                     <ScheduleTable selections={preEnrollment!.selections} selectionRef={removeSelectionRef} />
                     <ScheduleCalendar courseOfferings={preEnrollment!.selections}/>
