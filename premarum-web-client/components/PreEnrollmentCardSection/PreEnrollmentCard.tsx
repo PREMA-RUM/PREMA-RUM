@@ -103,10 +103,10 @@ export type PreEnrollmentCardProps = {
 
 export default function PreEnrollmentCard({group, semester}: PreEnrollmentCardProps) {
     return (
-        <Card sx={classes.containerCard}>
+        <Card sx={classes.containerCard} elevation={3}>
             <CardHeader
                 sx={classes.mainHeader}
-                title={`Semester - ${semester.term} - ${semester.year}`}
+                title={`${semester.term}: ${semester.year}-${semester.year + 1}`}
             />
             <Divider/>
             {group.map((currVal: IPreEnrollmentResponse, index: number) => {

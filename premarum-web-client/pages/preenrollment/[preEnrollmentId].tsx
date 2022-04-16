@@ -17,7 +17,7 @@ import ScheduleTable, {RemoveSelectionButton} from '../../components/scheduleTab
 import {useRouter} from "next/router";
 import {usePreEnrollment} from "../../utility/hooks/usePreEnrollments";
 import RecommendedGrid from '../../components/recommendedGrid';
-import {useTheme} from "@mui/material/styles";
+import {Theme, useTheme} from "@mui/material/styles";
 
 export default function Preenrollment() {
     const [value, setValue] = React.useState(0);
@@ -27,8 +27,10 @@ export default function Preenrollment() {
     // To keep track of selected cells without re-rendering
     const selectedAddCoursesRef = useRef([])
     const removeSelectionRef = useRef([])
+    // Styling
     const theme = useTheme()
     const matches = useMediaQuery(theme.breakpoints.down('sm'), {noSsr:true});
+    const classes = useStyles(theme);
     
     
     useEffect(() => {
@@ -82,6 +84,28 @@ export default function Preenrollment() {
         return <Stack sx={classes.mainGrid}>{children}</Stack>
     }
     
+    function ActionButtons() {
+        return (value === 0)?(
+                <Grid item>
+                    <Box sx={classes.ActionButton}>
+                        <RemoveSelectionButton
+                            preEnrollmentId={preEnrollmentId!}
+                            selectionsRef={removeSelectionRef}
+                        />
+                    </Box>
+                </Grid>
+            ):
+            <Grid item>
+                    <Box sx={classes.ActionButton}>
+                        <AddSelectionButton
+                            changeTab = {()=>{setValue(0)}}
+                            selectionsRef={selectedAddCoursesRef}
+                            preEnrollmentId={preEnrollmentId!}
+                        />
+                    </Box>
+            </Grid>
+    }
+    
     return (
         <ContainerComp>
             
@@ -100,8 +124,7 @@ export default function Preenrollment() {
             </Card>
             
             <Card sx={classes.contentCard}>
-                <Grid container direction="row" justifyContent={"space-between"}>
-
+                <Grid container direction="row" justifyContent={matches?"space-around":"space-between"}>
                     <Grid item>
                         <Tabs
                             value={value}
@@ -114,25 +137,9 @@ export default function Preenrollment() {
                             <Tab label='Recommended'/>
                         </Tabs>
                     </Grid>
-
-                    {(value === 0)?(
-                        <Grid item>
-                            <RemoveSelectionButton
-                                preEnrollmentId={preEnrollmentId}
-                                selectionsRef={removeSelectionRef}
-                            />
-                        </Grid>
-                    ):
-                        <Grid item>
-                            <AddSelectionButton 
-                                changeTab = {()=>{setValue(0)}}
-                                selectionsRef={selectedAddCoursesRef} 
-                                preEnrollmentId={preEnrollmentId}
-                            />
-                        </Grid>
-                    }
-
+                    {!matches? <ActionButtons />: <></>}
                 </Grid>
+                {matches? <Stack sx={{marginTop: 1}}><ActionButtons /></Stack>:<></>}
                 <TabPanel value={value} index={0}>
                     <ScheduleTable selections={preEnrollment!.selections} selectionRef={removeSelectionRef} />
                     <ScheduleCalendar courseOfferings={preEnrollment!.selections}/>
@@ -150,7 +157,7 @@ export default function Preenrollment() {
     )
 }
 
-const useStyles = {
+const useStyles = (theme: Theme) => ({
     mainGrid: {
         padding: 0
     },
@@ -184,10 +191,18 @@ const useStyles = {
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
+        [theme.breakpoints.down("sm")]: {
+            padding: 1
+        }
     },
     tabContent: {
         marginTop: 2,
     },
-};
-
-const classes = useStyles;
+    ActionButton: {
+        [theme.breakpoints.down("sm")]: {
+            padding: 1,
+            minWidth: 400,
+            overflowX: "scroll"
+        }
+    }
+});
