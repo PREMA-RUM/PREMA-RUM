@@ -1,13 +1,19 @@
 import React, {useEffect, useState} from "react";
 import {usePreEnrollments} from "../../utility/hooks/usePreEnrollments";
-import {CircularProgress, Grid, Typography} from "@mui/material";
-import PreEnrollmentCard, {PreEnrollmentCardProps} from "./PreEnrollmentCard";
+import {Button, CircularProgress, Stack, Typography} from "@mui/material";
+import EventBusyIcon from '@mui/icons-material/EventBusy';
 import _ from 'lodash';
+import PreEnrollmentCard, {PreEnrollmentCardProps} from "./PreEnrollmentCard";
+import {AddRounded} from "@mui/icons-material";
 
+type PreEnrollmentCardSection = {
+    handleModalOpen: () => void
+}
 
-export default function PreEnrollmentCardSection(): JSX.Element {
+export default function PreEnrollmentCardSection({handleModalOpen}: PreEnrollmentCardSection): JSX.Element {
     const {preEnrollments, isLoading, isError} = usePreEnrollments();
     const [group, setGroup] = useState<PreEnrollmentCardProps[]>([])
+    const classes = useStyle()
     
     useEffect(() => {
         getGroupedPreEnrollment()
@@ -35,9 +41,17 @@ export default function PreEnrollmentCardSection(): JSX.Element {
         return <CircularProgress/>;
     }
     if (preEnrollments?.length === 0) {
-        return <Grid container direction="column" justifyContent="center" alignItems="center">
-            <Typography>Nothing here yet... :(</Typography>
-        </Grid>;
+        return <Stack justifyContent="center" alignItems="center" >
+                <EventBusyIcon sx={{width:100, height:100}} />
+                <Typography variant={"h5"}>Nothing here yet...</Typography>
+                <Button
+                    variant="contained"
+                    sx={classes.addCoursesButton}
+                    onClick={handleModalOpen}
+                >
+                    Get Started
+                </Button>
+        </Stack>;
     }
     
     return <>
@@ -46,3 +60,10 @@ export default function PreEnrollmentCardSection(): JSX.Element {
         })}
     </>
 }
+
+const useStyle = () => ({
+    addCoursesButton: {
+        marginTop:2,
+        backgroundColor: 'primary.dark'
+    }
+})
