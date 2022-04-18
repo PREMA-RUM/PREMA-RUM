@@ -110,17 +110,25 @@ export default function Preenrollment() {
         <ContainerComp>
             
             <Card sx={classes.topCard}>
-                <Grid container direction="row" justifyContent="space-between" alignItems="center">
-                    
-                    <Grid item>
-                        <Grid container direction="row" alignItems="center">
-                            <Typography sx={classes.title}>Pre-Enrollments</Typography>
-                            <Divider orientation="vertical" variant='middle' light flexItem sx={classes.dividerItem}/>
-                            <Typography sx={classes.title2}>{preEnrollment?.name}: {preEnrollment?.semester.term} - {preEnrollment?.semester.year}</Typography>
+                {
+                    matches ?
+                        <Stack>
+                            <Typography variant={"body1"}>{preEnrollment?.name}</Typography>
+                            <Divider/>
+                            <Typography>{preEnrollment?.semester.term} {preEnrollment?.semester.year}-{preEnrollment!.semester.year + 1}</Typography>
+                        </Stack>
+                        : <Grid container direction="row" justifyContent="space-between" alignItems="center">
+                            <Grid item>
+                                <Grid container direction="row" alignItems="center">
+                                    <Typography sx={classes.title}>Pre-Enrollments</Typography>
+                                    <Divider orientation="vertical" variant='middle' light flexItem
+                                             sx={classes.dividerItem}/>
+                                    <Typography
+                                        sx={classes.title2}>{preEnrollment?.name}: {preEnrollment?.semester.term} {preEnrollment?.semester.year}-{preEnrollment!.semester.year + 1}</Typography>
+                                </Grid>
+                            </Grid>
                         </Grid>
-                    </Grid>
-
-                </Grid>
+                }
             </Card>
             
             <Card sx={classes.contentCard}>
@@ -181,7 +189,10 @@ const useStyles = (theme: Theme) => ({
     topCard: {
         padding: '5px 25px',
         backgroundColor: 'primary.light',
-        marginBottom: 1.5
+        marginBottom: 1.5,
+        [theme.breakpoints.down("sm")]: {
+            padding: 1
+        }
     },
     title: {
         padding: '8px 0',
