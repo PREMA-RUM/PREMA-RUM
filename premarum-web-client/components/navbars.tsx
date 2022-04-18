@@ -124,7 +124,7 @@ export default function Navbars({children}:any) {
               {/* <Typography variant="h6" noWrap component="div">
                 PREMARUM
               </Typography> */}
-              <img src="/prema-logo.png" style={classes.icon}/>
+              <img src="/prema-logo-white.png" style={classes.icon}/>
             </Button>
         </Toolbar>
       </AppBar>
