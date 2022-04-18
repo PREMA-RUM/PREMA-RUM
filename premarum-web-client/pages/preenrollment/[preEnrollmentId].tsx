@@ -1,12 +1,19 @@
 import {
+    Autocomplete,
     Box,
+    Button,
     Card,
+    CardActions,
+    CardContent,
+    CardHeader,
     CircularProgress,
     Container,
     Divider,
-    Grid, Stack,
+    Fade,
+    Grid, Modal, Stack,
     Tab,
     Tabs,
+    TextField,
     Typography, useMediaQuery
 } from '@mui/material'
 import React, {useEffect, useRef, useState} from 'react';
@@ -18,12 +25,15 @@ import {useRouter} from "next/router";
 import {usePreEnrollment} from "../../utility/hooks/usePreEnrollments";
 import RecommendedGrid from '../../components/recommendedGrid';
 import {Theme, useTheme} from "@mui/material/styles";
+import { EditRounded } from '@mui/icons-material';
+import { ISemesterResponse } from '../../utility/requests/responseTypes';
+import UpdatePreEnrollmentTitleModal from '../../components/updatePreEnrollmentTitleModal';
 
 export default function Preenrollment() {
     const [value, setValue] = React.useState(0);
     const router = useRouter()
     const [preEnrollmentId, setPreEnrollmentId] = React.useState<number | null>(null);
-    const {preEnrollment, isLoading, isError} = usePreEnrollment(preEnrollmentId) 
+    const {preEnrollment, isLoading, isError, updateTitle} = usePreEnrollment(preEnrollmentId) 
     // To keep track of selected cells without re-rendering
     const selectedAddCoursesRef = useRef([])
     const removeSelectionRef = useRef([])
@@ -31,6 +41,10 @@ export default function Preenrollment() {
     const theme = useTheme()
     const matches = useMediaQuery(theme.breakpoints.down('sm'), {noSsr:true});
     const classes = useStyles(theme);
+
+    const [open, setOpen] = React.useState(false);
+    const [modalLoading, setModalLoading] = React.useState(false);
+    const [preenrollmentTitle, setPreenrollmentTitle] = React.useState(preEnrollment?.name)
     
     
     useEffect(() => {
@@ -83,6 +97,23 @@ export default function Preenrollment() {
         } 
         return <Stack sx={classes.mainGrid}>{children}</Stack>
     }
+
+    const handleModalOpen = () => {
+        setOpen(true);
+    };
+
+    function EditTitleButton() {
+        return (
+            <Button
+                startIcon={<EditRounded/>}
+                variant="contained"
+                sx={classes.editTitleButton}
+                onClick={handleModalOpen}
+            >
+                Edit Title
+            </Button>
+        )
+    }
     
     function ActionButtons() {
         return (value === 0)?(
@@ -107,6 +138,7 @@ export default function Preenrollment() {
     }
     
     return (
+        <>
         <ContainerComp>
             
             <Card sx={classes.topCard}>
@@ -127,8 +159,13 @@ export default function Preenrollment() {
                                         sx={classes.title2}>{preEnrollment?.name}: {preEnrollment?.semester.term} {preEnrollment?.semester.year}-{preEnrollment!.semester.year + 1}</Typography>
                                 </Grid>
                             </Grid>
+
+                            <Grid item>
+                                <EditTitleButton/>
+                            </Grid>
                         </Grid>
                 }
+
             </Card>
             
             <Card sx={classes.contentCard}>
@@ -177,14 +214,24 @@ export default function Preenrollment() {
                 </TabPanel>
             </Card>
         
-        
         </ContainerComp>
+
+        <UpdatePreEnrollmentTitleModal
+            openModalState={open}
+            setOpenModalState={setOpen} 
+            preEnrollmentId={preEnrollmentId}
+        />
+
+        </>
     )
 }
 
 const useStyles = (theme: Theme) => ({
     mainGrid: {
         padding: 0
+    },
+    editTitleButton: {
+        backgroundColor: 'primary.dark',
     },
     topCard: {
         padding: '5px 25px',
@@ -232,5 +279,5 @@ const useStyles = (theme: Theme) => ({
             minWidth: 400,
             overflowX: "scroll"
         }
-    }
+    },
 });

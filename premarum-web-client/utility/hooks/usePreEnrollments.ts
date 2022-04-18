@@ -5,6 +5,7 @@ import addNewSelection from "../requests/addNewSelection";
 import removeSelections from "../requests/removeSelection";
 import {pca} from "../constants";
 import deletePreEnrollment from "../requests/deletePreEnrollment";
+import updatePreEnrollmentTitle from "../requests/updatePreEnrollmentTitle";
 
 export function usePreEnrollments() {
     const { data, error, mutate } = useSWR('usePreEnrollments', async () => {
@@ -57,13 +58,21 @@ export function usePreEnrollment(preEnrollmentId: number | null) {
             } as any
         })
     }
+
+    async function updateTitle(title: string) {
+        await mutate(async cachedData => {
+            await updatePreEnrollmentTitle(pca, title, preEnrollmentId!)
+            return {...cachedData, name: title} as any
+        })
+    }
     
     return {
         preEnrollment: data as IPreEnrollmentResponse | undefined,
         isLoading: !error && !data,
         isError: error,
         addSelectionFn: updateCache,
-        removeSelectionsFn: removeFromCache
+        removeSelectionsFn: removeFromCache,
+        updateTitle
     }
 }
 

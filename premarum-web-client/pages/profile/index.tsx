@@ -49,6 +49,8 @@ export default function Profile({courses, departments}: ProfileProps) {
     const {student, isLoading:studentLoading} = useStudent()
     const [selectedCourses, setSelectedCourses] = useState([])
     const [coursesAdditionInProgress, setCoursesAdditionInProgress] = useState(false)
+    const [coursesLoading, setCoursesLoading] = useState(false);
+
     
     const handleModalOpen = () => {
         setOpen(true);
@@ -111,6 +113,7 @@ export default function Profile({courses, departments}: ProfileProps) {
     function CourseCard({course}: CourseCardProps) {
         
         async function handleDelete() {
+            setCoursesLoading(true)
             try {
                 await removeCoursesTakenFromCache([course.id])
             } catch (err) {
@@ -118,7 +121,10 @@ export default function Profile({courses, departments}: ProfileProps) {
                     console.log((err as AxiosError).response)
                 }
                 alert(err)
+            } finally {
+                setCoursesLoading(false)
             }
+            
         }
         
         return(
@@ -155,7 +161,7 @@ export default function Profile({courses, departments}: ProfileProps) {
                             <Grid container direction="row" alignItems="center">
                                 <Typography sx={classes.title}>Profile</Typography>
                                 <Divider orientation="vertical" variant='middle' light flexItem sx={classes.dividerItem}/>
-                                <TextField size="small" variant="outlined" placeholder="Search Courses..." sx={classes.searchInput}/>
+                                {/* <TextField size="small" variant="outlined" placeholder="Search Courses..." sx={classes.searchInput}/> */}
                             </Grid>
                         </Grid>
 
@@ -181,9 +187,16 @@ export default function Profile({courses, departments}: ProfileProps) {
                         <Divider/>
                         
                         <Grid container direction="row" alignContent='center' justifyContent="center" sx={classes.coursesContainer}>
-                            {coursesTaken!.map((ct: ICoursesTakenResponse, index: number) => (
-                                <CourseCard key={index} course={ct.course}/>
-                            ))}
+                            {coursesLoading?
+                                <CircularProgress />
+                            :
+                                <>
+                                {coursesTaken!.map((ct: ICoursesTakenResponse, index: number) => (
+                                    <CourseCard key={index} course={ct.course}/>
+                                ))}
+                                </>
+                            }
+                            
                         </Grid>
                         
                     </Grid>
@@ -222,7 +235,7 @@ export default function Profile({courses, departments}: ProfileProps) {
                                         .filter(ct => 
                                             ct.course.courseCode === c.courseCode).length === 0)
                                 }
-                                getOptionLabel={(option) => option.courseCode}
+                                getOptionLabel={(option) => `${option.courseCode} - ${option.courseName}`}
                                 filterSelectedOptions
                                 onChange={(event:any, newValue:any) => {
                                     setSelectedCourses(newValue)

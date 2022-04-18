@@ -80,28 +80,11 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-const useStyles = {
-  logoComponent: {
-    position: "absolute",
-    bottom: 0,
-    marginBottom: 0,
-    height: "100px",
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  boxSize: {
-    width: "45px",
-    height: "45px",
-  }
-};
-
 export default function Navbars({children}:any) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [openLogout, setOpenLogout] = React.useState(false);
   const router = useRouter();
-  const classes = useStyles;
 
   const handleLogoutOpen = () => {
     setOpenLogout(true);
@@ -133,10 +116,15 @@ export default function Navbars({children}:any) {
             >
                 <Menu />
             </IconButton>
-            <Button disableRipple onClick={() => {router.push('/home')}} style={{color: 'white', marginLeft: -8}}>
-              <Typography variant="h6" noWrap component="div">
+            <Button
+              disableRipple
+              onClick={() => {router.push('/home')}}
+              sx={classes.logoButton}
+            >
+              {/* <Typography variant="h6" noWrap component="div">
                 PREMARUM
-              </Typography>
+              </Typography> */}
+              <img src="/prema-logo-white.png" style={classes.icon}/>
             </Button>
         </Toolbar>
       </AppBar>
@@ -211,3 +199,31 @@ export default function Navbars({children}:any) {
     </>
   );
 }
+
+const useStyles = {
+  logoComponent: {
+    position: "absolute",
+    bottom: 0,
+    marginBottom: 0,
+    height: "100px",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  boxSize: {
+    width: "45px",
+    height: "45px",
+  },
+  logoButton: {
+    marginLeft: -2,
+    maxWidth: '100%',
+    maxHeight: '64px',
+    padding: '2px 2px'
+  },
+  icon: {
+    width: '100%',
+    maxHeight: '50px',
+  }
+};
+
+const classes = useStyles;
