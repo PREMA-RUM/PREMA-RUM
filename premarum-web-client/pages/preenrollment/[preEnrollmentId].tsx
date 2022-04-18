@@ -27,6 +27,7 @@ import RecommendedGrid from '../../components/recommendedGrid';
 import {Theme, useTheme} from "@mui/material/styles";
 import { EditRounded } from '@mui/icons-material';
 import { ISemesterResponse } from '../../utility/requests/responseTypes';
+import UpdatePreEnrollmentTitleModal from '../../components/updatePreEnrollmentTitleModal';
 
 export default function Preenrollment() {
     const [value, setValue] = React.useState(0);
@@ -97,6 +98,10 @@ export default function Preenrollment() {
         return <Stack sx={classes.mainGrid}>{children}</Stack>
     }
 
+    const handleModalOpen = () => {
+        setOpen(true);
+    };
+
     function EditTitleButton() {
         return (
             <Button
@@ -108,31 +113,6 @@ export default function Preenrollment() {
                 Edit Title
             </Button>
         )
-    }
-
-    const handleModalOpen = () => {
-        setOpen(true);
-    };
-
-    const handleModalClose = () => {
-        setOpen(false);
-    };
-
-    const handleTitleChange = (title: string) => {
-        setPreenrollmentTitle(title)
-    }
-
-    const handleTitleEdit = async () => {
-        setModalLoading(true)
-        try {
-            await updateTitle(preenrollmentTitle!)
-        } catch (err) {
-            alert(err)
-            setModalLoading(false);
-            return;
-        }
-        handleModalClose()
-        setModalLoading(false);
     }
     
     function ActionButtons() {
@@ -236,52 +216,12 @@ export default function Preenrollment() {
         
         </ContainerComp>
 
-        <Modal
-            open={open}
-            onClose={handleModalClose}
-            closeAfterTransition
-        >
-            <Fade in={open}>
-                <Grid container direction="row" justifyContent="center" alignItems="center"
-                        sx={classes.modalGridMain}>
-                    <Card sx={classes.modalCard}>
-                        <CardHeader
-                            title="Create New Pre-Enrollment"
-                        />
+        <UpdatePreEnrollmentTitleModal
+            openModalState={open}
+            setOpenModalState={setOpen} 
+            preEnrollmentId={preEnrollmentId}
+        />
 
-                        <Divider/>
-
-                        <CardContent sx={classes.cardContent}>
-                            {modalLoading ? (
-                                <Stack alignItems="center" justifyContent="center">
-                                    <CircularProgress/>
-                                </Stack>
-                            ) : (
-                                <>
-                                    <TextField
-                                        sx={classes.titleInput}
-                                        placeholder="Add Pre-Enrollment Title..."
-                                        variant="outlined"
-                                        fullWidth
-                                        value={preenrollmentTitle}
-                                        onChange={event => setPreenrollmentTitle(event.target.value)}
-                                    />
-                                </>
-                            )}
-                        </CardContent>
-
-                        <Divider/>
-
-                        <CardActions sx={classes.cardActions}>
-                            <Button onClick={handleModalClose}>Cancel</Button>
-                            <Button
-                                disabled={modalLoading || !preenrollmentTitle} 
-                                onClick={handleTitleEdit}>Submit</Button>
-                        </CardActions>
-                    </Card>
-                </Grid>
-            </Fade>
-        </Modal>
         </>
     )
 }
@@ -339,26 +279,5 @@ const useStyles = (theme: Theme) => ({
             minWidth: 400,
             overflowX: "scroll"
         }
-    },
-    modalGridMain: {
-        width: '100%',
-        height: '100%',
-    },
-    modalCard: {
-        width: '60%',
-        minHeight: '30%',
-        backgroundColor: grey[50],
-    },
-    cardContent: {
-        width: '100%',
-        height: '100%',
-        padding: '60px 20px',
-    },
-    titleInput: {
-        marginBottom: 1,
-    },
-    cardActions: {
-        justifyContent: 'flex-end',
-        alignItems: 'flex-end',
     },
 });
