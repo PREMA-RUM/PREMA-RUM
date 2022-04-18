@@ -1,12 +1,19 @@
 import {
+    Autocomplete,
     Box,
+    Button,
     Card,
+    CardActions,
+    CardContent,
+    CardHeader,
     CircularProgress,
     Container,
     Divider,
-    Grid, Stack,
+    Fade,
+    Grid, Modal, Stack,
     Tab,
     Tabs,
+    TextField,
     Typography, useMediaQuery
 } from '@mui/material'
 import React, {useEffect, useRef, useState} from 'react';
@@ -18,12 +25,14 @@ import {useRouter} from "next/router";
 import {usePreEnrollment} from "../../utility/hooks/usePreEnrollments";
 import RecommendedGrid from '../../components/recommendedGrid';
 import {Theme, useTheme} from "@mui/material/styles";
+import { EditRounded } from '@mui/icons-material';
+import { ISemesterResponse } from '../../utility/requests/responseTypes';
 
 export default function Preenrollment() {
     const [value, setValue] = React.useState(0);
     const router = useRouter()
     const [preEnrollmentId, setPreEnrollmentId] = React.useState<number | null>(null);
-    const {preEnrollment, isLoading, isError} = usePreEnrollment(preEnrollmentId) 
+    const {preEnrollment, isLoading, isError, updateTitle} = usePreEnrollment(preEnrollmentId) 
     // To keep track of selected cells without re-rendering
     const selectedAddCoursesRef = useRef([])
     const removeSelectionRef = useRef([])
@@ -31,6 +40,10 @@ export default function Preenrollment() {
     const theme = useTheme()
     const matches = useMediaQuery(theme.breakpoints.down('sm'), {noSsr:true});
     const classes = useStyles(theme);
+
+    const [open, setOpen] = React.useState(false);
+    const [modalLoading, setModalLoading] = React.useState(false);
+    const [preenrollmentTitle, setPreenrollmentTitle] = React.useState(preEnrollment?.name)
     
     
     useEffect(() => {
@@ -83,6 +96,44 @@ export default function Preenrollment() {
         } 
         return <Stack sx={classes.mainGrid}>{children}</Stack>
     }
+
+    function EditTitleButton() {
+        return (
+            <Button
+                startIcon={<EditRounded/>}
+                variant="contained"
+                sx={classes.editTitleButton}
+                onClick={handleModalOpen}
+            >
+                Edit Title
+            </Button>
+        )
+    }
+
+    const handleModalOpen = () => {
+        setOpen(true);
+    };
+
+    const handleModalClose = () => {
+        setOpen(false);
+    };
+
+    const handleTitleChange = (title: string) => {
+        setPreenrollmentTitle(title)
+    }
+
+    const handleTitleEdit = async () => {
+        setModalLoading(true)
+        try {
+            await updateTitle(preenrollmentTitle!)
+        } catch (err) {
+            alert(err)
+            setModalLoading(false);
+            return;
+        }
+        handleModalClose()
+        setModalLoading(false);
+    }
     
     function ActionButtons() {
         return (value === 0)?(
@@ -107,6 +158,7 @@ export default function Preenrollment() {
     }
     
     return (
+        <>
         <ContainerComp>
             
             <Card sx={classes.topCard}>
@@ -127,8 +179,13 @@ export default function Preenrollment() {
                                         sx={classes.title2}>{preEnrollment?.name}: {preEnrollment?.semester.term} {preEnrollment?.semester.year}-{preEnrollment!.semester.year + 1}</Typography>
                                 </Grid>
                             </Grid>
+
+                            <Grid item>
+                                <EditTitleButton/>
+                            </Grid>
                         </Grid>
                 }
+
             </Card>
             
             <Card sx={classes.contentCard}>
@@ -177,14 +234,64 @@ export default function Preenrollment() {
                 </TabPanel>
             </Card>
         
-        
         </ContainerComp>
+
+        <Modal
+            open={open}
+            onClose={handleModalClose}
+            closeAfterTransition
+        >
+            <Fade in={open}>
+                <Grid container direction="row" justifyContent="center" alignItems="center"
+                        sx={classes.modalGridMain}>
+                    <Card sx={classes.modalCard}>
+                        <CardHeader
+                            title="Create New Pre-Enrollment"
+                        />
+
+                        <Divider/>
+
+                        <CardContent sx={classes.cardContent}>
+                            {modalLoading ? (
+                                <Stack alignItems="center" justifyContent="center">
+                                    <CircularProgress/>
+                                </Stack>
+                            ) : (
+                                <>
+                                    <TextField
+                                        sx={classes.titleInput}
+                                        placeholder="Add Pre-Enrollment Title..."
+                                        variant="outlined"
+                                        fullWidth
+                                        value={preenrollmentTitle}
+                                        onChange={event => setPreenrollmentTitle(event.target.value)}
+                                    />
+                                </>
+                            )}
+                        </CardContent>
+
+                        <Divider/>
+
+                        <CardActions sx={classes.cardActions}>
+                            <Button onClick={handleModalClose}>Cancel</Button>
+                            <Button
+                                disabled={modalLoading || !preenrollmentTitle} 
+                                onClick={handleTitleEdit}>Submit</Button>
+                        </CardActions>
+                    </Card>
+                </Grid>
+            </Fade>
+        </Modal>
+        </>
     )
 }
 
 const useStyles = (theme: Theme) => ({
     mainGrid: {
         padding: 0
+    },
+    editTitleButton: {
+        backgroundColor: 'primary.dark',
     },
     topCard: {
         padding: '5px 25px',
@@ -232,5 +339,26 @@ const useStyles = (theme: Theme) => ({
             minWidth: 400,
             overflowX: "scroll"
         }
-    }
+    },
+    modalGridMain: {
+        width: '100%',
+        height: '100%',
+    },
+    modalCard: {
+        width: '60%',
+        minHeight: '30%',
+        backgroundColor: grey[50],
+    },
+    cardContent: {
+        width: '100%',
+        height: '100%',
+        padding: '60px 20px',
+    },
+    titleInput: {
+        marginBottom: 1,
+    },
+    cardActions: {
+        justifyContent: 'flex-end',
+        alignItems: 'flex-end',
+    },
 });
