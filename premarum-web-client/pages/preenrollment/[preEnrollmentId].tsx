@@ -173,7 +173,7 @@ export default function Preenrollment() {
                     <CatalogGrid selectionsRef={selectedAddCoursesRef} exclude={preEnrollment!.selections.map(sel => sel.id)} semesterId={preEnrollment!.semester.id}/>
                 </TabPanel>
                 <TabPanel value={value} index={2}>
-                    <RecommendedGrid selectionsRef={selectedAddCoursesRef} exclude={preEnrollment!.selections.map(sel => sel.id)} semesterId={preEnrollment!.semester.id}/>
+                    <RecommendedGrid selectionsRef={selectedAddCoursesRef} preEnrollmentId={preEnrollment!.id}/>
                 </TabPanel>
             </Card>
         
