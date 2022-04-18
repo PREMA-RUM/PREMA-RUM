@@ -12,6 +12,7 @@ import {AddRounded} from "@mui/icons-material";
 import {usePreEnrollment} from "../utility/hooks/usePreEnrollments";
 import {GetRows} from "../utility/helpers/selectionToRow";
 import { GetColumnFormat } from "../utility/helpers/ColumnFormat";
+import {useRecommendations} from "../utility/hooks/useRecommendations";
 
 function CustomToolbar() {
     return(
@@ -65,22 +66,24 @@ export function AddSelectionButton({preEnrollmentId, selectionsRef, changeTab}: 
 }
 
 type RecommendedGridProps = {
-    semesterId: number,
-    exclude: number[],
+    preEnrollmentId: number,
     selectionsRef: any// Ids to exclude
 }
 
-export default function RecommendedGrid({semesterId, exclude, selectionsRef}: RecommendedGridProps) {
-    const {courseOfferings, isLoading, isError} = useSemesterOfferings(semesterId);
+export default function RecommendedGrid({preEnrollmentId, selectionsRef}: RecommendedGridProps) {
+    const {recommendations, isLoading, isError} = useRecommendations(preEnrollmentId);
     const [rows, setRows] = useState([])
     
     useEffect(() => {
+        selectionsRef.current = []
+    }, [])
+    
+    useEffect(() => {
         if (!isLoading)  {
-            console.log(courseOfferings)
-            GetRows(courseOfferings.filter(co => !exclude.includes(co.id)))
+            GetRows(recommendations!)
                 .then(res => {setRows(res as any)})   
         }
-    }, [courseOfferings])
+    }, [recommendations])
     
     if (!rows || isLoading) {
         return(
