@@ -14,6 +14,8 @@ import {useRouter} from "next/router";
 import Navbars from "./navbars";
 import OverlayIcons from "./OverlayIcons";
 import {Theme, useTheme} from "@mui/material/styles";
+import {useProfilePicture} from "../utility/hooks/useProfilePicture";
+import PersonIcon from '@mui/icons-material/Person';
 
 
 type MobileNavbarProps = {
@@ -28,6 +30,8 @@ export default function MobileNavbar({children}: MobileNavbarProps) {
     const classes = useStyles(theme)
     const [value, setValue] = useState<number | null>(null);
     const [title, setTitle] = useState("")
+    const {profilePicture, isLoading} = useProfilePicture();
+    
     
     useEffect(() => {
         switch(router.pathname) {
@@ -60,13 +64,19 @@ export default function MobileNavbar({children}: MobileNavbarProps) {
         <Box sx={classes.mainBox}>
             <AppBar position="fixed">
                 <Toolbar>
-                    <Stack onClick={() => {router.push('/home')}} style={{color: 'white', marginLeft: -8}}>
-                        <Typography variant="h6" noWrap component="div">
-                            PREMARUM
-                        </Typography>
-                        <Typography sx={classes.subTitle} variant={"subtitle2"}>
-                            {title}
-                        </Typography>
+                    <Stack direction="row"
+                           justifyContent="space-between"
+                           alignItems="center" sx={classes.toolBarStack}>
+                        <Stack onClick={() => {router.push('/home')}} style={{color: 'white', marginLeft: -8}}>
+                            <img src="/prema-logo-white.png" style={classes.icon}/>
+                            <Typography sx={classes.subTitle} variant={"subtitle2"}>
+                                {title}
+                            </Typography>
+                        </Stack>
+                        {!isLoading?
+                            <img style={classes.profilePic} src={profilePicture}/>: 
+                            <PersonIcon style={classes.profilePic}/>
+                        }
                     </Stack>
                 </Toolbar>
             </AppBar>
@@ -109,6 +119,19 @@ const useStyles = (theme: Theme) => ({
         display: 'flex', 
         p:1, 
         pb: 10, 
-        pt:8
+        pt:9
+    },
+    icon: {
+        width: '100%',
+        maxHeight: '50px',
+        marginLeft: -10
+    },
+    profilePic: {
+        borderRadius: 100,
+        width: 40,
+        height: 40,
+    },
+    toolBarStack: {
+        width: '100%'
     }
 })
