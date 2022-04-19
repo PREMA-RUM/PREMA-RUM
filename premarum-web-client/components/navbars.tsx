@@ -10,6 +10,7 @@ import { LogoutModal } from './logoutModal';
 import MobileNavbar from "./MobileNavBar";
 import {Stack} from "@mui/material";
 import {useProfilePicture} from "../utility/hooks/useProfilePicture";
+import ProfilePicture from "./ProfilePicture";
 
 const drawerWidth = 240;
 
@@ -129,7 +130,7 @@ export default function Navbars({children}:any) {
                 >
                     <img src="/prema-logo-white.png" style={classes.icon}/>
                 </Button>
-                <img src={profilePicture} style={classes.profilePic}/>
+                <ProfilePicture />
             </Stack>
         </Toolbar>
       </AppBar>
@@ -226,12 +227,7 @@ const useStyles = {
         padding: '2px 2px'
     },
     icon: {
-        maxHeight: '50px',
-    },
-    profilePic: {
-        borderRadius: 100,
-        width: 40,
-        height: 40,
+        maxHeight: '70px',
     },
     appBarStack: {
         width:'100%'

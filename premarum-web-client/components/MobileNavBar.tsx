@@ -16,6 +16,7 @@ import OverlayIcons from "./OverlayIcons";
 import {Theme, useTheme} from "@mui/material/styles";
 import {useProfilePicture} from "../utility/hooks/useProfilePicture";
 import PersonIcon from '@mui/icons-material/Person';
+import ProfilePicture from "./ProfilePicture";
 
 
 type MobileNavbarProps = {
@@ -30,8 +31,6 @@ export default function MobileNavbar({children}: MobileNavbarProps) {
     const classes = useStyles(theme)
     const [value, setValue] = useState<number | null>(null);
     const [title, setTitle] = useState("")
-    const {profilePicture, isLoading} = useProfilePicture();
-    
     
     useEffect(() => {
         switch(router.pathname) {
@@ -74,10 +73,7 @@ export default function MobileNavbar({children}: MobileNavbarProps) {
                                 {title}
                             </Typography>
                         </Stack>
-                        {isLoading || profilePicture === null?
-                            <PersonIcon style={classes.profilePic}/>:
-                            <img style={classes.profilePic} src={profilePicture}/>
-                        }
+                        <ProfilePicture />
                     </Stack>
                 </Toolbar>
             </AppBar>
@@ -120,16 +116,12 @@ const useStyles = (theme: Theme) => ({
         display: 'flex', 
         p:1, 
         pb: 10, 
-        pt:9
+        pt:10
     },
     icon: {
-        maxHeight: '50px',
+        maxHeight: '60px',
+        marginTop: -5,
         marginLeft: -10
-    },
-    profilePic: {
-        borderRadius: 100,
-        width: 40,
-        height: 40,
     },
      toolBarStack: {
         width: '100%'
