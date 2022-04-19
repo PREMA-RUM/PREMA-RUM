@@ -88,7 +88,6 @@ export default function Navbars({children}:any) {
   const [open, setOpen] = React.useState(false);
   const [openLogout, setOpenLogout] = React.useState(false);
   const router = useRouter();
-  const {profilePicture} = useProfilePicture()
 
   const handleLogoutOpen = () => {
     setOpenLogout(true);
