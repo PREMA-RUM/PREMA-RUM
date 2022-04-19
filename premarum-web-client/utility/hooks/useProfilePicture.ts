@@ -5,7 +5,12 @@ import {useEffect} from "react";
 
 export function useProfilePicture() {
     const {data, error, mutate} = useSWR("GetProfilePicture", async () => {
-        return URL.createObjectURL(await getProfilePicture(pca))
+        try {
+            return URL.createObjectURL(await getProfilePicture(pca))
+        } catch (e) {
+            console.error(e)
+            return null
+        }
     }, {
         revalidateOnFocus: false,
         revalidateOnMount:false,
@@ -13,7 +18,7 @@ export function useProfilePicture() {
     })
     
     useEffect(() => {
-        if (!data) {
+        if (data === undefined) {
             mutate()
         }
     }, [])

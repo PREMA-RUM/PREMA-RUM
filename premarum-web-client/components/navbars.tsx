@@ -226,7 +226,6 @@ const useStyles = {
         padding: '2px 2px'
     },
     icon: {
-        width: '100%',
         maxHeight: '50px',
     },
     profilePic: {

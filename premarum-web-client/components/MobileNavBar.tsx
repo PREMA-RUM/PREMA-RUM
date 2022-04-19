@@ -68,14 +68,15 @@ export default function MobileNavbar({children}: MobileNavbarProps) {
                            justifyContent="space-between"
                            alignItems="center" sx={classes.toolBarStack}>
                         <Stack onClick={() => {router.push('/home')}} style={{color: 'white', marginLeft: -8}}>
+                            
                             <img src="/prema-logo-white.png" style={classes.icon}/>
                             <Typography sx={classes.subTitle} variant={"subtitle2"}>
                                 {title}
                             </Typography>
                         </Stack>
-                        {!isLoading?
-                            <img style={classes.profilePic} src={profilePicture}/>: 
-                            <PersonIcon style={classes.profilePic}/>
+                        {isLoading || profilePicture === null?
+                            <PersonIcon style={classes.profilePic}/>:
+                            <img style={classes.profilePic} src={profilePicture}/>
                         }
                     </Stack>
                 </Toolbar>
@@ -122,7 +123,6 @@ const useStyles = (theme: Theme) => ({
         pt:9
     },
     icon: {
-        width: '100%',
         maxHeight: '50px',
         marginLeft: -10
     },
@@ -131,7 +131,7 @@ const useStyles = (theme: Theme) => ({
         width: 40,
         height: 40,
     },
-    toolBarStack: {
+     toolBarStack: {
         width: '100%'
     }
 })
