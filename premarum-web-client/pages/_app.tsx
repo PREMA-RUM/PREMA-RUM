@@ -17,6 +17,7 @@ import {NextPage} from "next";
 import {ReactElement, ReactNode} from "react";
 import {pca} from "../utility/constants";
 import MobileNavbar from "../components/MobileNavBar";
+import NextNProgress from "nextjs-progressbar";
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -47,7 +48,8 @@ const MyApp: React.FunctionComponent<AppPropsWithLayout> = (props) => {
     <MsalProvider instance={pca}>
       <CacheProvider value={emotionCache}>
         <ThemeProvider theme={lightTheme}>
-          <CssBaseline />
+          <CssBaseline /> 
+          <NextNProgress />
           <Head>
           <title>PREMARUM</title>
           <meta name="description" content="Easiest way to create enrollment logistical plans for UPRM students." />

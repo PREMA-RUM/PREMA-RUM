@@ -4,13 +4,14 @@ import {Button, CircularProgress, Stack, Typography} from "@mui/material";
 import EventBusyIcon from '@mui/icons-material/EventBusy';
 import _ from 'lodash';
 import PreEnrollmentCard, {PreEnrollmentCardProps} from "./PreEnrollmentCard";
-import {AddRounded} from "@mui/icons-material";
+import {ISemesterResponse} from "../../utility/requests/responseTypes";
 
 type PreEnrollmentCardSection = {
-    handleModalOpen: () => void
+    handleModalOpen: () => void,
+    filterBySemester: ISemesterResponse | null
 }
 
-export default function PreEnrollmentCardSection({handleModalOpen}: PreEnrollmentCardSection): JSX.Element {
+export default function PreEnrollmentCardSection({handleModalOpen, filterBySemester}: PreEnrollmentCardSection): JSX.Element {
     const {preEnrollments, isLoading, isError} = usePreEnrollments();
     const [group, setGroup] = useState<PreEnrollmentCardProps[]>([])
     const classes = useStyle()
@@ -56,7 +57,8 @@ export default function PreEnrollmentCardSection({handleModalOpen}: PreEnrollmen
     
     return <>
         {group.map((currVal:any, index:number) => {
-            return <PreEnrollmentCard key={index+1000} group={currVal.group} semester={currVal.semester} />
+            if (filterBySemester === null || currVal.semester.id === filterBySemester?.id)
+                return <PreEnrollmentCard key={index+1000} group={currVal.group} semester={currVal.semester} />
         })}
     </>
 }

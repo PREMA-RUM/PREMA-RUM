@@ -19,7 +19,6 @@ import {
 import React, {useEffect, useRef, useState} from 'react';
 import CatalogGrid, {AddSelectionButton} from '../../components/catalogGrid';
 import { grey } from '@mui/material/colors';
-import ScheduleCalendar from '../../components/scheduleCalendar';
 import ScheduleTable, {RemoveSelectionButton} from '../../components/scheduleTable';
 import {useRouter} from "next/router";
 import {usePreEnrollment} from "../../utility/hooks/usePreEnrollments";
@@ -28,6 +27,14 @@ import {Theme, useTheme} from "@mui/material/styles";
 import { EditRounded } from '@mui/icons-material';
 import { ISemesterResponse } from '../../utility/requests/responseTypes';
 import UpdatePreEnrollmentTitleModal from '../../components/updatePreEnrollmentTitleModal';
+import dynamic from "next/dynamic";
+
+const ScheduleCalendar = dynamic(() => import('../../components/scheduleCalendar'), {
+    ssr: false ,
+    loading: () => <Stack alignItems={"center"} justifyContent={"center"}>
+        <CircularProgress />
+    </Stack>
+})
 
 export default function Preenrollment() {
     const [value, setValue] = React.useState(0);

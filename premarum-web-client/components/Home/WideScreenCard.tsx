@@ -1,17 +1,21 @@
 import {Autocomplete, Card, Divider, Grid, TextField, Typography} from "@mui/material";
-import React from "react";
+import React, {Dispatch, useState} from "react";
 import {ISemesterResponse} from "../../utility/requests/responseTypes";
 import {Theme, useTheme} from "@mui/material/styles";
 import {AddPreEnrollmentButton} from "./AddPreEnrollmentButton";
 
 type WideScreenProps = {
     semesters: ISemesterResponse[],
-    handleModalOpen: () => void
+    handleModalOpen: () => void,
+    filterState: ISemesterResponse | null,
+    setFilterState: Dispatch<ISemesterResponse | null>
 }
 
-export function WideScreenCard({semesters, handleModalOpen}: WideScreenProps) {
+export function WideScreenCard({semesters, handleModalOpen, filterState, setFilterState}: WideScreenProps) {
     const theme = useTheme()
     const classes = useStyles(theme)
+    
+    const [inputVal, setInputVal] = useState('')
     
     return <Card sx={classes.topCard}>
         <Grid container direction="row" justifyContent="space-between" alignItems="center">
@@ -24,8 +28,12 @@ export function WideScreenCard({semesters, handleModalOpen}: WideScreenProps) {
                         sx={classes.semesterSelect}
                         id="tags-outlined"
                         options={semesters}
-                        getOptionLabel={(option) => `${option.term} - ${option.year}`}
+                        getOptionLabel={(option) => `${option.term}: ${option.year}-${option.year+1}`}
                         filterSelectedOptions
+                        onChange={(event: any, newValue: ISemesterResponse | null) => {setFilterState(newValue)}}
+                        value={filterState}
+                        inputValue={inputVal}
+                        onInputChange={(_: any, newVal: string) => {setInputVal(newVal)}}
                         size="small"
                         renderInput={(params) => (
                             <TextField

@@ -47,6 +47,8 @@ export default function Home(props: HomeProps) {
     const {student, isLoading:studentLoading} = useStudent()
     const {preEnrollments} = usePreEnrollments()
     
+    const [filterBySemester, setFilterBySemester] = useState<ISemesterResponse | null>(null) 
+    
     const theme = useTheme()
     const classes = useStyles(theme)
     const matches = useMediaQuery(theme.breakpoints.down('sm'), {noSsr:true});
@@ -100,19 +102,32 @@ export default function Home(props: HomeProps) {
                 <Grid item>
                     {
                         matches? <MobileTopArea 
+                            semesters={props.semesters}
+                            filterState={filterBySemester}
+                            setFilterState={setFilterBySemester}
+                            handleModalOpen={handleModalOpen} 
+                        />: <WideScreenCard
+                            filterState={filterBySemester}
+                            setFilterState={setFilterBySemester}
                             semesters={props.semesters} 
                             handleModalOpen={handleModalOpen} 
-                        />: <WideScreenCard semesters={props.semesters} handleModalOpen={handleModalOpen} />
+                        />
                     }
                 </Grid>
 
                 <Grid item>
                     {matches?
                         <Box sx={preEnrollments?.length===0?classes.contentCardEmpty:classes.contentCard}>
-                            <PreEnrollmentCardSection handleModalOpen={handleModalOpen}/>
+                            <PreEnrollmentCardSection 
+                                filterBySemester={filterBySemester} 
+                                handleModalOpen={handleModalOpen}
+                            />
                         </Box>:
                         <Card sx={preEnrollments?.length===0?classes.contentCardEmpty:classes.contentCard}>
-                            <PreEnrollmentCardSection handleModalOpen={handleModalOpen}/>
+                            <PreEnrollmentCardSection 
+                                filterBySemester={filterBySemester} 
+                                handleModalOpen={handleModalOpen}
+                            />
                         </Card>
                     }
                 </Grid>
