@@ -27,14 +27,8 @@ import {Theme, useTheme} from "@mui/material/styles";
 import { EditRounded } from '@mui/icons-material';
 import { ISemesterResponse } from '../../utility/requests/responseTypes';
 import UpdatePreEnrollmentTitleModal from '../../components/updatePreEnrollmentTitleModal';
-import dynamic from "next/dynamic";
+import ScheduleCalendar from "../../components/scheduleCalendar";
 
-const ScheduleCalendar = dynamic(() => import('../../components/scheduleCalendar'), {
-    ssr: false ,
-    loading: () => <Stack alignItems={"center"} justifyContent={"center"}>
-        <CircularProgress />
-    </Stack>
-})
 
 export default function Preenrollment() {
     const [value, setValue] = React.useState(0);
