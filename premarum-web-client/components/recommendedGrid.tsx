@@ -1,4 +1,16 @@
-import {Box, Button, CircularProgress, Grid, Paper, styled, Tooltip, tooltipClasses, TooltipProps, Typography} from "@mui/material";
+import {
+    Box,
+    Button,
+    CircularProgress,
+    Grid,
+    Paper,
+    styled,
+    Tooltip,
+    tooltipClasses,
+    TooltipProps,
+    Typography,
+    useMediaQuery
+} from "@mui/material";
 import {
     DataGrid,
     GridToolbarColumnsButton,
@@ -13,56 +25,28 @@ import {usePreEnrollment} from "../utility/hooks/usePreEnrollments";
 import {GetRows} from "../utility/helpers/selectionToRow";
 import { GetColumnFormat } from "../utility/helpers/ColumnFormat";
 import {useRecommendations} from "../utility/hooks/useRecommendations";
+import QuickSearchToolbar, {QuickSearchToolbarProps, requestSearch} from "./DataGridAddOns/QuickSearchToolbar";
+import {useTheme} from "@mui/material/styles";
 
 function CustomToolbar() {
     return(
         <Box sx={classes.toolbarBox}>
             <GridToolbarContainer>
-                <GridToolbarColumnsButton />
-                <GridToolbarFilterButton />
+                <GridToolbarFilterButton  />
                 <GridToolbarDensitySelector />
             </GridToolbarContainer>
         </Box>
     )
 }
 
-type AddSelectionProps = {
-    preEnrollmentId: number,
-    changeTab: () => void,
-    selectionsRef: any
-}
+function WrapToolBars(props: QuickSearchToolbarProps) {
+    const theme = useTheme()
+    const match = useMediaQuery(theme.breakpoints.down("sm"))
 
-export function AddSelectionButton({preEnrollmentId, selectionsRef, changeTab}: AddSelectionProps) {
-    const { addSelectionFn } = usePreEnrollment(preEnrollmentId)
-    const [isLoading, setIsLoading] = useState(false)
-    
-    return(
-        <Button
-            startIcon={<AddRounded/>}
-            variant="contained"
-            sx={classes.addSelectionButton}
-            onClick={async () => {
-                setIsLoading(true)
-                if (selectionsRef.current.length === 0) {
-                    setIsLoading(false)
-                    return
-                }
-                try {
-                    await addSelectionFn(selectionsRef.current)
-                } catch (err) {
-                    alert(err)
-                    selectionsRef.current = []
-                    changeTab()
-                    return
-                }
-                selectionsRef.current = []
-                changeTab()
-            }}
-            disabled={isLoading}
-        >
-            Add Selection
-        </Button>
-    )
+    return <>
+        <QuickSearchToolbar {...props} />
+        {!match? <CustomToolbar /> : null}
+    </>
 }
 
 type RecommendedGridProps = {
@@ -72,7 +56,8 @@ type RecommendedGridProps = {
 
 export default function RecommendedGrid({preEnrollmentId, selectionsRef}: RecommendedGridProps) {
     const {recommendations, isLoading, isError} = useRecommendations(preEnrollmentId);
-    const [rows, setRows] = useState([])
+    const [rows, setRows] = useState<any[]>([])
+    const [quickSearchState, setQuickSearchState] = useState("")
     
     useEffect(() => {
         selectionsRef.current = []
@@ -84,6 +69,7 @@ export default function RecommendedGrid({preEnrollmentId, selectionsRef}: Recomm
                 .then(res => {setRows(res as any)})   
         }
     }, [recommendations])
+    
     
     if (!rows || isLoading) {
         return(
@@ -107,7 +93,24 @@ export default function RecommendedGrid({preEnrollmentId, selectionsRef}: Recomm
                 columns={GetColumnFormat({creditSum: null})}
                 autoHeight
                 components={{
-                    Toolbar: CustomToolbar,
+                    Toolbar: WrapToolBars
+                }}
+                componentsProps={{
+                    toolbar: {
+                        value: quickSearchState,
+                        onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
+                            requestSearch({
+                                searchValue: event.target.value,
+                                setSearchText: setQuickSearchState,
+                                rowSetter: (rec: any[]) => GetRows(rec).then(res => setRows(res)),
+                                rows: recommendations!
+                            }),
+                        clearSearch: () => {
+                            setQuickSearchState("")
+                            GetRows(recommendations!)
+                                .then(res => setRows(res))
+                        }
+                    }
                 }}
             />
         </Paper>
@@ -116,7 +119,6 @@ export default function RecommendedGrid({preEnrollmentId, selectionsRef}: Recomm
 
 const useStyles = {
     toolbarBox: {
-        marginTop: 1,
         marginLeft: 1,
     },
     containerBox: {

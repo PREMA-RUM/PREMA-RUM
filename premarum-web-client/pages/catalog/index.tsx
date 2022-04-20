@@ -1,4 +1,19 @@
-import { Autocomplete, Box, Card, CircularProgress, Divider, Grid, Paper, styled, TextField, Tooltip, tooltipClasses, TooltipProps, Typography } from '@mui/material'
+import {
+    Autocomplete,
+    Box,
+    Card,
+    CircularProgress,
+    Divider,
+    Grid,
+    Paper,
+    styled,
+    TextField,
+    Tooltip,
+    tooltipClasses,
+    TooltipProps,
+    Typography,
+    useMediaQuery
+} from '@mui/material'
 import React, { SyntheticEvent, useEffect, useState } from 'react';
 import { grey } from '@mui/material/colors';
 import { DataGrid, GridColumns, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton } from '@mui/x-data-grid';
@@ -8,6 +23,11 @@ import { ISemesterResponse } from '../../utility/requests/responseTypes';
 import { useSemesterOfferings } from '../../utility/hooks/useSemesterOfferings';
 import { GetRows } from '../../utility/helpers/selectionToRow';
 import { GetColumnFormat } from '../../utility/helpers/ColumnFormat';
+import QuickSearchToolbar, {
+    QuickSearchToolbarProps,
+    requestSearch
+} from "../../components/DataGridAddOns/QuickSearchToolbar";
+import {useTheme} from "@mui/material/styles";
 
 type SemesterProps = {
     semesters: ISemesterResponse[]
@@ -31,10 +51,21 @@ function CustomToolbar() {
     )
 }
 
+function WrapToolBars(props: QuickSearchToolbarProps) {
+    const theme = useTheme()
+    const match = useMediaQuery(theme.breakpoints.down("sm"))
+
+    return <>
+        <QuickSearchToolbar {...props} />
+        {!match? <CustomToolbar /> : null}
+    </>
+}
+
 export default function Catalog({semesters}: SemesterProps) {
     const [semesterID, setSemesterID] = useState(0)
     const {courseOfferings, isLoading, isError} = useSemesterOfferings(semesterID);
     const [rows, setRows] = useState([])
+    const [quickSearchState, setQuickSearchState] = useState("")
     
     const handleSemesterID = (id: number) => {
         setSemesterID(id);
@@ -103,7 +134,24 @@ export default function Catalog({semesters}: SemesterProps) {
                             rows={rows}
                             columns={GetColumnFormat({creditSum: null})}
                             components={{
-                                Toolbar: CustomToolbar,
+                                Toolbar: WrapToolBars,
+                            }}
+                            componentsProps={{
+                                toolbar: {
+                                    value: quickSearchState,
+                                    onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
+                                        requestSearch({
+                                            searchValue: event.target.value,
+                                            setSearchText: setQuickSearchState,
+                                            rowSetter: (rec: any[]) => GetRows(rec).then(res => setRows(res as any)),
+                                            rows: courseOfferings!
+                                        }),
+                                    clearSearch: () => {
+                                        setQuickSearchState("")
+                                        GetRows(courseOfferings!)
+                                            .then(res => setRows(res as any))
+                                    }
+                                }
                             }}
                         />
                     </Paper>
