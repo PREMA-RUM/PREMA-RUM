@@ -38,8 +38,6 @@ const StyledOuterBox = styled(Box)(
         [theme.breakpoints.down("sm")]: {
             maxWidth: "100%",
             overflowX: "scroll",
-            maxHeight: "1000px",
-            overflowY: "scroll"
         }
     })
 );

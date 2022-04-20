@@ -116,16 +116,16 @@ export default function Preenrollment() {
     
     function ActionButtons() {
         return (value === 0)?(
-                <Grid item>
-                    <Box sx={classes.ActionButton}>
-                        <RemoveSelectionButton
-                            preEnrollmentId={preEnrollmentId!}
-                            selectionsRef={removeSelectionRef}
-                        />
-                    </Box>
-                </Grid>
+            <Grid item  sx={{overflowX: 'hidden'}}>
+                <Box sx={classes.ActionButton}>
+                    <RemoveSelectionButton
+                        preEnrollmentId={preEnrollmentId!}
+                        selectionsRef={removeSelectionRef}
+                    />
+                </Box>
+            </Grid>
             ):
-            <Grid item>
+            <Grid item sx={{overflowX: 'hidden'}}>
                     <Box sx={classes.ActionButton}>
                         <AddSelectionButton
                             changeTab = {()=>{setValue(0)}}
@@ -276,7 +276,6 @@ const useStyles = (theme: Theme) => ({
         [theme.breakpoints.down("sm")]: {
             padding: 1,
             minWidth: 400,
-            overflowX: "scroll"
-        }
+        },
     },
 });
