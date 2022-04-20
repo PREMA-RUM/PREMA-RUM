@@ -97,11 +97,12 @@ export default function CatalogGrid({semesterId, exclude, selectionsRef}: Catalo
     const {courseOfferings, isLoading, isError} = useSemesterOfferings(semesterId);
     const [rows, setRows] = useState([])
     const [quickSearchState, setQuickSearchState] = useState("")
+    const afterExclusion = courseOfferings? courseOfferings.filter(co => !exclude.includes(co.id)): []
     
     useEffect(() => {
         if (!isLoading)  {
             console.log(courseOfferings)
-            GetRows(courseOfferings.filter(co => !exclude.includes(co.id)))
+            GetRows(afterExclusion)
                 .then(res => {setRows(res as any)})   
         }
     }, [courseOfferings])
@@ -138,11 +139,11 @@ export default function CatalogGrid({semesterId, exclude, selectionsRef}: Catalo
                                 searchValue: event.target.value,
                                 setSearchText: setQuickSearchState,
                                 rowSetter: (rec: any[]) => GetRows(rec).then(res => setRows(res as any)),
-                                rows: courseOfferings!
+                                rows: afterExclusion
                             }),
                         clearSearch: () => {
                             setQuickSearchState("")
-                            GetRows(courseOfferings!)
+                            GetRows(afterExclusion)
                                 .then(res => setRows(res as any))
                         }
                     }
