@@ -182,13 +182,18 @@ export default function Navbars({children}:any) {
           </List>
           
           <Tooltip title="UPRM" placement="right" arrow>
-            <Button sx={classes.logoComponent} onClick={() => router.push('/')}>
-                <Box
-                  sx={classes.boxSize}
-                  component="img"
-                  alt="UPRM"
-                  src="https://www.uprm.edu/wdt/resources/seal-rum-uprm.svg"
-                />
+            <Button
+              sx={classes.logoComponent}
+              href="https://www.uprm.edu/portada/"
+              target="_blank"
+              disableRipple
+            >
+              <Box
+                sx={classes.boxSize}
+                component="img"
+                alt="UPRM"
+                src="rum-logo-transparent.svg"
+              />
             </Button>
           </Tooltip>
 
