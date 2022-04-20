@@ -1,19 +1,22 @@
 import {ISemesterResponse} from "../../utility/requests/responseTypes";
 import {Theme} from "@mui/material/styles";
 import {Autocomplete, Divider, Stack, TextField, useTheme} from "@mui/material";
-import React from "react";
+import React, {Dispatch, SetStateAction, useState} from "react";
 import {usePreEnrollments} from "../../utility/hooks/usePreEnrollments";
 import {AddPreEnrollmentButton} from "./AddPreEnrollmentButton";
 
 type MobileTopAreaProps = {
     semesters: ISemesterResponse[],
-    handleModalOpen: () => void
+    handleModalOpen: () => void,
+    filterState: ISemesterResponse | null,
+    setFilterState: Dispatch<ISemesterResponse | null>
 }
 
-export function MobileTopArea({semesters, handleModalOpen}: MobileTopAreaProps) {
+export function MobileTopArea({semesters, handleModalOpen, filterState, setFilterState}: MobileTopAreaProps) {
     const theme = useTheme()
     const classes = useStyles(theme)
     const {preEnrollments} = usePreEnrollments()
+    const [inputVal, setInputVal] = useState('')
     
     return <Stack sx={classes.topCardMobile} spacing={1}>
         {
@@ -23,8 +26,12 @@ export function MobileTopArea({semesters, handleModalOpen}: MobileTopAreaProps) 
                         sx={classes.semesterSelect}
                         id="tags-outlined"
                         options={semesters}
-                        getOptionLabel={(option) => `${option.term} - ${option.year}`}
+                        getOptionLabel={(option) => `${option.term}: ${option.year}-${option.year+1}`}
+                        onChange={(_: any, newValue: ISemesterResponse | null) => {setFilterState(newValue)}}
+                        value={filterState}
                         filterSelectedOptions
+                        inputValue={inputVal}
+                        onInputChange={(_: any, newVal: string) => {setInputVal(newVal)}}
                         size="small"
                         renderInput={(params) => (
                             <TextField
