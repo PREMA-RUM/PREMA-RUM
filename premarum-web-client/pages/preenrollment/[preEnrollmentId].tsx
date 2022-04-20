@@ -43,8 +43,6 @@ export default function Preenrollment() {
     const classes = useStyles(theme);
 
     const [open, setOpen] = React.useState(false);
-    const [modalLoading, setModalLoading] = React.useState(false);
-    const [preenrollmentTitle, setPreenrollmentTitle] = React.useState(preEnrollment?.name)
     
     
     useEffect(() => {

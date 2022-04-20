@@ -8,6 +8,9 @@ import { useRouter } from 'next/router';
 import {useMsal} from "@azure/msal-react";
 import { LogoutModal } from './logoutModal';
 import MobileNavbar from "./MobileNavBar";
+import {Stack} from "@mui/material";
+import {useProfilePicture} from "../utility/hooks/useProfilePicture";
+import ProfilePicture from "./ProfilePicture";
 
 const drawerWidth = 240;
 
@@ -116,16 +119,18 @@ export default function Navbars({children}:any) {
             >
                 <Menu />
             </IconButton>
-            <Button
-              disableRipple
-              onClick={() => {router.push('/home')}}
-              sx={classes.logoButton}
-            >
-              {/* <Typography variant="h6" noWrap component="div">
-                PREMARUM
-              </Typography> */}
-              <img src="/prema-logo-white.png" style={classes.icon}/>
-            </Button>
+            <Stack 
+                style={classes.appBarStack}
+                direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
+                <Button
+                    disableRipple
+                    onClick={() => {router.push('/home')}}
+                    sx={classes.logoButton}
+                >
+                    <img src="/prema-logo-white.png" style={classes.icon}/>
+                </Button>
+                <ProfilePicture />
+            </Stack>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
@@ -201,29 +206,31 @@ export default function Navbars({children}:any) {
 }
 
 const useStyles = {
-  logoComponent: {
-    position: "absolute",
-    bottom: 0,
-    marginBottom: 0,
-    height: "100px",
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  boxSize: {
-    width: "45px",
-    height: "45px",
-  },
-  logoButton: {
-    marginLeft: -2,
-    maxWidth: '100%',
-    maxHeight: '64px',
-    padding: '2px 2px'
-  },
-  icon: {
-    width: '100%',
-    maxHeight: '50px',
-  }
+    logoComponent: {
+        position: "absolute",
+        bottom: 0,
+        marginBottom: 0,
+        height: "100px",
+        width: "100%",
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    boxSize: {
+        width: "45px",
+        height: "45px",
+    },
+    logoButton: {
+        marginLeft: -2,
+        maxWidth: '100%',
+        maxHeight: '64px',
+        padding: '2px 2px'
+    },
+    icon: {
+        maxHeight: '70px',
+    },
+    appBarStack: {
+        width:'100%'
+    }
 };
 
 const classes = useStyles;

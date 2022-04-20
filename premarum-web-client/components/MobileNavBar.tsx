@@ -14,6 +14,9 @@ import {useRouter} from "next/router";
 import Navbars from "./navbars";
 import OverlayIcons from "./OverlayIcons";
 import {Theme, useTheme} from "@mui/material/styles";
+import {useProfilePicture} from "../utility/hooks/useProfilePicture";
+import PersonIcon from '@mui/icons-material/Person';
+import ProfilePicture from "./ProfilePicture";
 
 
 type MobileNavbarProps = {
@@ -60,13 +63,17 @@ export default function MobileNavbar({children}: MobileNavbarProps) {
         <Box sx={classes.mainBox}>
             <AppBar position="fixed">
                 <Toolbar>
-                    <Stack onClick={() => {router.push('/home')}} style={{color: 'white', marginLeft: -8}}>
-                        <Typography variant="h6" noWrap component="div">
-                            PREMARUM
-                        </Typography>
-                        <Typography sx={classes.subTitle} variant={"subtitle2"}>
-                            {title}
-                        </Typography>
+                    <Stack direction="row"
+                           justifyContent="space-between"
+                           alignItems="center" sx={classes.toolBarStack}>
+                        <Stack onClick={() => {router.push('/home')}} style={{color: 'white', marginLeft: -8}}>
+                            
+                            <img src="/prema-logo-white.png" style={classes.icon}/>
+                            <Typography sx={classes.subTitle} variant={"subtitle2"}>
+                                {title}
+                            </Typography>
+                        </Stack>
+                        <ProfilePicture />
                     </Stack>
                 </Toolbar>
             </AppBar>
@@ -109,6 +116,14 @@ const useStyles = (theme: Theme) => ({
         display: 'flex', 
         p:1, 
         pb: 10, 
-        pt:8
+        pt:10
+    },
+    icon: {
+        maxHeight: '60px',
+        marginTop: -5,
+        marginLeft: -10
+    },
+     toolBarStack: {
+        width: '100%'
     }
 })
