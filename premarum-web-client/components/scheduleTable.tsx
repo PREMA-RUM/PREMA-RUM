@@ -7,18 +7,6 @@ import {RemoveRounded} from "@mui/icons-material";
 import {usePreEnrollment} from "../utility/hooks/usePreEnrollments";
 import { GetColumnFormat } from "../utility/helpers/ColumnFormat";
 
-function CustomToolbar() {
-    return(
-        <Box sx={classes.toolbarBox}>
-            <GridToolbarContainer>
-                <GridToolbarColumnsButton />
-                <GridToolbarFilterButton />
-                <GridToolbarDensitySelector />
-            </GridToolbarContainer>
-        </Box>
-    )
-}
-
 async function totalCredits(selections: IPreEnrollmentSelectionResponse[]) {
     if (selections.length === 0) return 0;
     console.log(selections)
@@ -95,9 +83,6 @@ export default function ScheduleTable({selections, selectionRef}: ScheduleTableP
                 rows={rows}
                 columns={GetColumnFormat({creditSum})}
                 autoHeight
-                components={{
-                    Toolbar: CustomToolbar,
-                }}
             />
         </Paper>
     )

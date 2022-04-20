@@ -1,4 +1,16 @@
-import {Box, Button, CircularProgress, Grid, Paper, styled, Tooltip, tooltipClasses, TooltipProps, Typography} from "@mui/material";
+import {
+    Box,
+    Button,
+    CircularProgress,
+    Grid,
+    Paper,
+    styled,
+    Tooltip,
+    tooltipClasses,
+    TooltipProps,
+    Typography,
+    useMediaQuery
+} from "@mui/material";
 import {
     DataGrid,
     GridToolbarColumnsButton,
@@ -12,17 +24,28 @@ import {AddRounded} from "@mui/icons-material";
 import {usePreEnrollment} from "../utility/hooks/usePreEnrollments";
 import {GetRows} from "../utility/helpers/selectionToRow";
 import { GetColumnFormat } from "../utility/helpers/ColumnFormat";
+import QuickSearchToolbar, {QuickSearchToolbarProps, requestSearch} from "./DataGridAddOns/QuickSearchToolbar";
+import {useTheme} from "@mui/material/styles";
 
 function CustomToolbar() {
     return(
         <Box sx={classes.toolbarBox}>
             <GridToolbarContainer>
-                <GridToolbarColumnsButton />
                 <GridToolbarFilterButton />
                 <GridToolbarDensitySelector />
             </GridToolbarContainer>
         </Box>
     )
+}
+
+function WrapToolBars(props: QuickSearchToolbarProps) {
+    const theme = useTheme()
+    const match = useMediaQuery(theme.breakpoints.down("sm"))
+    
+    return <>
+        <QuickSearchToolbar {...props} />
+        {!match? <CustomToolbar /> : null}
+    </>
 }
 
 type AddSelectionProps = {
@@ -34,12 +57,6 @@ type AddSelectionProps = {
 export function AddSelectionButton({preEnrollmentId, selectionsRef, changeTab}: AddSelectionProps) {
     const { addSelectionFn } = usePreEnrollment(preEnrollmentId)
     const [isLoading, setIsLoading] = useState(false)
-    // const [selected, setSelected] = useState(false)
-
-    // useEffect(() => {
-    //     selectionsRef.current.length === 0? setSelected(false) : setSelected(true)
-    //     console.log(selectionsRef.current.length)
-    // })
     
     return(
         <Button
@@ -79,11 +96,13 @@ type CatalogGridProps = {
 export default function CatalogGrid({semesterId, exclude, selectionsRef}: CatalogGridProps) {
     const {courseOfferings, isLoading, isError} = useSemesterOfferings(semesterId);
     const [rows, setRows] = useState([])
+    const [quickSearchState, setQuickSearchState] = useState("")
+    const afterExclusion = courseOfferings? courseOfferings.filter(co => !exclude.includes(co.id)): []
     
     useEffect(() => {
         if (!isLoading)  {
             console.log(courseOfferings)
-            GetRows(courseOfferings.filter(co => !exclude.includes(co.id)))
+            GetRows(afterExclusion)
                 .then(res => {setRows(res as any)})   
         }
     }, [courseOfferings])
@@ -110,7 +129,24 @@ export default function CatalogGrid({semesterId, exclude, selectionsRef}: Catalo
                 columns={GetColumnFormat({creditSum: null})}
                 autoHeight
                 components={{
-                    Toolbar: CustomToolbar,
+                    Toolbar: WrapToolBars,
+                }}
+                componentsProps={{
+                    toolbar: {
+                        value: quickSearchState,
+                        onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
+                            requestSearch({
+                                searchValue: event.target.value,
+                                setSearchText: setQuickSearchState,
+                                rowSetter: (rec: any[]) => GetRows(rec).then(res => setRows(res as any)),
+                                rows: afterExclusion
+                            }),
+                        clearSearch: () => {
+                            setQuickSearchState("")
+                            GetRows(afterExclusion)
+                                .then(res => setRows(res as any))
+                        }
+                    }
                 }}
             />
         </Paper>
@@ -119,7 +155,6 @@ export default function CatalogGrid({semesterId, exclude, selectionsRef}: Catalo
 
 const useStyles = {
     toolbarBox: {
-        marginTop: 1,
         marginLeft: 1,
     },
     containerBox: {
