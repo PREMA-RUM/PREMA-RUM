@@ -9,6 +9,8 @@ import {
 import {usePreEnrollments} from "../../utility/hooks/usePreEnrollments";
 import {useEffect, useState} from "react";
 import {useTheme} from "@mui/material/styles";
+import DeletePreenrollmentModal from "./deletePreenrollmentModal";
+import React from "react";
 
 export type OptionsButtonProps = {
     preEnrollment: IPreEnrollmentResponse
@@ -16,15 +18,14 @@ export type OptionsButtonProps = {
 
 function OptionsButton({preEnrollment}: OptionsButtonProps) {
     const router = useRouter();
-    const {removePreEnrollmentFromCache} = usePreEnrollments()
+    const [open, setOpen] = React.useState(false);
     
-    async function handleDelete() {
-        if (confirm(`Are your sure you want to delete pre enrollment ${preEnrollment.name}?`)) {
-            await removePreEnrollmentFromCache(preEnrollment.id)
-        }
-    }
+    const handleDeleteOpen = () => {
+        setOpen(true);
+    };
 
     return(
+        <>
         <ButtonGroup variant="contained" disableElevation sx={classes.buttonGroup}>
             <Button onClick={(event: any) => {
                 event.stopPropagation()
@@ -33,10 +34,12 @@ function OptionsButton({preEnrollment}: OptionsButtonProps) {
             <Button size="small">
                 <DeleteRounded onClick={(event:any) => {
                     event.stopPropagation()
-                    handleDelete()
+                    handleDeleteOpen()
                 }} />
             </Button>
         </ButtonGroup>
+        <DeletePreenrollmentModal openModalState={open} setOpenModalState={setOpen} preEnrollment={preEnrollment}/>
+        </>
     )
 }
 
