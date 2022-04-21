@@ -6,6 +6,7 @@ import {GetRows} from "../utility/helpers/selectionToRow";
 import {RemoveRounded} from "@mui/icons-material";
 import {usePreEnrollment} from "../utility/hooks/usePreEnrollments";
 import { GetColumnFormat } from "../utility/helpers/ColumnFormat";
+import {useRecommendations} from "../utility/hooks/useRecommendations";
 
 async function totalCredits(selections: IPreEnrollmentSelectionResponse[]) {
     if (selections.length === 0) return 0;
@@ -26,6 +27,7 @@ export function RemoveSelectionButton({preEnrollmentId, selectionsRef}: AddSelec
     
     const {removeSelectionsFn} = usePreEnrollment(preEnrollmentId)
     const [isDisabled, setIsDisabled] = useState(false);
+    const {manualRevalidate} = useRecommendations(preEnrollmentId);
     
     async function removeSelections() {
         setIsDisabled(true)
@@ -35,6 +37,7 @@ export function RemoveSelectionButton({preEnrollmentId, selectionsRef}: AddSelec
             alert(err)
             setIsDisabled(false)
         }
+        manualRevalidate()
         setIsDisabled(false)
     }
     

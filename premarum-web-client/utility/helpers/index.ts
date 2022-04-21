@@ -27,7 +27,11 @@ export async function getGraphAuthToken(instance: IPublicClientApplication) {
         })).accessToken;
     } catch(err) {
         if (err instanceof InteractionRequiredAuthError) {
-            return (await instance.acquireTokenPopup(TOKEN_REQUEST)).accessToken;
+            return (await instance.acquireTokenSilent({
+                scopes:[
+                    "User.Read"
+                ]
+            })).accessToken;
         }
         console.error(err);
         throw err;

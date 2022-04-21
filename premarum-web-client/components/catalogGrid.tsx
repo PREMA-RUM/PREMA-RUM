@@ -26,6 +26,7 @@ import {GetRows} from "../utility/helpers/selectionToRow";
 import { GetColumnFormat } from "../utility/helpers/ColumnFormat";
 import QuickSearchToolbar, {QuickSearchToolbarProps, requestSearch} from "./DataGridAddOns/QuickSearchToolbar";
 import {useTheme} from "@mui/material/styles";
+import {useRecommendations} from "../utility/hooks/useRecommendations";
 
 function CustomToolbar() {
     return(
@@ -51,12 +52,13 @@ function WrapToolBars(props: QuickSearchToolbarProps) {
 type AddSelectionProps = {
     preEnrollmentId: number,
     changeTab: () => void,
-    selectionsRef: any
+    selectionsRef: any,
 }
 
 export function AddSelectionButton({preEnrollmentId, selectionsRef, changeTab}: AddSelectionProps) {
     const { addSelectionFn } = usePreEnrollment(preEnrollmentId)
     const [isLoading, setIsLoading] = useState(false)
+    const {manualRevalidate} = useRecommendations(preEnrollmentId);
     
     return(
         <Button
@@ -78,6 +80,7 @@ export function AddSelectionButton({preEnrollmentId, selectionsRef, changeTab}: 
                     return
                 }
                 selectionsRef.current = []
+                manualRevalidate()
                 changeTab()
             }}
             disabled={isLoading}
