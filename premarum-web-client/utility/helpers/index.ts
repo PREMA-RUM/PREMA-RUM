@@ -4,10 +4,7 @@ import {TOKEN_REQUEST} from "../constants";
 export async function getAuthToken(instance: IPublicClientApplication) {
     try {
         return (await instance.acquireTokenSilent({
-            scopes: [
-                "api://83c3cbe7-f00e-4ea8-87d8-bf4d75690f17/access_as_user",
-                "api://83c3cbe7-f00e-4ea8-87d8-bf4d75690f17/User.Read"
-            ],
+            scopes: TOKEN_REQUEST.scopes,
         })).accessToken;
     } catch(err) {
         if (err instanceof InteractionRequiredAuthError) {
@@ -27,11 +24,12 @@ export async function getGraphAuthToken(instance: IPublicClientApplication) {
         })).accessToken;
     } catch(err) {
         if (err instanceof InteractionRequiredAuthError) {
-            return (await instance.acquireTokenSilent({
+            await instance.acquireTokenRedirect({
                 scopes:[
                     "User.Read"
-                ]
-            })).accessToken;
+                ],
+                redirectUri: "/home"
+            })
         }
         console.error(err);
         throw err;
