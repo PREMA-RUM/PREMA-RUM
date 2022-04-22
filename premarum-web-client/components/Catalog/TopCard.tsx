@@ -1,20 +1,38 @@
-import {Autocomplete, Card, Divider, Grid, TextField, Typography} from "@mui/material";
+import {Autocomplete, Card, Divider, Grid, Stack, TextField, Typography} from "@mui/material";
 import {ISemesterResponse} from "../../utility/requests/responseTypes";
 import React from "react";
+import {Property} from "csstype";
+import Top = Property.Top;
 
 type TopAreaProps = {
     semesters: ISemesterResponse[],
     handleSelect: (sId:number) => void
 }
 
-export function CatalogMobileTopArea() {
-    
+export function CatalogMobileTopArea({semesters, handleSelect}: TopAreaProps) {
+return <Stack sx={{mb: 1}}>
+        <Autocomplete
+            sx={classes.semesterSelect}
+            id="semester-select"
+            options={semesters}
+            getOptionLabel={(option) => `${option.term}: ${option.year}-${option.year+1}`}
+            filterSelectedOptions
+            size="small"
+            onChange={(event: any, newValue: ISemesterResponse | null) => {handleSelect(newValue? newValue.id : 0)}}
+            renderInput={(params) => (
+                <TextField
+                    {...params}
+                    placeholder="Select Semester..."
+                />
+            )}
+        />
+        <Divider />
+    </Stack>
 }
 
-export function WideScreenTopArea({semesters, handleSelect}: TopAreaProps) {
+export function CatalogWideScreenTopArea({semesters, handleSelect}: TopAreaProps) {
     return <Card sx={classes.topCard}>
         <Grid container direction="row" justifyContent="space-between" alignItems="center">
-
             <Grid item>
                 <Grid container direction="row" alignItems="center">
                     <Typography sx={classes.title}>Course Catalog</Typography>
@@ -31,14 +49,12 @@ export function WideScreenTopArea({semesters, handleSelect}: TopAreaProps) {
                         renderInput={(params) => (
                             <TextField
                                 {...params}
-                                label="Semester Selection"
                                 placeholder="Select Semester..."
                             />
                         )}
                     />
                 </Grid>
             </Grid>
-
         </Grid>
     </Card>
 }

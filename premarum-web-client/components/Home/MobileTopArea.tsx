@@ -56,6 +56,6 @@ const useStyles = (theme: Theme) => ({
     },
     semesterSelect: {
         backgroundColor: 'white',
-        minWidth: '300px'
+        width: "100%"
     }
 })

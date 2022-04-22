@@ -21,10 +21,14 @@ import QuickSearchToolbar, {
     QuickSearchToolbarProps,
     requestSearch
 } from "../../components/DataGridAddOns/QuickSearchToolbar";
-import {useTheme} from "@mui/material/styles";
+import {Theme, useTheme} from "@mui/material/styles";
+import {CatalogMobileTopArea, CatalogWideScreenTopArea} from "../../components/Catalog/TopCard";
 
 
 function CustomToolbar() {
+    const theme = useTheme();
+    const classes = useStyles(theme)
+    
     return(
         <Box sx={classes.toolbarBox}>
             <GridToolbarContainer>
@@ -55,6 +59,9 @@ export default function Catalog({semesters}: SemesterProps) {
     const {courseOfferings, isLoading, isError} = useSemesterOfferings(semesterID);
     const [rows, setRows] = useState([])
     const [quickSearchState, setQuickSearchState] = useState("")
+    const theme = useTheme();
+    const matches = useMediaQuery(theme.breakpoints.down("sm"))
+    const classes = useStyles(theme)
     
     const handleSemesterID = (id: number) => {
         setSemesterID(id);
@@ -71,35 +78,10 @@ export default function Catalog({semesters}: SemesterProps) {
         <Grid container direction="column">
 
             <Grid item>
-                <Card sx={classes.topCard}>
-                    <Grid container direction="row" justifyContent="space-between" alignItems="center">
-                        
-                        <Grid item>
-                            <Grid container direction="row" alignItems="center">
-                                <Typography sx={classes.title}>Course Catalog</Typography>
-                                <Divider orientation="vertical" variant='middle' light flexItem sx={classes.dividerItem}/>
-                                {/* <TextField size="small" variant="outlined" placeholder="Search Courses..." sx={classes.searchInput}/> */}
-                                <Autocomplete
-                                    sx={classes.semesterSelect}
-                                    id="semester-select"
-                                    options={semesters}
-                                    getOptionLabel={(option) => `${option.term} - ${option.year}`}
-                                    filterSelectedOptions
-                                    size="small"
-                                    onChange={(event: any, newValue: ISemesterResponse | null) => {handleSemesterID(newValue? newValue.id : 0)}}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            label="Semester Selection"
-                                            placeholder="Select Semester..."
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                        </Grid>
-
-                    </Grid>
-                </Card>
+                {matches? 
+                    <CatalogMobileTopArea semesters={semesters} handleSelect={setSemesterID} />: 
+                    <CatalogWideScreenTopArea semesters={semesters} handleSelect={setSemesterID} />
+                }
             </Grid>
             
             <Grid item>
@@ -143,7 +125,7 @@ export default function Catalog({semesters}: SemesterProps) {
     )
 }
 
-const useStyles = {
+const useStyles = (theme: Theme) => ({
     toolbarBox: {
         marginTop: 1,
         marginLeft: 1,
@@ -168,6 +150,10 @@ const useStyles = {
         backgroundColor: 'primary.dark'
     },
     contentCard: {
+        [theme.breakpoints.down("sm")]: {
+          p:1,
+          minHeight: '70vh'  
+        },
         backgroundColor: grey[100],
         padding: '15px',
         minHeight: '80vh',
@@ -176,9 +162,7 @@ const useStyles = {
     dataContainer: {
 
     },
-  };
-
-const classes = useStyles;
+});
 
 export async function getStaticProps() {
     return {
