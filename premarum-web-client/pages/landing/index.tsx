@@ -70,13 +70,18 @@ export default function Landing() {
     const matches = useMediaQuery(theme.breakpoints.down(BREAKPOINT_WIDTH), {noSsr:true});
 
     return(
-        // <Grid container direction="column" justifyContent="center" alignItems="center">
         <Box sx={classes.fullBox}>
             <OverlayIcons />
 
+            {/* <Box
+                sx={classes.backImage}
+                component="img"
+                alt="background"
+                src="/backgroundImage.png"
+            /> */}
+
             <Box sx={classes.topBox}>
-                <Grid container direction="column" justifyContent="center" alignItems="center">
-                    {/* <Typography align="center" variant="h1" sx={classes.topTitle}>PREMA-RUM</Typography> */}
+                <Grid container direction="column" justifyContent="center" alignItems="center" >
                     <Box
                         sx={classes.premaLogo}
                         component="img"
@@ -94,7 +99,7 @@ export default function Landing() {
             <Box sx={classes.bottomBox}>
                 <Grid container direction="column" justifyContent="center" alignItems="center">
                     <Typography align="center" variant="h3" sx={classes.bottomTitle}>What is PREMARUM?</Typography>
-                    <Box>
+                    <Box sx={classes.videoBox}>
                         {matches?
                             <iframe
                                 width="500"
@@ -135,6 +140,13 @@ Landing.getLayout = function getLayout(page: NextPage) {
 
 
 const useStyles = {
+    backImage: {
+        position: 'absolute',
+        opacity: 0.5,
+        zIndex: 0,
+        width: '100%',
+        height: '100%',
+    },
     loginButton: {
         color: 'black',
         backgroundColor: 'secondary.light',
@@ -151,8 +163,10 @@ const useStyles = {
         minHeight: '250px',
     },
     premaLogo: {
-        maxWidth: '700px',
+        width: '100%',
         height: '100%',
+        maxWidth: '700px',
+        minWidth: '400px',
     },
     topTitle: {
         padding: '20px 20px 10px 20px',
@@ -164,7 +178,11 @@ const useStyles = {
     bottomBox: {
         backgroundColor: 'secondary.main',
         width: '100%',
+        height: '100%',
         minHeight: '500px',
+    },
+    videoBox: {
+        
     },
     bottomTitle: {
         padding: '20px',
