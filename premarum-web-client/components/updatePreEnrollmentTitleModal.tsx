@@ -48,7 +48,7 @@ export default function UpdatePreEnrollmentTitleModal(props: PreEnrollmentProps)
                         sx={classes.modalGridMain}>
                     <Card sx={classes.modalCard}>
                         <CardHeader
-                            title="Create New Pre-Enrollment"
+                            title="Update Pre-Enrollment Name"
                         />
 
                         <Divider/>
@@ -93,14 +93,21 @@ const useStyles = (theme: Theme) => ({
         height: '100%',
     },
     modalCard: {
+        [theme.breakpoints.down("sm")]: {
+          width: '90%',
+          minHeight: '5%'  
+        },
         width: '60%',
         minHeight: '30%',
         backgroundColor: grey[50],
     },
     cardContent: {
+        [theme.breakpoints.down("sm")]: {
+            p: 2
+        },
         width: '100%',
         height: '100%',
-        padding: '60px 20px',
+        p: '60px 20px',
     },
     titleInput: {
         marginBottom: 1,

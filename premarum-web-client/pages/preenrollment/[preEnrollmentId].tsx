@@ -25,7 +25,6 @@ import {usePreEnrollment} from "../../utility/hooks/usePreEnrollments";
 import RecommendedGrid from '../../components/recommendedGrid';
 import {Theme, useTheme} from "@mui/material/styles";
 import { EditRounded } from '@mui/icons-material';
-import { ISemesterResponse } from '../../utility/requests/responseTypes';
 import UpdatePreEnrollmentTitleModal from '../../components/updatePreEnrollmentTitleModal';
 import ScheduleCalendar from "../../components/scheduleCalendar";
 
@@ -102,8 +101,8 @@ export default function Preenrollment() {
     };
 
     function EditTitleButton() {
-        return (
-            <Button
+        if (!matches) {
+            return <Button
                 startIcon={<EditRounded/>}
                 variant="contained"
                 sx={classes.editTitleButton}
@@ -111,7 +110,14 @@ export default function Preenrollment() {
             >
                 Edit Title
             </Button>
-        )
+        }
+        return <Button
+            variant="contained"
+            sx={classes.editTitleButton}
+            onClick={handleModalOpen}
+        >
+            <EditRounded/>
+        </Button>
     }
     
     function ActionButtons() {
@@ -140,14 +146,21 @@ export default function Preenrollment() {
         <>
         <ContainerComp>
             
-            <Card sx={classes.topCard}>
+            <Card sx={classes.topCard} elevation={3}>
                 {
                     matches ?
-                        <Stack>
-                            <Typography variant={"body1"}>{preEnrollment?.name}</Typography>
-                            <Divider/>
-                            <Typography>{preEnrollment?.semester.term} {preEnrollment?.semester.year}-{preEnrollment!.semester.year + 1}</Typography>
-                        </Stack>
+                        <Grid container direction={"row"}>
+                            <Grid item xs={9} sx={{pl:0.5}}>
+                                <Typography variant={"body1"}>{preEnrollment?.name}</Typography>
+                                <Divider/>
+                                <Typography>{preEnrollment?.semester.term} {preEnrollment?.semester.year}-{preEnrollment!.semester.year + 1}</Typography>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <Stack sx={classes.mobileEditBtnContainer} alignItems={"center"} justifyContent={"center"} >
+                                    <EditTitleButton/>
+                                </Stack>
+                            </Grid>
+                        </Grid>
                         : <Grid container direction="row" justifyContent="space-between" alignItems="center">
                             <Grid item>
                                 <Grid container direction="row" alignItems="center">
@@ -167,7 +180,7 @@ export default function Preenrollment() {
 
             </Card>
             
-            <Card sx={classes.contentCard}>
+            <Card sx={classes.contentCard} elevation={3}>
                 {matches?
                     <>
                         <Tabs
@@ -230,11 +243,12 @@ const useStyles = (theme: Theme) => ({
         padding: 0
     },
     editTitleButton: {
-        backgroundColor: 'primary.dark',
+        backgroundColor: theme.palette.secondary.dark,
     },
     topCard: {
         padding: '5px 25px',
-        backgroundColor: 'primary.light',
+        backgroundColor: 'primary.main',
+        color: theme.palette.primary.contrastText,
         marginBottom: 1.5,
         [theme.breakpoints.down("sm")]: {
             padding: 1
@@ -278,4 +292,9 @@ const useStyles = (theme: Theme) => ({
             minWidth: 400,
         },
     },
+    mobileEditBtnContainer: {
+        height:"3em",
+        width: "100%",
+        pl:1
+    }
 });
