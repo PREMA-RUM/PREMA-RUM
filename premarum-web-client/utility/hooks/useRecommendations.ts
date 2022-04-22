@@ -5,7 +5,8 @@ import {IPreEnrollmentSelectionResponse} from "../requests/responseTypes";
 
 
 export function useRecommendations(preEnrollmentId: number) {
-    const {data, error, mutate} = useSWR("getRecommendations", async () => {
+    const {data, error, mutate} = useSWR(`getRecommendations-${preEnrollmentId}`, 
+        async () => {
         return await getRecommendations(pca, preEnrollmentId)
     }, {revalidateIfStale: false})
     
