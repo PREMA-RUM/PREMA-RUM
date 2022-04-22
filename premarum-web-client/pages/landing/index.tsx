@@ -162,7 +162,7 @@ const useStyles = {
         padding: '0 20px',
     },
     bottomBox: {
-        backgroundColor: 'info.light',
+        backgroundColor: 'secondary.main',
         width: '100%',
         minHeight: '500px',
     },

@@ -4,14 +4,19 @@ const lightThemeOptions: ThemeOptions = {
     palette: {
         mode: 'light',
         primary: {
-            main: '',
+            main: '#164A41',
         },
         secondary: {
-            main: '',
+            main: '#9DC88D',
         },
-        info: {
-            main: '',
-        }
+        // info: {
+        //     main: '',
+        // },
+        // text: {
+        //     primary: '',
+        //     secondary: '',
+        //     disabled: '',
+        // },
     },
     components: {
         MuiCssBaseline: {
