@@ -168,4 +168,4 @@ const useStyles = {
     },
 };
   
-const classes = useStyles;
+const classes = useStyles
