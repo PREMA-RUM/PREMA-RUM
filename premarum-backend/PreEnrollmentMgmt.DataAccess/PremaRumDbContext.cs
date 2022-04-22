@@ -240,14 +240,21 @@ public class PremaRumDbContext : DbContext
                 .HasConstraintName("t_id");
         });
 
+        modelBuilder.Entity<ProfessorTaught>(entity =>
+        {
+            entity.ToTable("ProfessorTeaches");
+            entity.HasKey("ProfessorId", "SemesterOfferId");
+            entity.Property(e => e.ProfessorId).HasColumnName("p_id");
+            entity.Property(e => e.SemesterOfferId).HasColumnName("so_id");
+        });
+        
         modelBuilder.Entity<SemesterOffer>(entity =>
         {
-            entity.HasKey(e => e.Id)
-                .HasName("semesteroffer_pk");
-
             entity.ToTable("SemesterOffer");
 
-            entity.Property(e => e.Id).HasColumnName("so_id");
+            entity.Property(e => e.Id)
+                .HasColumnName("so_id");
+            entity.HasKey(e => e.Id);
 
             entity.Property(e => e.SectionName)
                 .HasColumnName("so_section_name");
@@ -275,22 +282,25 @@ public class PremaRumDbContext : DbContext
 
             entity.HasMany(d => d.Professors)
                 .WithMany(p => p.OffersTeached)
-                .UsingEntity<Dictionary<string, object>>(
-                    "ProfessorTeach",
-                    l => l.HasOne<Professor>().WithMany().HasForeignKey("PId").OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("p_id"),
-                    r => r.HasOne<SemesterOffer>().WithMany().HasForeignKey("SoId")
-                        .OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("so_id"),
-                    j =>
-                    {
-                        j.HasKey("SoId", "PId").HasName("professorteaches_pk");
+                .UsingEntity<ProfessorTaught>(
+                    l => l.HasOne<Professor>().WithMany()
+                        .HasForeignKey(pt => pt.ProfessorId)
+                        .OnDelete(DeleteBehavior.ClientSetNull),
+                    r => r.HasOne<SemesterOffer>().WithMany()
+                        .HasForeignKey(pt => pt.SemesterOfferId)
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                );
+        });
 
-                        j.ToTable("ProfessorTeaches");
-
-                        j.IndexerProperty<int>("SoId").HasColumnName("so_id");
-
-                        j.IndexerProperty<int>("PId").HasColumnName("p_id");
-                    });
+        modelBuilder.Entity<RankedSemesterOffer>(entity =>
+        {
+            entity.HasKey(e => e.SemesterOfferId);
+            entity.Property(e => e.SemesterOfferId).HasColumnName("so_id");
+            entity.Property(e => e.Rank).HasColumnName("rank");
+            entity.ToView(null);
+            entity.HasOne(e => e.SemesterOffer)
+                .WithOne()
+                .HasForeignKey<RankedSemesterOffer>(e => e.SemesterOfferId);
         });
 
         modelBuilder.Entity<Student>(entity =>
