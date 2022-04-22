@@ -12,7 +12,8 @@ type ButtonProps = {
     
 }
 
-const BREAKPOINT_WIDTH = 750
+const BREAKPOINT_SMALL = 350
+const BREAKPOINT_MID = 750
 
 const LoginButton: React.FunctionComponent<ButtonProps> = () => {
     const { instance, inProgress } = useMsal();
@@ -65,21 +66,60 @@ const LoginButton: React.FunctionComponent<ButtonProps> = () => {
     )
 }
 
-export default function Landing() {
+export function DemoVideo() {
     const theme = useTheme()
-    const matches = useMediaQuery(theme.breakpoints.down(BREAKPOINT_WIDTH), {noSsr:true});
+    const matchesS = useMediaQuery(theme.breakpoints.down(BREAKPOINT_SMALL), {noSsr:true});
+    const matchesM = useMediaQuery(theme.breakpoints.down(BREAKPOINT_MID), {noSsr:true});
+    
+    // if(matchesS){
+    //     return(
+    //         <iframe
+    //             width="300"
+    //             height="170"
+    //             frameBorder="0"
+    //             title="PREMARUM Demo Video"
+    //             src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+    //         />
+    //     )
+    // } else if(matchesM) {
+    //     return(
+    //         <iframe
+    //             width="480"
+    //             height="270"
+    //             frameBorder="0"
+    //             title="PREMARUM Demo Video"
+    //             src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+    //         />
+    //     )
+    // } else {
+    //     return(
+    //         <iframe
+    //             width="720"
+    //             height="420"
+    //             frameBorder="0"
+    //             title="PREMARUM Demo Video"
+    //             src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+    //         />
+    //     )
+    // }
+
+    return(
+        <iframe
+            width="100%"
+            height="100%"
+            frameBorder="0"
+            title="PREMARUM Demo Video"
+            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+        />
+    )
+}
+
+export default function Landing() {
 
     return(
         <Box sx={classes.fullBox}>
             <OverlayIcons />
-
-            {/* <Box
-                sx={classes.backImage}
-                component="img"
-                alt="background"
-                src="/backgroundImage.png"
-            /> */}
-
+            
             <Box sx={classes.topBox}>
                 <Grid container direction="column" justifyContent="center" alignItems="center" >
                     <Box
@@ -100,23 +140,17 @@ export default function Landing() {
                 <Grid container direction="column" justifyContent="center" alignItems="center">
                     <Typography align="center" variant="h3" sx={classes.bottomTitle}>What is PREMARUM?</Typography>
                     <Box sx={classes.videoBox}>
-                        {matches?
-                            <iframe
-                                width="500"
-                                height="280"
-                                frameBorder="0"
-                                title="PREMA-RUM Demo Video"
-                                src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                            />
-                        :
-                            <iframe
-                                width="720"
-                                height="420"
-                                frameBorder="0"
-                                title="PREMARUM Demo Video"
-                                src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                            />
-                        }
+                        <Box sx={classes.videoBoxWrapper}>
+                            <Box sx={classes.videoWrapper}>
+                                <Box
+                                    sx={classes.videoFrame}
+                                    component="iframe"
+                                    frameBorder="0"
+                                    title="PREMARUM Demo Video"
+                                    src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                                />
+                            </Box>
+                        </Box>
                     </Box>
                     <Typography align="center" variant="h5" sx={classes.bottomSubtitle}>Designed for UPRM students, by UPRM students.</Typography>
                     <Box
@@ -166,7 +200,6 @@ const useStyles = {
         width: '100%',
         height: '100%',
         maxWidth: '700px',
-        minWidth: '400px',
     },
     topTitle: {
         padding: '20px 20px 10px 20px',
@@ -181,11 +214,31 @@ const useStyles = {
         height: '100%',
         minHeight: '500px',
     },
-    videoBox: {
-        
+    videoBox: { 
+        width: '100%',
+        maxWidth: '720px',
+        height: '100%',
+        padding: '0 20px'
+    },
+    videoBoxWrapper: { // 16:9 ratio
+        width: '100%',
+        height: 0,
+        paddingBottom: '56.25%',
+        position: 'relative',
+    },
+    videoWrapper: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+    },
+    videoFrame: {
+        width: '100%',
+        height: '100%',
     },
     bottomTitle: {
-        padding: '20px',
+        padding: '20px 0',
     },
     bottomSubtitle: {
         padding: '20px',
