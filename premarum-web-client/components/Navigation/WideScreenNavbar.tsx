@@ -184,7 +184,7 @@ export default function Navbars({children}:any) {
                   sx={classes.boxSize}
                   component="img"
                   alt="UPRM"
-                  src="https://www.uprm.edu/wdt/resources/seal-rum-uprm.svg"
+                  src="/rum-logo.png"
                 />
             </Button>
           </Tooltip>

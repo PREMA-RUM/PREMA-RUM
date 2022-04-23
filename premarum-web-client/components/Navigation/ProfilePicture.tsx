@@ -5,6 +5,7 @@ import Image from 'next/image'
 import {useState} from "react";
 import dynamic from "next/dynamic";
 import {useTheme} from "@mui/material/styles";
+import {LogoutModal} from "../logoutModal";
 
 const MobilePicDrawer = dynamic(() => import('./MobileProfilePicDrawer'))
 
@@ -12,13 +13,17 @@ export default function ProfilePicture() {
     const {profilePicture} = useProfilePicture()
     const {student} = useStudent()
     const [showDrawer, setShowDrawer] = useState(false)
+    const [showLogoutModal, setShowLogoutModal] = useState(false)
     // TODO: Change to useIsMobile Once it is merge
     const theme = useTheme()
     const matches = useMediaQuery(theme.breakpoints.down("sm"), {noSsr:true})
     
     if (profilePicture === null || profilePicture === undefined)  {
         return <>
-            {matches && <MobilePicDrawer open={showDrawer} onClose={()=>{setShowDrawer(false)}}/>}
+            {matches && <>
+                <MobilePicDrawer open={showDrawer} onClose={()=>{setShowDrawer(false)}} onLogoutRequest={()=>{setShowLogoutModal(true)}}/>
+                <LogoutModal openModalState={showLogoutModal} setOpenModalState={setShowLogoutModal} />
+            </>}
             <Avatar style={classes.profilePic} >
                 {student? student.name![0]: <></>}
             </Avatar>
@@ -26,7 +31,11 @@ export default function ProfilePicture() {
     }
     
     return <>
-        {matches && <MobilePicDrawer open={showDrawer} onClose={()=>{setShowDrawer(false)}}/>}
+        {matches && <>
+                <MobilePicDrawer open={showDrawer} onClose={()=>{setShowDrawer(false)}} onLogoutRequest={()=>{setShowLogoutModal(true)}}/>
+                <LogoutModal openModalState={showLogoutModal} setOpenModalState={setShowLogoutModal} />
+            </>    
+        }
         <Box 
             onClick={() => setShowDrawer(true)}
             style={classes.profilePic}>
