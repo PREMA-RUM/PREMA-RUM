@@ -33,6 +33,7 @@ public class SemesterOfferRepository : ISemesterOfferRepository
     {
         return await _context
             .Semesters
+            .OrderByDescending(sem => sem.Id)
             .Include(sem => sem.Term)
             .ToListAsync();
     }

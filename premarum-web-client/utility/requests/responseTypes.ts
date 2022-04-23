@@ -14,6 +14,11 @@ export interface ICourseResponse {
     courseName: string
 }
 
+export interface IDepartmentResponse {
+    departmentId: number
+    departmentName: string
+}
+
 export interface IProfessorResponse {
     id: number
     name: string
@@ -41,4 +46,9 @@ export interface IPreEnrollmentResponse {
     studentId: number
     semester: ISemesterResponse
     selections: IPreEnrollmentSelectionResponse[]
+}
+
+export interface ICoursesTakenResponse {
+    course: ICourseResponse,
+    semester: ISemesterResponse | null
 }

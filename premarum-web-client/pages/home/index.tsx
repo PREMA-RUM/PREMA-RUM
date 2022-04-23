@@ -11,32 +11,47 @@ import {
     Grid,
     Modal, Stack,
     TextField,
-    Typography,
+    useTheme,
+    Theme, useMediaQuery, Box
 } from '@mui/material'
-import {AddRounded} from '@mui/icons-material';
 import {grey} from '@mui/material/colors';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useRouter} from 'next/router';
 import getAllSemesters from "../../utility/requests/getAllSemesters";
-import {IPreEnrollmentResponse, ISemesterResponse} from "../../utility/requests/responseTypes";
+import {IDepartmentResponse, IPreEnrollmentResponse, ISemesterResponse} from "../../utility/requests/responseTypes";
 import {
-    useMutatePreEnrollmentsCache,
+    useMutatePreEnrollmentsCache, usePreEnrollments,
 } from "../../utility/hooks/usePreEnrollments";
 import createPreEnrollment from "../../utility/requests/createPreEnrollment";
 import {useMsal} from "@azure/msal-react";
 import PreEnrollmentCardSection from "../../components/PreEnrollmentCardSection";
+import { StudentDepartmentModal } from '../../components/departmentChoiceModal';
+import getAllDepartments from '../../utility/requests/getAllDepartments';
+import { useStudent } from '../../utility/hooks/useStudent';
+import {MobileTopArea} from "../../components/Home/MobileTopArea";
+import {WideScreenCard} from "../../components/Home/WideScreenCard";
 
 type HomeProps = {
-    semesters: ISemesterResponse[]
+    semesters: ISemesterResponse[],
+    departments: IDepartmentResponse[],
 }
 
 export default function Home(props: HomeProps) {
     const {instance} = useMsal();
     const [open, setOpen] = React.useState(false);
+    const [deptOpen, setDeptOpen] = useState(false);
     const [modalLoading, setModalLoading] = React.useState(false);
     const [newPreEnrollmentName, setNewPreEnrollmentName] = useState("");
     const [newPreEnrollmentSemester, setNewPreEnrollmentSemester] = useState<ISemesterResponse | null>(null)
     const mutatePreEnrollmentCache = useMutatePreEnrollmentsCache();
+    const {student, isLoading:studentLoading} = useStudent()
+    const {preEnrollments} = usePreEnrollments()
+    
+    const [filterBySemester, setFilterBySemester] = useState<ISemesterResponse | null>(null) 
+    
+    const theme = useTheme()
+    const classes = useStyles(theme)
+    const matches = useMediaQuery(theme.breakpoints.down('sm'), {noSsr:true});
 
     const router = useRouter();
 
@@ -68,65 +83,53 @@ export default function Home(props: HomeProps) {
         await router.push(`/preenrollment/${result.id}`)
     }
 
-    function AddButton() {
-        return (
-            <Button
-                startIcon={<AddRounded/>}
-                variant="contained"
-                sx={classes.addCoursesButton}
-                onClick={handleModalOpen}
-            >
-                Add Pre-Enrollment
-            </Button>
-        )
-    }
+    useEffect(() => {
+        if (!studentLoading) {
+            setDeptOpen(!student?.departmentId)
+        }
+    }, [student])
 
     return (
-        <>
+        <Box  sx={classes.mainBox}>
+            <StudentDepartmentModal
+                departments={props.departments}
+                openModalState={deptOpen}
+                allowClose={false}
+                setOpenModalState={setDeptOpen}
+            />
+            
             <Grid container direction="column" sx={classes.mainGrid}>
-
                 <Grid item>
-                    <Card sx={classes.topCard}>
-                        <Grid container direction="row" justifyContent="space-between" alignItems="center">
-
-                            <Grid item>
-                                <Grid container direction="row" alignItems="center">
-                                    <Typography sx={classes.title}>Pre-Enrollment</Typography>
-                                    <Divider orientation="vertical" variant='middle' light flexItem
-                                             sx={classes.dividerItem}/>
-                                    <Autocomplete
-                                        sx={classes.semesterSelect}
-                                        id="tags-outlined"
-                                        options={props.semesters}
-                                        getOptionLabel={(option) => `${option.term}-${option.year}`}
-                                        filterSelectedOptions
-                                        size="small"
-                                        renderInput={(params) => (
-                                            <TextField
-                                                {...params}
-                                                label="Semester Selection"
-                                                placeholder="Select Semester..."
-                                            />
-                                        )}
-                                    />
-                                </Grid>
-                            </Grid>
-
-                            <Grid item>
-                                <AddButton/>
-                            </Grid>
-
-                        </Grid>
-                    </Card>
+                    {
+                        matches? <MobileTopArea 
+                            semesters={props.semesters}
+                            filterState={filterBySemester}
+                            setFilterState={setFilterBySemester}
+                            handleModalOpen={handleModalOpen} 
+                        />: <WideScreenCard
+                            filterState={filterBySemester}
+                            setFilterState={setFilterBySemester}
+                            semesters={props.semesters} 
+                            handleModalOpen={handleModalOpen} 
+                        />
+                    }
                 </Grid>
-
-
                 <Grid item>
-                    <Card sx={classes.contentCard}>
-                        <PreEnrollmentCardSection/>
-                    </Card>
+                    {matches?
+                        <Box sx={preEnrollments?.length===0?classes.contentCardEmpty:classes.contentCard}>
+                            <PreEnrollmentCardSection 
+                                filterBySemester={filterBySemester} 
+                                handleModalOpen={handleModalOpen}
+                            />
+                        </Box>:
+                        <Card sx={preEnrollments?.length===0?classes.contentCardEmpty:classes.contentCard}>
+                            <PreEnrollmentCardSection 
+                                filterBySemester={filterBySemester} 
+                                handleModalOpen={handleModalOpen}
+                            />
+                        </Card>
+                    }
                 </Grid>
-
             </Grid>
 
             <Modal
@@ -192,46 +195,39 @@ export default function Home(props: HomeProps) {
                     </Grid>
                 </Fade>
             </Modal>
-        </>
+        </Box>
     )
 }
 
-const useStyles = {
+const useStyles = (theme: Theme) => ({
+    mainBox: {
+    },
     mainGrid: {
-        width: '100%',
-        height: '100%',
-    },
-    topCard: {
-        padding: '5px 25px',
-        backgroundColor: 'primary.light',
-        marginBottom: 1.5
-    },
-    title: {},
-    dividerItem: {
-        marginLeft: 2,
-        marginRight: 2,
-    },
-    semesterSelect: {
-        backgroundColor: 'white',
-        minWidth: '300px'
-    },
-    addCoursesButton: {
-        backgroundColor: 'primary.dark',
     },
     contentCard: {
-        backgroundColor: 'secondary.light',
         padding: '25px',
         minHeight: '80vh',
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: 'secondary.light',
+        [theme.breakpoints.down("sm")] : {
+            backgroundColor: 'transparent',
+            padding: 0,
+        },
+    },
+    contentCardEmpty: {
+        display: "flex",
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '80vh',
+        width: '100%',
+        [theme.breakpoints.up("sm")] : {
+            backgroundColor: 'secondary.light',
+        }
     },
     contentText: {
         padding: '2px 10px',
-    },
-    coursesContainer: {
-        minWidth: '100%',
-        maxHeight: '80vh',
     },
     itemStyle: {
         width: '100%',
@@ -241,6 +237,9 @@ const useStyles = {
         height: '90%',
     },
     modalCard: {
+        [theme.breakpoints.down("sm")]: {
+            width: "90%"
+        },
         width: '60%',
         minHeight: '30%',
         backgroundColor: grey[50],
@@ -257,14 +256,14 @@ const useStyles = {
         justifyContent: 'flex-end',
         alignItems: 'flex-end',
     },
-};
-
-const classes = useStyles;
+});
 
 export async function getStaticProps() {
     return {
         props: {
-            semesters: await getAllSemesters()
+            semesters: await getAllSemesters(),
+            departments: await getAllDepartments()
         }, // will be passed to the page component as props
+        revalidate: 3600*2 // revalidate every 2 hours
     }
 }

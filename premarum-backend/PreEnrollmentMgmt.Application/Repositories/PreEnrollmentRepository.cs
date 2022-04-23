@@ -15,10 +15,10 @@ public class PreEnrollmentRepository : IPreEnrollmentRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<PreEnrollment>> GetByStudentIdComplete(int studentId)
+    public async Task<IEnumerable<PreEnrollment>> GetByStudentIdPartial(int studentId)
     {
         return await
-            GetCompletePreEnrollmentQueryable()
+            GetPartialPreEnrollmentQueryable()
                 .Where(pe => pe.StudentId == studentId)
                 .ToListAsync();
     }
@@ -44,7 +44,7 @@ public class PreEnrollmentRepository : IPreEnrollmentRepository
 
     public async Task<bool> ContainsWithNameStudentAndSemesterId(string name, int studentId, int semesterId)
     {
-        int id = await _context
+        var id = await _context
             .PreEnrollments
             .Where(pe =>
                 pe.StudentId == studentId &&
@@ -65,18 +65,42 @@ public class PreEnrollmentRepository : IPreEnrollmentRepository
         return _context
             .PreEnrollments
             .Include(pe => pe.Semester).ThenInclude(s => s.Term)
+            .OrderByDescending(pe => pe.Semester.Id)
             .Include(pe => pe.Selections).ThenInclude(so => so.Course)
             .Include(pe => pe.Selections).ThenInclude(so => so.Professors)
             .Include(pe => pe.Selections).ThenInclude(so => so.TimeSlots)
             .Include("Selections.TimeSlots.WeekDay");
     }
-    
+
+    public async Task<IEnumerable<SemesterOffer>> GetRecommendationsForPreEnrollment(int preEnrollmentId)
+    {
+        return await _context
+            .Set<RankedSemesterOffer>()
+            .FromSqlRaw("select so_id, rank from top_100_courses_for_pre_enrollment({0})", preEnrollmentId)
+            .Include("SemesterOffer.Course")
+            .Include("SemesterOffer.Professors")
+            .Include("SemesterOffer.TimeSlots")
+            .Include("SemesterOffer.TimeSlots.WeekDay")
+            .OrderByDescending(rs => rs.Rank)
+            .Select(rs => rs.SemesterOffer)
+            .ToListAsync();
+    }
+
+    private IQueryable<PreEnrollment> GetPartialPreEnrollmentQueryable()
+    {
+        return _context
+            .PreEnrollments
+            .Include(pe => pe.Semester).ThenInclude(s => s.Term)
+            .OrderByDescending(pe => pe.Semester.Id)
+            .Include(pe => pe.Selections).ThenInclude(so => so.Course);
+    }
+
     public async Task<IEnumerable<OverlappingPreEnrollmentSelections>> GetConflictingSelections(int preEnrollmentId)
     {
         return await _context
             .OverlappingSemesterOffers
             .FromSqlRaw(
-                "select * from sp_conflicting_selections({0})", 
+                "select * from sp_conflicting_selections({0})",
                 preEnrollmentId
             ).ToListAsync();
     }

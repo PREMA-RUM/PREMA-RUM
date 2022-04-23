@@ -6,6 +6,11 @@ import MuiDrawer from '@mui/material/Drawer';
 import {Menu, ChevronLeft, ChevronRight, AccountBoxRounded, HomeRounded, ListAltRounded, AccountCircle, ManageAccountsRounded, SchoolRounded, LogoutRounded} from '@mui/icons-material'
 import { useRouter } from 'next/router';
 import {useMsal} from "@azure/msal-react";
+import { LogoutModal } from './logoutModal';
+import MobileNavbar from "./MobileNavBar";
+import {Stack} from "@mui/material";
+import {useProfilePicture} from "../utility/hooks/useProfilePicture";
+import ProfilePicture from "./ProfilePicture";
 
 const drawerWidth = 240;
 
@@ -78,29 +83,15 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-const useStyles = {
-  logoComponent: {
-    position: "absolute",
-    bottom: 0,
-    marginBottom: 0,
-    height: "100px",
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  boxSize: {
-    width: "45px",
-    height: "45px",
-  }
-};
-
 export default function Navbars({children}:any) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [openLogout, setOpenLogout] = React.useState(false);
   const router = useRouter();
-  const classes = useStyles;
 
-  const { instance } = useMsal();
+  const handleLogoutOpen = () => {
+    setOpenLogout(true);
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -111,6 +102,7 @@ export default function Navbars({children}:any) {
   };
 
   return (
+    <>
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
@@ -127,9 +119,18 @@ export default function Navbars({children}:any) {
             >
                 <Menu />
             </IconButton>
-            <Typography variant="h6" noWrap component="div">
-                PREMARUM
-            </Typography>
+            <Stack 
+                style={classes.appBarStack}
+                direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
+                <Button
+                    disableRipple
+                    onClick={() => {router.push('/home')}}
+                    sx={classes.logoButton}
+                >
+                    <img src="/prema-logo-white.png" style={classes.icon}/>
+                </Button>
+                <ProfilePicture />
+            </Stack>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
@@ -141,7 +142,7 @@ export default function Navbars({children}:any) {
         <Divider />
 
           <List>
-              <Tooltip title="Home" placement="right">
+              <Tooltip title="Home" placement="right" arrow>
                 <ListItemButton key="Home" onClick={() => {router.push('/home')}}>
                     <ListItemIcon>
                         <HomeRounded/>
@@ -150,7 +151,7 @@ export default function Navbars({children}:any) {
                 </ListItemButton>
               </Tooltip>
 
-              <Tooltip title="Course Catalog" placement="right">  
+              <Tooltip title="Course Catalog" placement="right" arrow>  
                 <ListItemButton key="Course Catalog" onClick={() => {router.push('/catalog')}}>
                     <ListItemIcon>
                         <ListAltRounded/>
@@ -159,7 +160,7 @@ export default function Navbars({children}:any) {
                 </ListItemButton>
               </Tooltip>
               
-              <Tooltip title="Profile" placement="right">
+              <Tooltip title="Profile" placement="right" arrow>
                 <ListItemButton key="Profile" onClick={() => {router.push('/profile')}}>
                     <ListItemIcon>
                         <AccountBoxRounded/>
@@ -170,14 +171,8 @@ export default function Navbars({children}:any) {
 
               <Divider />
 
-              <Tooltip title="Log Out" placement="right">
-                <ListItemButton key="Log Out" onClick={async () => {
-                  console.log(instance.getActiveAccount())
-                    await router.push('/')
-                    await instance.logoutPopup({
-                      account: instance.getActiveAccount()
-                    })
-                }}>
+              <Tooltip title="Log Out" placement="right" arrow>
+                <ListItemButton key="Log Out" onClick={handleLogoutOpen}>
                     <ListItemIcon>
                         <LogoutRounded/>
                     </ListItemIcon> 
@@ -186,7 +181,7 @@ export default function Navbars({children}:any) {
               </Tooltip>
           </List>
           
-          <Tooltip title="UPRM" placement="right">
+          <Tooltip title="UPRM" placement="right" arrow>
             <Button sx={classes.logoComponent} onClick={() => router.push('/')}>
                 <Box
                   sx={classes.boxSize}
@@ -205,5 +200,37 @@ export default function Navbars({children}:any) {
 
       </Box>
     </Box>
+    <LogoutModal openModalState={openLogout} setOpenModalState={setOpenLogout} />
+    </>
   );
 }
+
+const useStyles = {
+    logoComponent: {
+        position: "absolute",
+        bottom: 0,
+        marginBottom: 0,
+        height: "100px",
+        width: "100%",
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    boxSize: {
+        width: "45px",
+        height: "45px",
+    },
+    logoButton: {
+        marginLeft: -2,
+        maxWidth: '100%',
+        maxHeight: '64px',
+        padding: '2px 2px'
+    },
+    icon: {
+        maxHeight: '70px',
+    },
+    appBarStack: {
+        width:'100%'
+    }
+};
+
+const classes = useStyles;

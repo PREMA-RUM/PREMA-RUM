@@ -95,7 +95,7 @@ public class PreEnrollmentService
         if (student == null)
             throw new StudentNotFoundException("No student found with specified email");
         var preEnrollments = await _preEnrollmentRepository
-            .GetByStudentIdComplete(student.Id);
+            .GetByStudentIdPartial(student.Id);
         return preEnrollments;
     }
     
@@ -145,5 +145,15 @@ public class PreEnrollmentService
         if (!preEnrollment.CanBeChangedByStudent(student))
             throw new CoreException("Student cannot modify pre enrollment");
         _preEnrollmentRepository.DeletePreEnrollment(preEnrollment);
+    }
+
+    public async Task<IEnumerable<SemesterOffer>> GetPreEnrollmentRecommendations(int preEnrollmentId,
+        string studentEmail)
+    {
+        var preEnrollment = await ValidatePreEnrollmentExists(preEnrollmentId);
+        var student = await _studentValidationService.ValidateStudentExists(studentEmail);
+        if (!preEnrollment.CanBeChangedByStudent(student))
+            throw new CoreException("Student cannot modify pre enrollment");
+        return await _preEnrollmentRepository.GetRecommendationsForPreEnrollment(preEnrollmentId);
     }
 }

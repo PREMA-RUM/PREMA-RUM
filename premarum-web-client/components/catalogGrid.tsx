@@ -1,7 +1,18 @@
-import {Box, Button, Paper} from "@mui/material";
+import {
+    Box,
+    Button,
+    CircularProgress,
+    Grid,
+    Paper,
+    styled,
+    Tooltip,
+    tooltipClasses,
+    TooltipProps,
+    Typography,
+    useMediaQuery
+} from "@mui/material";
 import {
     DataGrid,
-    GridColDef,
     GridToolbarColumnsButton,
     GridToolbarContainer,
     GridToolbarDensitySelector,
@@ -12,22 +23,15 @@ import {useSemesterOfferings} from "../utility/hooks/useSemesterOfferings";
 import {AddRounded} from "@mui/icons-material";
 import {usePreEnrollment} from "../utility/hooks/usePreEnrollments";
 import {GetRows} from "../utility/helpers/selectionToRow";
-
-const columns: GridColDef[] = [
-    {field: 'course', headerName: 'Course', minWidth: 100, description: ''},
-    {field: 'section', headerName: 'Section', minWidth: 100, description: ''},
-    {field: 'credits', headerName: 'Credits', minWidth: 100, description: ''},
-    {field: 'days', headerName: 'Days', minWidth: 100, flex: 1, description: ''},
-    {field: 'classroom', headerName: 'Classroom', minWidth: 100, description: ''},
-    {field: 'timeslot', headerName: 'Timeslot', minWidth: 175, flex: 1, description: ''},
-    {field: 'professor', headerName: 'Professor', minWidth: 175, flex: 1, description: ''},
-]
+import { GetColumnFormat } from "../utility/helpers/ColumnFormat";
+import QuickSearchToolbar, {QuickSearchToolbarProps, requestSearch} from "./DataGridAddOns/QuickSearchToolbar";
+import {useTheme} from "@mui/material/styles";
+import {useRecommendations} from "../utility/hooks/useRecommendations";
 
 function CustomToolbar() {
     return(
         <Box sx={classes.toolbarBox}>
             <GridToolbarContainer>
-                <GridToolbarColumnsButton />
                 <GridToolbarFilterButton />
                 <GridToolbarDensitySelector />
             </GridToolbarContainer>
@@ -35,15 +39,26 @@ function CustomToolbar() {
     )
 }
 
+function WrapToolBars(props: QuickSearchToolbarProps) {
+    const theme = useTheme()
+    const match = useMediaQuery(theme.breakpoints.down("sm"))
+    
+    return <>
+        <QuickSearchToolbar {...props} />
+        {!match? <CustomToolbar /> : null}
+    </>
+}
+
 type AddSelectionProps = {
     preEnrollmentId: number,
     changeTab: () => void,
-    selectionsRef: any
+    selectionsRef: any,
 }
 
 export function AddSelectionButton({preEnrollmentId, selectionsRef, changeTab}: AddSelectionProps) {
     const { addSelectionFn } = usePreEnrollment(preEnrollmentId)
     const [isLoading, setIsLoading] = useState(false)
+    const {manualRevalidate} = useRecommendations(preEnrollmentId);
     
     return(
         <Button
@@ -65,6 +80,7 @@ export function AddSelectionButton({preEnrollmentId, selectionsRef, changeTab}: 
                     return
                 }
                 selectionsRef.current = []
+                manualRevalidate()
                 changeTab()
             }}
             disabled={isLoading}
@@ -83,17 +99,23 @@ type CatalogGridProps = {
 export default function CatalogGrid({semesterId, exclude, selectionsRef}: CatalogGridProps) {
     const {courseOfferings, isLoading, isError} = useSemesterOfferings(semesterId);
     const [rows, setRows] = useState([])
+    const [quickSearchState, setQuickSearchState] = useState("")
+    const afterExclusion = courseOfferings? courseOfferings.filter(co => !exclude.includes(co.id)): []
     
     useEffect(() => {
         if (!isLoading)  {
             console.log(courseOfferings)
-            GetRows(courseOfferings.filter(co => !exclude.includes(co.id)))
+            GetRows(afterExclusion)
                 .then(res => {setRows(res as any)})   
         }
     }, [courseOfferings])
     
     if (!rows || isLoading) {
-        return <>...</>
+        return(
+            <Grid container direction="column" justifyContent="center" alignContent="center">
+                <CircularProgress />
+            </Grid>
+        )
     }
     
     return(
@@ -104,11 +126,30 @@ export default function CatalogGrid({semesterId, exclude, selectionsRef}: Catalo
                         sel =>  (rows[sel as number] as any).entryId )
                 }}
                 checkboxSelection
+                pageSize={25}
+                rowHeight={75}
                 rows={rows}
-                columns={columns}
+                columns={GetColumnFormat({creditSum: null})}
                 autoHeight
                 components={{
-                    Toolbar: CustomToolbar,
+                    Toolbar: WrapToolBars,
+                }}
+                componentsProps={{
+                    toolbar: {
+                        value: quickSearchState,
+                        onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
+                            requestSearch({
+                                searchValue: event.target.value,
+                                setSearchText: setQuickSearchState,
+                                rowSetter: (rec: any[]) => GetRows(rec).then(res => setRows(res as any)),
+                                rows: afterExclusion
+                            }),
+                        clearSearch: () => {
+                            setQuickSearchState("")
+                            GetRows(afterExclusion)
+                                .then(res => setRows(res as any))
+                        }
+                    }
                 }}
             />
         </Paper>
@@ -117,15 +158,14 @@ export default function CatalogGrid({semesterId, exclude, selectionsRef}: Catalo
 
 const useStyles = {
     toolbarBox: {
-        marginTop: 1,
         marginLeft: 1,
     },
     containerBox: {
 
     },
     addSelectionButton: {
-        backgroundColor: 'primary.dark',
+        backgroundColor: 'secondary.main',
     },
 };
   
-const classes = useStyles;
+const classes = useStyles
