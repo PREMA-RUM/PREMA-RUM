@@ -108,7 +108,7 @@ export default function CatalogGrid({semesterId, exclude, selectionsRef}: Catalo
             GetRows(afterExclusion)
                 .then(res => {setRows(res as any)})   
         }
-    }, [courseOfferings])
+    }, [courseOfferings, isLoading])
     
     if (!rows || isLoading) {
         return(
