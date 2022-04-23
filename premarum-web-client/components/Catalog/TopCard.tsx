@@ -65,7 +65,8 @@ const useStyles = () => {
     return {
         topCard: {
             padding: '5px 25px',
-            backgroundColor: 'primary.light',
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.primary.contrastText,
             marginBottom: 1.5
         },
         semesterSelect: {
