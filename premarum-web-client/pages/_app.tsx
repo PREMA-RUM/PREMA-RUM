@@ -18,6 +18,9 @@ import {ReactElement, ReactNode} from "react";
 import {pca} from "../utility/constants";
 import MobileNavbar from "../components/MobileNavBar";
 import NextNProgress from "nextjs-progressbar";
+import {useGoogleAnalytics} from "../utility/hooks/useGoogleAnalytics";
+import Script from 'next/script'
+import * as gtag from '../utility/gtag'
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -33,6 +36,7 @@ type AppPropsWithLayout = AppProps & {
 }
 
 const MyApp: React.FunctionComponent<AppPropsWithLayout> = (props) => {
+  useGoogleAnalytics()  
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
   // Default Layout
   let DefaultLayout:  (page: ReactElement) => ReactNode = 
@@ -49,11 +53,33 @@ const MyApp: React.FunctionComponent<AppPropsWithLayout> = (props) => {
       <CacheProvider value={emotionCache}>
         <ThemeProvider theme={lightTheme}>
           <CssBaseline /> 
-          <NextNProgress />
+          <NextNProgress/>
           <Head>
-          <title>PREMARUM</title>
-          <meta name="description" content="Easiest way to create enrollment logistical plans for UPRM students." />
-          <link rel="icon" href="/prema-icon.png" />
+              <title>PREMARUM</title>
+              <meta name="description" content="Easiest way to create enrollment logistical plans for UPRM students." />
+              <link rel="icon" href="/prema-icon.png" />
+              <Script async 
+                      src={"https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1454168480250190"}
+                      crossOrigin={"anonymous"}
+              />
+              <Script
+                  strategy="afterInteractive"
+                  src={`https://www.googletagmanager.com/gtag/js?id=${gtag.GA_TRACKING_ID}`}
+              />
+              <Script
+                  id="gtag-init"
+                  strategy="afterInteractive"
+                  dangerouslySetInnerHTML={{
+                      __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${gtag.GA_TRACKING_ID}', {
+                  page_path: window.location.pathname,
+                });
+              `
+                  }}
+              />
           </Head>
           {DefaultLayout(<Component {...pageProps} />)}
         </ThemeProvider>
