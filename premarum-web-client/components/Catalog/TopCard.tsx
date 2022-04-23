@@ -34,7 +34,6 @@ export function CatalogWideScreenTopArea({semesters, handleSelect}: TopAreaProps
     const classes = useStyles();
     return <Card sx={classes.topCard}>
         <Grid container direction="row" justifyContent="space-between" alignItems="center">
-
             <Grid item>
                 <Grid container direction="row" alignItems="center">
                     <Typography sx={classes.title}>Course Catalog</Typography>
@@ -51,18 +50,15 @@ export function CatalogWideScreenTopArea({semesters, handleSelect}: TopAreaProps
                         renderInput={(params) => (
                             <TextField
                                 {...params}
-                                label="Semester Selection"
                                 placeholder="Select Semester..."
                             />
                         )}
                     />
                 </Grid>
             </Grid>
-
         </Grid>
     </Card>
 }
-
 
 const useStyles = () => {
     const theme = useTheme()

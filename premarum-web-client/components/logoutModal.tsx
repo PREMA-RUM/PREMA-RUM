@@ -37,6 +37,7 @@ export function LogoutModal(props: ModalProps) {
         }
         handleLogoutClose()
         setModalLoading(false);
+        window.location.href="/"
     }
 
     return(

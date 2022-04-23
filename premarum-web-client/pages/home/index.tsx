@@ -90,7 +90,7 @@ export default function Home(props: HomeProps) {
     }, [student])
 
     return (
-        <>
+        <Box  sx={classes.mainBox}>
             <StudentDepartmentModal
                 departments={props.departments}
                 openModalState={deptOpen}
@@ -114,7 +114,6 @@ export default function Home(props: HomeProps) {
                         />
                     }
                 </Grid>
-
                 <Grid item>
                     {matches?
                         <Box sx={preEnrollments?.length===0?classes.contentCardEmpty:classes.contentCard}>
@@ -131,7 +130,6 @@ export default function Home(props: HomeProps) {
                         </Card>
                     }
                 </Grid>
-
             </Grid>
 
             <Modal
@@ -197,14 +195,14 @@ export default function Home(props: HomeProps) {
                     </Grid>
                 </Fade>
             </Modal>
-        </>
+        </Box>
     )
 }
 
 const useStyles = (theme: Theme) => ({
+    mainBox: {
+    },
     mainGrid: {
-        width: '100%',
-        height: '100%',
     },
     contentCard: {
         padding: '25px',
@@ -216,7 +214,7 @@ const useStyles = (theme: Theme) => ({
         [theme.breakpoints.down("sm")] : {
             backgroundColor: 'transparent',
             padding: 0,
-        }
+        },
     },
     contentCardEmpty: {
         display: "flex",
@@ -230,10 +228,6 @@ const useStyles = (theme: Theme) => ({
     },
     contentText: {
         padding: '2px 10px',
-    },
-    coursesContainer: {
-        minWidth: '100%',
-        maxHeight: '80vh',
     },
     itemStyle: {
         width: '100%',

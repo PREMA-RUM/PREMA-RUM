@@ -116,7 +116,8 @@ const useStyles = (theme: Theme) => ({
         display: 'flex', 
         p:1, 
         pb: 10, 
-        pt:10
+        pt:10,
+        justifyContent: "center"
     },
     icon: {
         maxHeight: '60px',
