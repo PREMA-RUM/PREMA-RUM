@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PreEnrollmentMgmt.Core.Entities.Output;
 using PreEnrollmentMgmt.Core.Services;
-using PreEnrollmentMgmt.CourseParserLib;
+using PreEnrollmentMgmt.Core.Services.Interfaces;
 using PreEnrollmentMgmt.WebApi.Controllers.DTOS.Requests;
 
 namespace PreEnrollmentMgmt.WebApi.Controllers;
@@ -14,11 +14,11 @@ public class CourseParserController : ControllerBase
 {
     private readonly IMapper _mapper;
     private readonly StudentValidationService _studentValidationService;
-    private readonly CourseParsingService _parsingService;
+    private readonly ICourseParsingService _parsingService;
 
 
     public CourseParserController(IMapper mapper,
-        StudentValidationService studentValidationService, CourseParsingService parsingService)
+        StudentValidationService studentValidationService, ICourseParsingService parsingService)
     {
         _mapper = mapper;
         _studentValidationService = studentValidationService;
@@ -26,7 +26,7 @@ public class CourseParserController : ControllerBase
     }
 
     [Authorize]
-    [HttpGet]
+    [HttpPost]
     public async Task<CourseParserOutput> StudentCompliesWithRequisites(
         [FromBody] CourseRequisitesRequest newCourseRequisitesRequest
     )

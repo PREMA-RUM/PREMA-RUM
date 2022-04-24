@@ -2,23 +2,23 @@ namespace PreEnrollmentMgmt.CourseParserLib;
 
 public class CourseTakenVisitorValue
 {
-    public string CourseName { get; set; }
+    public string CourseCode { get; set; }
     public int? CourseId { get; set; }
 
-    public CourseTakenVisitorValue(string courseName, int? courseId)
+    public CourseTakenVisitorValue(string courseCode, int? courseId)
     {
-        CourseName = courseName;
+        CourseCode = courseCode;
         CourseId = courseId;
     }
 
-    public CourseTakenVisitorValue(string courseName)
+    public CourseTakenVisitorValue(string courseCode)
     {
-        CourseName = courseName;
+        CourseCode = courseCode;
     }
 
     protected bool Equals(CourseTakenVisitorValue other)
     {
-        return CourseName.Equals(other.CourseName);
+        return CourseCode.Equals(other.CourseCode);
     }
 
     public override bool Equals(object? obj)
@@ -31,6 +31,6 @@ public class CourseTakenVisitorValue
 
     public override int GetHashCode()
     {
-        return CourseName.GetHashCode();
+        return CourseCode.GetHashCode();
     }
 }

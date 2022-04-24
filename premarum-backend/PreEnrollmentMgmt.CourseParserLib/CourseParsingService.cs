@@ -6,17 +6,18 @@ using PreEnrollmentMgmt.Core.Services.Interfaces;
 
 namespace PreEnrollmentMgmt.CourseParserLib;
 
-public class CourseParsingService: ICourseParsingService
+public class CourseParsingService : ICourseParsingService
 {
     public CourseParserOutput CompliesWithRequisites(IEnumerable<CoursesTaken> coursesTaken, string? requisites)
     {
-        if (requisites == null)
+        if (string.IsNullOrEmpty(requisites))
             return new CourseParserOutput(true, null);
         var stream = new AntlrInputStream(requisites);
         var lexer = new CourseGrammarLexer(stream);
         var parser = new CourseGrammarParser(new CommonTokenStream(lexer));
         var tree = parser.start()!;
-        var visitor = new CourseTreeVisitor(coursesTaken.Select(ct=> new CourseTakenVisitorValue(ct.Course.CourseCode, ct.CourseId)).ToImmutableHashSet());
-        return new CourseParserOutput(visitor.VisitExpression(tree.expression()), visitor.Missing);
+        var visitor = new CourseTreeVisitor(coursesTaken
+            .Select(ct => new CourseTakenVisitorValue(ct.Course.CourseCode, ct.CourseId)).ToImmutableHashSet());
+        return new CourseParserOutput(visitor.VisitExpression(tree.expression()), null);
     }
 }

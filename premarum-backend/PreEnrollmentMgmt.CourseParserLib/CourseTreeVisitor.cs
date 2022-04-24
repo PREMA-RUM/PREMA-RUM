@@ -36,7 +36,7 @@ public class CourseTreeVisitor: CourseGrammarBaseVisitor<bool> {
         
         var currentCourse = new CourseTakenVisitorValue(context.IDENTIFIER().Symbol.Text);
         
-        if (currentCourse.CourseName.Equals("dir") || CoursesTaken.Contains(currentCourse))
+        if (currentCourse.CourseCode.Equals("dir") || CoursesTaken.Contains(currentCourse))
             return true;
         
         Missing.Add(currentCourse);
