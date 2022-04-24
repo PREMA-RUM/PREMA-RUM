@@ -1,8 +1,10 @@
+using System.Collections.Immutable;
 using PreEnrollmentMgmt.Core.Entities;
 using PreEnrollmentMgmt.Core.Entities.ComputedEntities;
 using PreEnrollmentMgmt.Core.Exceptions;
 using PreEnrollmentMgmt.Core.Repositories;
-using PreEnrollmentMgmt.CourseParserLib;
+using PreEnrollmentMgmt.Core.Services.Interfaces;
+
 
 namespace PreEnrollmentMgmt.Core.Services;
 
@@ -13,11 +15,11 @@ public class PreEnrollmentService
     private readonly IStudentRepository _studentRepository;
     private readonly SemesterValidationService _semesterValidationService;
     private readonly StudentValidationService _studentValidationService;
-    private readonly CourseParsingService _courseParsingService;
+    private readonly ICourseParsingService _courseParsingService;
 
     public PreEnrollmentService(IPreEnrollmentRepository preEnrollmentRepository,
         ISemesterOfferRepository semesterOfferRepository, IStudentRepository studentRepository,
-        SemesterValidationService semesterValidationService, StudentValidationService studentValidationService, CourseParsingService courseParsingService)
+        SemesterValidationService semesterValidationService, StudentValidationService studentValidationService, ICourseParsingService courseParsingService)
     {
         _preEnrollmentRepository = preEnrollmentRepository;
         _semesterOfferRepository = semesterOfferRepository;
@@ -47,9 +49,9 @@ public class PreEnrollmentService
 
         foreach (var semesterOffer in semesterOffers)
         {
-            if (!_courseParsingService.CompliesWithRequisites(student.GetCoursesTaken(),
-                    semesterOffer.Course.CoursePrerequisites))
-                Console.WriteLine("Notifify that courses taken do not comply with requisites to add this semesterOffer. Will still permit to add the semesterOffer. ");
+            if (_courseParsingService.CompliesWithRequisites(student.CoursesTaken,
+                    semesterOffer.Course.CoursePrerequisites).CompliesWithRequisites)
+                Console.WriteLine("Notify that courses taken do not comply with requisites to add this semesterOffer. Will still permit to add the semesterOffer.");
             preEnrollment.AddSelection(semesterOffer);
         }
             

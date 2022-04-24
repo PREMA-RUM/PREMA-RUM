@@ -6,9 +6,4 @@
         <Nullable>enable</Nullable>
         <RootNamespace>PreEnrollmentMgmt.Core</RootNamespace>
     </PropertyGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\PreEnrollmentMgmt.CourseParserLib\PreEnrollmentMgmt.CourseParserLib.csproj" />
-    </ItemGroup>
-
 </Project>

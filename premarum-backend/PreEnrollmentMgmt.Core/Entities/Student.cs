@@ -47,16 +47,4 @@ public class Student
         return deleted;
 
     }
-
-    public IEnumerable<string> GetCoursesTaken()
-    {
-        var coursesTaken = new HashSet<string>();
-        foreach (var courseTaken in CoursesTaken)
-        {
-            if (courseTaken.Course != null)
-                coursesTaken.Add(courseTaken.Course.CourseName);
-        }
-
-        return coursesTaken;
-    }
 }
