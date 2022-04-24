@@ -28,19 +28,19 @@ public class PreEnrollmentService
         int[] courseOfferings)
     {
         if (courseOfferings is {Length: > 7})
-            throw new InvalidPreEnrollmentSelectionException("Cannot insert more than 7 selections at a time");
+            throw new CoreException("Cannot insert more than 7 selections at a time");
 
         var preEnrollment = await ValidatePreEnrollmentExists(preEnrollmentId);
 
         var student = await _studentValidationService.ValidateStudentExists(studentEmail);
 
         if (!preEnrollment.CanBeChangedByStudent(student))
-            throw new InvalidPreEnrollmentSelectionException("Student cannot change PreEnrollment");
+            throw new CoreException("Student cannot change PreEnrollment");
 
         var semesterOffers = await _semesterOfferRepository.GetByIdList(courseOfferings);
 
         if (semesterOffers.Count() < courseOfferings.Length)
-            throw new InvalidPreEnrollmentSelectionException("Some selected course offerings to add do not exist");
+            throw new CoreException("Some selected course offerings to add do not exist");
 
         foreach (var semesterOffer in semesterOffers)
             preEnrollment.AddSelection(semesterOffer);
@@ -53,17 +53,17 @@ public class PreEnrollmentService
         int[] courseOfferings)
     {
         if (courseOfferings is {Length: > 7})
-            throw new InvalidPreEnrollmentSelectionException("Cannot remove more than 7 selections at a time");
+            throw new CoreException("Cannot remove more than 7 selections at a time");
 
         var preEnrollment = await ValidatePreEnrollmentExists(preEnrollmentId);
 
         var student = await _studentValidationService.ValidateStudentExists(studentEmail);
 
         if (!preEnrollment.CanBeChangedByStudent(student))
-            throw new InvalidPreEnrollmentSelectionException("Student cannot change PreEnrollment");
+            throw new CoreException("Student cannot change PreEnrollment");
 
         if (preEnrollment.Selections.Count < courseOfferings.Length)
-            throw new InvalidPreEnrollmentSelectionException("Cannot remove more selections than what are available");
+            throw new CoreException("Cannot remove more selections than what are available");
 
         preEnrollment.RemoveSelections(courseOfferings);
         _preEnrollmentRepository.Save(preEnrollment);
@@ -84,7 +84,7 @@ public class PreEnrollmentService
     {
         var student = await _studentRepository.GetByEmailSimple(studentEmail);
         if (student == null)
-            throw new StudentNotFoundException("No student found with specified email");
+            throw new CoreException("No student found with specified email");
         var preEnrollments = await _preEnrollmentRepository
             .GetByStudentIdPartial(student.Id);
         return preEnrollments;
@@ -96,7 +96,7 @@ public class PreEnrollmentService
         var preEnrollment = await ValidatePreEnrollmentExists(preEnrollmentId, true);
         if (preEnrollment.CanBeChangedByStudent(student))
             return preEnrollment;
-        throw new InvalidPreEnrollmentSelectionException("Student cannot change PreEnrollment");
+        throw new CoreException("Student cannot change PreEnrollment");
     }
 
     public async Task UpdateName(int preEnrollmentId, string studentEmail, string newName)
@@ -106,7 +106,7 @@ public class PreEnrollmentService
         var student = await _studentValidationService.ValidateStudentExists(studentEmail);
 
         if (!preEnrollment.CanBeChangedByStudent(student))
-            throw new InvalidPreEnrollmentSelectionException("Student cannot change PreEnrollment");
+            throw new CoreException("Student cannot change PreEnrollment");
 
         preEnrollment.Name = newName;
         _preEnrollmentRepository.Save(preEnrollment);
@@ -120,7 +120,7 @@ public class PreEnrollmentService
         else
             preEnrollment = await _preEnrollmentRepository.GetByIdWithSemesterOffersSimple(preEnrollmentId);
         if (preEnrollment == null)
-            throw new PreEnrollmentNotFoundException("No PreEnrollment found with specified email");
+            throw new CoreException("No PreEnrollment found with specified email");
         return preEnrollment;
     }
 

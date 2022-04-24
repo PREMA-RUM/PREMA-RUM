@@ -58,7 +58,7 @@ public class StudentService
     public async Task<IEnumerable<CoursesTaken>> RemoveCoursesTaken(string studentEmail, int[] courseIds)
     {
         if (courseIds is {Length: > 7})
-            throw new InvalidCourseTakenDeletionException("Cannot remove more than 7 courses taken at a time");
+            throw new CoreException("Cannot remove more than 7 courses taken at a time");
 
         var student = await _studentValidationService.ValidateStudentExists(studentEmail, true);
         var deleted = student.RemoveCoursesTaken(courseIds);

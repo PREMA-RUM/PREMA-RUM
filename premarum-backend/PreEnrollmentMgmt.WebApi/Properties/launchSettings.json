@@ -20,6 +20,17 @@
         "DATABASE_SERVER_URL": "postgresql://postgres:supersecretpassword@localhost:9001/premadb"
       }
     },
+    "PremaRUM.WebApi Staging": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "applicationUrl": "https://localhost:7182;http://localhost:5171",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Staging",
+        "DATABASE_SERVER_URL": "postgresql://postgres:supersecretpassword@localhost:9001/premadb"
+      }
+    },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
