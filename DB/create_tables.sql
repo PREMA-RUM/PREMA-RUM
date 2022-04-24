@@ -257,10 +257,10 @@ begin
             course_vector_courses_taken as
                 (
                     SELECT ct1.c_id c_id_a, ct2.c_id c_id_b, count(*) frequency
-                    FROM ("CoursesTaken" natural inner join "Student") ct1, "CoursesTaken" ct2
+                    FROM ("CoursesTaken" natural inner join "Student") ct1, ("CoursesTaken" natural inner join "Student") ct2
                     WHERE ct1.c_id != ct2.c_id
                       AND ct1.st_id = ct2.st_id
-                      AND ct1.dept_id = (select dept_id from student_department) -- SHOULD BE A PARAMETER
+                      AND ct1.dept_id = (select dept_id from student_department)
                     group by ct1.c_id, ct2.c_id
                 ),
             -- SCORING
@@ -323,7 +323,7 @@ begin
                            coalesce(dept_score, 0) final_dept_score,
                            coalesce(global_score, 0) final_global_score,
                            coalesce(course_taken_score, 0) final_course_taken_score
-                    from all_stats natural right join "Course"
+                    from all_stats
                 ),
             aggregate_rank as
                 (
