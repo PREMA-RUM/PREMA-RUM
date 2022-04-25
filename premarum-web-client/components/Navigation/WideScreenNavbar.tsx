@@ -5,11 +5,8 @@ import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import MuiDrawer from '@mui/material/Drawer';
 import {Menu, ChevronLeft, ChevronRight, AccountBoxRounded, HomeRounded, ListAltRounded, AccountCircle, ManageAccountsRounded, SchoolRounded, LogoutRounded} from '@mui/icons-material'
 import { useRouter } from 'next/router';
-import {useMsal} from "@azure/msal-react";
-import { LogoutModal } from './logoutModal';
-import MobileNavbar from "./MobileNavBar";
+import { LogoutModal } from '../logoutModal';
 import {Stack} from "@mui/material";
-import {useProfilePicture} from "../utility/hooks/useProfilePicture";
 import ProfilePicture from "./ProfilePicture";
 
 const drawerWidth = 240;

@@ -87,7 +87,7 @@ export default function Home(props: HomeProps) {
         if (!studentLoading) {
             setDeptOpen(!student?.departmentId)
         }
-    }, [student])
+    }, [student, studentLoading])
 
     return (
         <Box  sx={classes.mainBox}>

@@ -11,11 +11,9 @@ import {useEffect, useState} from "react";
 import {AccountBoxRounded, HomeRounded, ListAltRounded} from "@mui/icons-material";
 import * as React from "react";
 import {useRouter} from "next/router";
-import Navbars from "./navbars";
-import OverlayIcons from "./OverlayIcons";
+import Navbars from "./WideScreenNavbar";
+import OverlayIcons from "../OverlayIcons";
 import {Theme, useTheme} from "@mui/material/styles";
-import {useProfilePicture} from "../utility/hooks/useProfilePicture";
-import PersonIcon from '@mui/icons-material/Person';
 import ProfilePicture from "./ProfilePicture";
 
 
@@ -67,7 +65,6 @@ export default function MobileNavbar({children}: MobileNavbarProps) {
                            justifyContent="space-between"
                            alignItems="center" sx={classes.toolBarStack}>
                         <Stack onClick={() => {router.push('/home')}} style={{color: 'white', marginLeft: -8}}>
-                            
                             <img src="/prema-logo-white.png" style={classes.icon}/>
                             <Typography sx={classes.subTitle} variant={"subtitle2"}>
                                 {title}

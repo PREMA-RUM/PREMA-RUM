@@ -21,7 +21,7 @@ export function useProfilePicture() {
         if (data === undefined) {
             mutate()
         }
-    }, [])
+    }, [data])
     
     return {
         profilePicture: data as string | undefined,
