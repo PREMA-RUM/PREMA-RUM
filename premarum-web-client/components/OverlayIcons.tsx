@@ -1,4 +1,4 @@
-import { Button, Tooltip } from "@mui/material";
+import { Button, Tooltip, Box } from "@mui/material";
 
 export function GithubIcon() {
     return(
@@ -9,7 +9,12 @@ export function GithubIcon() {
                     target="_blank"
                     disableRipple
                 >
-                    <img src="/GitHub-Icon.png" style={classes.icon}/>
+                    <Box
+                        sx={classes.icon}
+                        component="img"
+                        alt="GitHub"
+                        src="/GitHub-Icon.png"
+                    />
                 </Button>
         </Tooltip>
     )
@@ -24,7 +29,12 @@ export function PaypalIcon() {
                     target="_blank"
                     disableRipple
                 >
-                    <img src="/PayPal-Icon.png" style={classes.icon}/>
+                    <Box
+                        sx={classes.icon}
+                        component="img"
+                        alt="GitHub"
+                        src="/PayPal-Icon.png"
+                    />
                 </Button>
         </Tooltip>
     )
