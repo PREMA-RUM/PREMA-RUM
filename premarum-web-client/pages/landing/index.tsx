@@ -261,11 +261,16 @@ const useStyles = {
         color: 'white',
     },
     bottomBox: {
-        backgroundColor: 'secondary.main',
         width: '100%',
         height: '100vh',
         minHeight: '500px',
-        padding: '0 0 0 0'
+        padding: '0 0 0 0',
+        background: `linear-gradient(rgba(255,255,255,0.4), rgba(255,255,255,0.5)),
+                    url(backgroundImage.png)`,
+        backgroundColor: 'secondary.main',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center center',
+        backgroundSize: 'cover',
     },
     videoBox: { 
         width: '100%',
@@ -291,10 +296,10 @@ const useStyles = {
         height: '100%',
     },
     bottomTitle: {
-        padding: '30px 0',
+        padding: '25px 0',
     },
     bottomSubtitle: {
-        padding: '30px',
+        padding: '25px 0',
     },
     rumLogoBox: {
         width: "250px",
