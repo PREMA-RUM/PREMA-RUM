@@ -75,12 +75,14 @@ public class PreEnrollmentRepository : IPreEnrollmentRepository
     public async Task<IEnumerable<SemesterOffer>> GetRecommendationsForPreEnrollment(int preEnrollmentId)
     {
         return await _context
-            .SemesterOffers
-            .FromSqlRaw("select * from top_100_courses_for_pre_enrollment({0})", preEnrollmentId)
-            .Include(so => so.Semester).ThenInclude(s => s.Term)
-            .Include(so => so.Course)
-            .Include(so => so.Professors)
-            .Include(so => so.TimeSlots).ThenInclude(ts => ts.WeekDay)
+            .Set<RankedSemesterOffer>()
+            .FromSqlRaw("select so_id, rank from top_100_courses_for_pre_enrollment({0})", preEnrollmentId)
+            .Include("SemesterOffer.Course")
+            .Include("SemesterOffer.Professors")
+            .Include("SemesterOffer.TimeSlots")
+            .Include("SemesterOffer.TimeSlots.WeekDay")
+            .OrderByDescending(rs => rs.Rank)
+            .Select(rs => rs.SemesterOffer)
             .ToListAsync();
     }
 

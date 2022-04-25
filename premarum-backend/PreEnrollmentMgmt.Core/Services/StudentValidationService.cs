@@ -22,7 +22,7 @@ public class StudentValidationService
         else
             student = await _studentRepository.GetByEmailSimple(studentEmail);
         if (student == null)
-            throw new StudentNotFoundException("No student found with specified email");
+            throw new CoreException("No student found with specified email");
         return student;
     }
 }

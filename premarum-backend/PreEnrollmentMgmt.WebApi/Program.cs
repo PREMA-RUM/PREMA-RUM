@@ -93,6 +93,15 @@ app.UseSwagger();
 
 app.UseSwaggerUI();
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/api/Error/Development");
+}
+else
+{
+    app.UseExceptionHandler("/api/Error");
+}
+
 app.UseCors(x => x
     .AllowAnyOrigin()
     .AllowAnyMethod()

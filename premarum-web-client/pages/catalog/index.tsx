@@ -2,22 +2,16 @@ import {
     Autocomplete,
     Box,
     Card,
-    CircularProgress,
     Divider,
     Grid,
     Paper,
-    styled,
     TextField,
-    Tooltip,
-    tooltipClasses,
-    TooltipProps,
     Typography,
     useMediaQuery
 } from '@mui/material'
-import React, { SyntheticEvent, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { grey } from '@mui/material/colors';
-import { DataGrid, GridColumns, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton } from '@mui/x-data-grid';
-import { useDemoData } from '@mui/x-data-grid-generator';
+import { DataGrid, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton } from '@mui/x-data-grid';
 import getAllSemesters from '../../utility/requests/getAllSemesters';
 import { ISemesterResponse } from '../../utility/requests/responseTypes';
 import { useSemesterOfferings } from '../../utility/hooks/useSemesterOfferings';
@@ -27,19 +21,14 @@ import QuickSearchToolbar, {
     QuickSearchToolbarProps,
     requestSearch
 } from "../../components/DataGridAddOns/QuickSearchToolbar";
-import {useTheme} from "@mui/material/styles";
+import {Theme, useTheme} from "@mui/material/styles";
+import {CatalogMobileTopArea, CatalogWideScreenTopArea} from "../../components/Catalog/TopCard";
 
-type SemesterProps = {
-    semesters: ISemesterResponse[]
-}
-
-type CatalogGridProps = {
-    semesterId: number,
-    exclude: number[],
-    selectionsRef: any// Ids to exclude
-}
 
 function CustomToolbar() {
+    const theme = useTheme();
+    const classes = useStyles(theme)
+    
     return(
         <Box sx={classes.toolbarBox}>
             <GridToolbarContainer>
@@ -61,11 +50,18 @@ function WrapToolBars(props: QuickSearchToolbarProps) {
     </>
 }
 
+type SemesterProps = {
+    semesters: ISemesterResponse[]
+}
+
 export default function Catalog({semesters}: SemesterProps) {
     const [semesterID, setSemesterID] = useState(0)
     const {courseOfferings, isLoading, isError} = useSemesterOfferings(semesterID);
     const [rows, setRows] = useState([])
     const [quickSearchState, setQuickSearchState] = useState("")
+    const theme = useTheme();
+    const matches = useMediaQuery(theme.breakpoints.down("sm"))
+    const classes = useStyles(theme)
     
     const handleSemesterID = (id: number) => {
         setSemesterID(id);
@@ -73,56 +69,21 @@ export default function Catalog({semesters}: SemesterProps) {
 
     useEffect(() => {
         if (!isLoading)  {
-            console.log(courseOfferings)
             GetRows(courseOfferings).then(res => {setRows(res as any)})
         }
     }, [courseOfferings])
-
-    if (!rows || isLoading) {
-        return(
-            <Grid container direction="column" justifyContent="center" alignContent="center">
-                <CircularProgress />
-            </Grid>
-        )
-    }
 
     return (
         <>
         <Grid container direction="column">
 
             <Grid item>
-                <Card sx={classes.topCard}>
-                    <Grid container direction="row" justifyContent="space-between" alignItems="center">
-                        
-                        <Grid item>
-                            <Grid container direction="row" alignItems="center">
-                                <Typography sx={classes.title}>Course Catalog</Typography>
-                                <Divider orientation="vertical" variant='middle' light flexItem sx={classes.dividerItem}/>
-                                {/* <TextField size="small" variant="outlined" placeholder="Search Courses..." sx={classes.searchInput}/> */}
-                                <Autocomplete
-                                    sx={classes.semesterSelect}
-                                    id="semester-select"
-                                    options={semesters}
-                                    getOptionLabel={(option) => `${option.term} - ${option.year}`}
-                                    filterSelectedOptions
-                                    size="small"
-                                    onChange={(event: any, newValue: ISemesterResponse | null) => {handleSemesterID(newValue? newValue.id : 0)}}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            label="Semester Selection"
-                                            placeholder="Select Semester..."
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                        </Grid>
-
-                    </Grid>
-                </Card>
+                {matches? 
+                    <CatalogMobileTopArea semesters={semesters} handleSelect={setSemesterID} />: 
+                    <CatalogWideScreenTopArea semesters={semesters} handleSelect={setSemesterID} />
+                }
             </Grid>
             
-
             <Grid item>
                 <Card sx={classes.contentCard} >
                     <Paper elevation={0} sx={classes.dataContainer}>
@@ -136,6 +97,7 @@ export default function Catalog({semesters}: SemesterProps) {
                             components={{
                                 Toolbar: WrapToolBars,
                             }}
+                            loading={isLoading}
                             componentsProps={{
                                 toolbar: {
                                     value: quickSearchState,
@@ -148,7 +110,7 @@ export default function Catalog({semesters}: SemesterProps) {
                                         }),
                                     clearSearch: () => {
                                         setQuickSearchState("")
-                                        GetRows(courseOfferings!)
+                                        GetRows(courseOfferings?.length >= 0? courseOfferings: [])
                                             .then(res => setRows(res as any))
                                     }
                                 }
@@ -163,7 +125,7 @@ export default function Catalog({semesters}: SemesterProps) {
     )
 }
 
-const useStyles = {
+const useStyles = (theme: Theme) => ({
     toolbarBox: {
         marginTop: 1,
         marginLeft: 1,
@@ -188,6 +150,10 @@ const useStyles = {
         backgroundColor: 'primary.dark'
     },
     contentCard: {
+        [theme.breakpoints.down("sm")]: {
+          p:1,
+          minHeight: '70vh'  
+        },
         backgroundColor: grey[100],
         padding: '15px',
         minHeight: '80vh',
@@ -196,15 +162,13 @@ const useStyles = {
     dataContainer: {
 
     },
-  };
-
-const classes = useStyles;
+});
 
 export async function getStaticProps() {
     return {
         props: {
             semesters: await getAllSemesters()
         }, // will be passed to the page component as props
-        revalidate: 3600*2 // revalidate every hour
+        revalidate: 3600*2 // revalidate every 2 hour
     }
 }
