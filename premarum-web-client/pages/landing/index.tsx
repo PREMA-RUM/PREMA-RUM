@@ -5,8 +5,10 @@ import getOrCreateUser from "../../utility/requests/getOrCreateUser";
 import { TOKEN_REQUEST } from "../../utility/constants";
 import {NextPage} from "next";
 import {useRouter} from "next/router";
-import React, {useState} from "react";
+import React, {useRef, useState} from "react";
 import OverlayIcons from "../../components/OverlayIcons";
+import { url } from "inspector";
+import { ExpandMoreOutlined } from "@mui/icons-material";
 
 type ButtonProps = {
     
@@ -115,30 +117,56 @@ export function DemoVideo() {
 }
 
 export default function Landing() {
+    const titleRef = useRef();
+
+    function handleClick() {
+        (titleRef!.current! as any).scrollIntoView({ behavior: "smooth" });
+    }
 
     return(
         <Box sx={classes.fullBox}>
             <OverlayIcons />
             
             <Box sx={classes.topBox}>
-                <Grid container direction="column" justifyContent="center" alignItems="center" >
-                    <Box
-                        sx={classes.premaLogo}
-                        component="img"
-                        alt="PREMARUM"
-                        src="prema-logo-white.png"
-                    />
-                    <Typography align="center" variant="h5" sx={classes.topSubtitle}>
-                        The easiest way to prepare yourself for your next semester.<br/>
-                        The app for creating enrollment logistical plans, storing, and sharing them with the community.
-                    </Typography>
-                    <LoginButton/>
+                <Grid container direction="column" justifyContent="center" alignItems="center" sx={{height: '100%'}}>
+                    <Grid item>
+                        <Box
+                            sx={classes.premaLogo}
+                            component="img"
+                            alt="PREMARUM"
+                            src="prema-logo-white-up.png"
+                        />
+                    </Grid>
+                    <Grid item>
+                        <Typography align="center" variant="h4" sx={classes.topSubtitle1}>
+                            The easiest way to prepare yourself for your next semester.
+                        </Typography>
+                    </Grid>
+                    <Grid item>
+                        <Typography align="center" sx={classes.topSubtitle2}>
+                            The app for creating enrollment logistical plans, storing, and sharing them with the community.
+                        </Typography>
+                    </Grid>
+                    <Grid item>
+                        <LoginButton/>
+                    </Grid>
+
+                    <Button
+                        sx={classes.learnMorebutton}
+                        startIcon={<ExpandMoreOutlined/>} 
+                        endIcon={<ExpandMoreOutlined/>}
+                        onClick={handleClick}
+                    >
+                        Learn more
+                    </Button>
+
                 </Grid>
             </Box>
 
-            <Box sx={classes.bottomBox}>
-                <Grid container direction="column" justifyContent="center" alignItems="center">
+            <Box sx={classes.bottomBox} ref={titleRef}>
+                <Grid container direction="column" justifyContent="space-between" alignItems="center">
                     <Typography align="center" variant="h3" sx={classes.bottomTitle}>What is PREMARUM?</Typography>
+                    
                     <Box sx={classes.videoBox}>
                         <Box sx={classes.videoBoxWrapper}>
                             <Box sx={classes.videoWrapper}>
@@ -152,7 +180,11 @@ export default function Landing() {
                             </Box>
                         </Box>
                     </Box>
+                 
+
                     <Typography align="center" variant="h5" sx={classes.bottomSubtitle}>Designed for UPRM students, by UPRM students.</Typography>
+
+
                     <Box
                         sx={classes.rumLogoBox}
                         component="img"
@@ -183,18 +215,24 @@ const useStyles = {
     },
     loginButton: {
         color: 'black',
-        backgroundColor: 'secondary.light',
+        backgroundColor: 'secondary.main',
         marginTop: 3,
         marginBottom: 4,
+        minWidth: '200px',
     },
     fullBox: {
         width: '100%',
         height: '100%',
     },
     topBox: {
-        backgroundColor: 'primary.main',
         width: '100%',
-        minHeight: '250px',
+        height: '100vh',
+        background: `linear-gradient(rgba(22,74,65,0.6), rgba(0,0,0,0.6)),
+                    url(backgroundImage2.png)`,
+        backgroundColor: 'primary.main',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center center',
+        backgroundSize: 'cover',
     },
     premaLogo: {
         width: '100%',
@@ -204,15 +242,30 @@ const useStyles = {
     topTitle: {
         padding: '20px 20px 10px 20px',
     },
-    topSubtitle: {
+    topSubtitle1: {
+        color: 'white',
         width: '100%',
         padding: '0 20px',
+    },
+    topSubtitle2: {
+        color: 'white',
+        width: '100%',
+        padding: '0 20px',
+        marginTop: 2.5,
+        fontSize: '1.1rem',
+        fontWeight: 400,
+    },
+    learnMorebutton: {
+        position: 'absolute',
+        bottom: 20,
+        color: 'white',
     },
     bottomBox: {
         backgroundColor: 'secondary.main',
         width: '100%',
-        height: '100%',
+        height: '100vh',
         minHeight: '500px',
+        padding: '0 0 0 0'
     },
     videoBox: { 
         width: '100%',
@@ -238,15 +291,15 @@ const useStyles = {
         height: '100%',
     },
     bottomTitle: {
-        padding: '20px 0',
+        padding: '30px 0',
     },
     bottomSubtitle: {
-        padding: '20px',
+        padding: '30px',
     },
     rumLogoBox: {
         width: "250px",
         height: "250px",
-        marginBottom: 3
+        marginBottom: 3,
     }
 };
   

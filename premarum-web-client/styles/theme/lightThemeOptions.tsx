@@ -9,9 +9,9 @@ const lightThemeOptions: ThemeOptions = {
         secondary: {
             main: '#9DC88D',
         },
-        // info: {
-        //     main: '',
-        // },
+        info: {
+            main: '#DADED4',
+        },
         // text: {
         //     primary: '',
         //     secondary: '',
