@@ -243,7 +243,10 @@ const useStyles = (theme: Theme) => ({
         padding: 0
     },
     editTitleButton: {
-        backgroundColor: theme.palette.secondary.dark,
+        [theme.breakpoints.down("sm")]: {
+            backgroundColor: theme.palette.secondary.dark,    
+        },
+        backgroundColor: theme.palette.primary.light,
     },
     topCard: {
         padding: '5px 25px',

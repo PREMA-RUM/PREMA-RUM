@@ -25,6 +25,9 @@ export function AddPreEnrollmentButton({handleModalOpen}: AddPreEnrollmentButton
 
 const useStyles = (theme: Theme) => ({
     addCoursesButton: {
-        backgroundColor: theme.palette.primary.dark,
+        [theme.breakpoints.down("sm")]: {
+          backgroundColor: theme.palette.primary.main  
+        },
+        backgroundColor: theme.palette.primary.light,
     }
 })
