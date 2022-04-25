@@ -52,7 +52,7 @@ export function MobileTopArea({semesters, handleModalOpen, filterState, setFilte
 
 const useStyles = (theme: Theme) => ({
     topCardMobile: {
-        marginBottom: 1
+        marginBottom: 1,
     },
     semesterSelect: {
         backgroundColor: 'white',

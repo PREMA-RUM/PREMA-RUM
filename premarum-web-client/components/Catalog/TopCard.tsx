@@ -5,10 +5,11 @@ import {useTheme} from "@mui/material/styles";
 
 type TopAreaProps = {
     semesters: ISemesterResponse[],
-    handleSelect: (sId:number) => void
+    currentSemester: ISemesterResponse | null,
+    setCurrentSemester: (s: ISemesterResponse | null) => void
 }
 
-export function CatalogMobileTopArea({semesters, handleSelect}: TopAreaProps) {
+export function CatalogMobileTopArea({semesters, currentSemester, setCurrentSemester}: TopAreaProps) {
     const classes = useStyles();
     return <Stack sx={{mb: 1}}>
         <Autocomplete
@@ -16,9 +17,10 @@ export function CatalogMobileTopArea({semesters, handleSelect}: TopAreaProps) {
             id="semester-select"
             options={semesters}
             getOptionLabel={(option) => `${option.term}: ${option.year}-${option.year+1}`}
+            value={currentSemester}
             filterSelectedOptions
             size="small"
-            onChange={(event: any, newValue: ISemesterResponse | null) => {handleSelect(newValue? newValue.id : 0)}}
+            onChange={(event: any, newValue: ISemesterResponse | null) => {setCurrentSemester(newValue)}}
             renderInput={(params) => (
                 <TextField
                     {...params}
@@ -30,7 +32,7 @@ export function CatalogMobileTopArea({semesters, handleSelect}: TopAreaProps) {
     </Stack>
 }
 
-export function CatalogWideScreenTopArea({semesters, handleSelect}: TopAreaProps) {
+export function CatalogWideScreenTopArea({semesters, currentSemester, setCurrentSemester}: TopAreaProps) {
     const classes = useStyles();
     return <Card sx={classes.topCard}>
         <Grid container direction="row" justifyContent="space-between" alignItems="center">
@@ -45,8 +47,9 @@ export function CatalogWideScreenTopArea({semesters, handleSelect}: TopAreaProps
                         options={semesters}
                         getOptionLabel={(option) => `${option.term}: ${option.year}-${option.year+1}`}
                         filterSelectedOptions
+                        value={currentSemester}
                         size="small"
-                        onChange={(event: any, newValue: ISemesterResponse | null) => {handleSelect(newValue? newValue.id : 0)}}
+                        onChange={(event: any, newValue: ISemesterResponse | null) => {setCurrentSemester(newValue)}}
                         renderInput={(params) => (
                             <TextField
                                 {...params}

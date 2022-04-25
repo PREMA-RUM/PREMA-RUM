@@ -38,6 +38,7 @@ export default function DeletePreenrollmentModal(props: ModalProps) {
             open={props.openModalState}
             onClose={handleModalClose}
             closeAfterTransition
+            onClick={(event) => {event.stopPropagation()}}
         >
             <Fade in={props.openModalState}>
                 <Grid container direction="row" justifyContent="center" alignItems="center" sx={classes.modalGridMain}>
