@@ -6,19 +6,21 @@ import Top = Property.Top;
 
 type TopAreaProps = {
     semesters: ISemesterResponse[],
-    handleSelect: (sId:number) => void
+    currentSemester: ISemesterResponse | null,
+    setCurrentSemester: (s: ISemesterResponse | null) => void
 }
 
-export function CatalogMobileTopArea({semesters, handleSelect}: TopAreaProps) {
+export function CatalogMobileTopArea({semesters, currentSemester, setCurrentSemester}: TopAreaProps) {
 return <Stack sx={{mb: 1}}>
         <Autocomplete
             sx={classes.semesterSelect}
             id="semester-select"
             options={semesters}
             getOptionLabel={(option) => `${option.term}: ${option.year}-${option.year+1}`}
+            value={currentSemester}
             filterSelectedOptions
             size="small"
-            onChange={(event: any, newValue: ISemesterResponse | null) => {handleSelect(newValue? newValue.id : 0)}}
+            onChange={(event: any, newValue: ISemesterResponse | null) => {setCurrentSemester(newValue)}}
             renderInput={(params) => (
                 <TextField
                     {...params}
@@ -30,7 +32,7 @@ return <Stack sx={{mb: 1}}>
     </Stack>
 }
 
-export function CatalogWideScreenTopArea({semesters, handleSelect}: TopAreaProps) {
+export function CatalogWideScreenTopArea({semesters, currentSemester, setCurrentSemester}: TopAreaProps) {
     return <Card sx={classes.topCard}>
         <Grid container direction="row" justifyContent="space-between" alignItems="center">
             <Grid item>
@@ -44,8 +46,9 @@ export function CatalogWideScreenTopArea({semesters, handleSelect}: TopAreaProps
                         options={semesters}
                         getOptionLabel={(option) => `${option.term}: ${option.year}-${option.year+1}`}
                         filterSelectedOptions
+                        value={currentSemester}
                         size="small"
-                        onChange={(event: any, newValue: ISemesterResponse | null) => {handleSelect(newValue? newValue.id : 0)}}
+                        onChange={(event: any, newValue: ISemesterResponse | null) => {setCurrentSemester(newValue)}}
                         renderInput={(params) => (
                             <TextField
                                 {...params}

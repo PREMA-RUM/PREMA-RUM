@@ -201,6 +201,7 @@ export default function Home(props: HomeProps) {
 
 const useStyles = (theme: Theme) => ({
     mainBox: {
+        width:'100%'
     },
     mainGrid: {
     },

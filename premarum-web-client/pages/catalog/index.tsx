@@ -55,17 +55,13 @@ type SemesterProps = {
 }
 
 export default function Catalog({semesters}: SemesterProps) {
-    const [semesterID, setSemesterID] = useState(0)
-    const {courseOfferings, isLoading, isError} = useSemesterOfferings(semesterID);
+    const [filterBySemester, setFilterBySemester] = useState<ISemesterResponse | null>(semesters.length > 0? semesters[0]: null)
+    const {courseOfferings, isLoading, isError} = useSemesterOfferings(filterBySemester === null? 0: filterBySemester.id);
     const [rows, setRows] = useState([])
     const [quickSearchState, setQuickSearchState] = useState("")
     const theme = useTheme();
     const matches = useMediaQuery(theme.breakpoints.down("sm"))
     const classes = useStyles(theme)
-    
-    const handleSemesterID = (id: number) => {
-        setSemesterID(id);
-    };
 
     useEffect(() => {
         if (!isLoading)  {
@@ -79,8 +75,13 @@ export default function Catalog({semesters}: SemesterProps) {
 
             <Grid item>
                 {matches? 
-                    <CatalogMobileTopArea semesters={semesters} handleSelect={setSemesterID} />: 
-                    <CatalogWideScreenTopArea semesters={semesters} handleSelect={setSemesterID} />
+                    <CatalogMobileTopArea semesters={semesters} 
+                                          currentSemester={filterBySemester} 
+                                          setCurrentSemester={setFilterBySemester}/>: 
+                    <CatalogWideScreenTopArea
+                        semesters={semesters}
+                        currentSemester={filterBySemester}
+                        setCurrentSemester={setFilterBySemester}/>
                 }
             </Grid>
             
