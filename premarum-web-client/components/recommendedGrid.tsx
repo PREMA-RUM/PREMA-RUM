@@ -61,14 +61,14 @@ export default function RecommendedGrid({preEnrollmentId, selectionsRef}: Recomm
     
     useEffect(() => {
         selectionsRef.current = []
-    }, [])
+    }, [selectionsRef])
     
     useEffect(() => {
         if (!isLoading)  {
             GetRows(recommendations!)
                 .then(res => {setRows(res as any)})   
         }
-    }, [recommendations])
+    }, [recommendations, isLoading])
     
     
     if (!rows || isLoading) {

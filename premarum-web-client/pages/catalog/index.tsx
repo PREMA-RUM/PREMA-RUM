@@ -71,7 +71,7 @@ export default function Catalog({semesters}: SemesterProps) {
         if (!isLoading)  {
             GetRows(courseOfferings).then(res => {setRows(res as any)})
         }
-    }, [courseOfferings])
+    }, [courseOfferings, isLoading])
 
     return (
         <>

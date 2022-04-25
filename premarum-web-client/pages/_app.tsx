@@ -16,7 +16,7 @@ import AuthDefaultLayout from '../components/DefaultLayout'
 import {NextPage} from "next";
 import {ReactElement, ReactNode} from "react";
 import {pca} from "../utility/constants";
-import MobileNavbar from "../components/MobileNavBar";
+import MobileNavbar from "../components/Navigation/MobileNavBar";
 import NextNProgress from "nextjs-progressbar";
 
 const clientSideEmotionCache = createEmotionCache();
