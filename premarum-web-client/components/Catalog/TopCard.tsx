@@ -1,8 +1,7 @@
-import {Autocomplete, Card, Divider, Grid, Stack, TextField, Typography} from "@mui/material";
+import {Autocomplete, Card, Divider, Grid, TextField, Typography, Stack} from "@mui/material";
 import {ISemesterResponse} from "../../utility/requests/responseTypes";
 import React from "react";
-import {Property} from "csstype";
-import Top = Property.Top;
+import {useTheme} from "@mui/material/styles";
 
 type TopAreaProps = {
     semesters: ISemesterResponse[],
@@ -11,7 +10,8 @@ type TopAreaProps = {
 }
 
 export function CatalogMobileTopArea({semesters, currentSemester, setCurrentSemester}: TopAreaProps) {
-return <Stack sx={{mb: 1}}>
+    const classes = useStyles();
+    return <Stack sx={{mb: 1}}>
         <Autocomplete
             sx={classes.semesterSelect}
             id="semester-select"
@@ -33,6 +33,7 @@ return <Stack sx={{mb: 1}}>
 }
 
 export function CatalogWideScreenTopArea({semesters, currentSemester, setCurrentSemester}: TopAreaProps) {
+    const classes = useStyles();
     return <Card sx={classes.topCard}>
         <Grid container direction="row" justifyContent="space-between" alignItems="center">
             <Grid item>
@@ -62,24 +63,28 @@ export function CatalogWideScreenTopArea({semesters, currentSemester, setCurrent
     </Card>
 }
 
-
-const useStyles = {
-    topCard: {
-        padding: '5px 25px',
-        backgroundColor: 'primary.light',
-        marginBottom: 1.5
-    },
-    semesterSelect: {
-        backgroundColor: 'white',
-        minWidth: '300px'
-    },
-    title: {
-        padding: '8px 0',
-    },
-    dividerItem: {
-        marginLeft: 2,
-        marginRight: 2,
-    },
+const useStyles = () => {
+    const theme = useTheme()
+    return {
+        topCard: {
+            padding: '5px 25px',
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.primary.contrastText,
+            marginBottom: 1.5
+        },
+        semesterSelect: {
+            backgroundColor: 'white',
+            minWidth: '300px',
+            [theme.breakpoints.down("sm")]: {
+                mb: 1
+            }
+        },
+        title: {
+            padding: '8px 0',
+        },
+        dividerItem: {
+            marginLeft: 2,
+            marginRight: 2,
+        },
+    }
 }
-
-const classes = useStyles

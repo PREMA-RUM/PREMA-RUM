@@ -9,7 +9,8 @@ export default function DefaultLayout({children}:any) {
     useEffect(() => {
         if (!isAuthenticated)
             router.push("/");
-    }, [])
+    }, [isAuthenticated, router])
+    
     if (isAuthenticated)
         return <>{children}</>
     
