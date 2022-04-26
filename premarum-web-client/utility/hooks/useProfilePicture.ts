@@ -2,10 +2,8 @@ import useSWR from "swr";
 import getProfilePicture from "../requests/getProfilePicture";
 import {pca} from "../constants";
 import {useEffect} from "react";
-import {useStudent} from "./useStudent";
 
 export function useProfilePicture() {
-    
     const {data, error, mutate} = useSWR("GetProfilePicture", async () => {
         try {
             return URL.createObjectURL(await getProfilePicture(pca))
