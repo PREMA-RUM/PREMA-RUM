@@ -111,7 +111,7 @@ const useStyles = (theme: Theme) => ({
     },
     mainBox: {
         display: 'flex', 
-        p:1, 
+        p: 1,
         pb: 10, 
         pt:10,
         justifyContent: "center"

@@ -201,9 +201,11 @@ export default function Home(props: HomeProps) {
 
 const useStyles = (theme: Theme) => ({
     mainBox: {
-        width:'100%'
+        display: 'flex',
+        flex: 1
     },
     mainGrid: {
+        
     },
     contentCard: {
         padding: '25px',
