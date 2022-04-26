@@ -52,3 +52,11 @@ export interface ICoursesTakenResponse {
     course: ICourseResponse,
     semester: ISemesterResponse | null
 }
+
+export interface IApiProblem {
+    type: string,
+    detail: string,
+    title: string,
+    status: number,
+    traceId: string
+}
