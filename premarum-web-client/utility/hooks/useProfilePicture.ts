@@ -4,9 +4,9 @@ import {pca} from "../constants";
 import {useEffect} from "react";
 import {useStudent} from "./useStudent";
 
-export function useProfilePicture(studentEmail: string | undefined) {
+export function useProfilePicture() {
     
-    const {data, error, mutate} = useSWR(`GetProfilePicture-${studentEmail}`, async () => {
+    const {data, error, mutate} = useSWR("GetProfilePicture", async () => {
         try {
             return URL.createObjectURL(await getProfilePicture(pca))
         } catch (e) {
@@ -23,7 +23,7 @@ export function useProfilePicture(studentEmail: string | undefined) {
         if (data === undefined) {
             mutate()
         }
-    }, [data, studentEmail])
+    }, [data])
     
     return {
         profilePicture: data as string | null | undefined,

@@ -12,7 +12,7 @@ const MobilePicDrawer = dynamic(() => import('./MobileProfilePicDrawer'))
 
 export default function ProfilePicture() {
     const {student} = useStudent()
-    const {profilePicture} = useProfilePicture(student?.email)
+    const {profilePicture} = useProfilePicture()
     const [showDrawer, setShowDrawer] = useState(false)
     const [showLogoutModal, setShowLogoutModal] = useState(false)
     const isMobile = useIsMobile()
