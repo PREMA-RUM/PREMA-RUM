@@ -166,7 +166,7 @@ export default function Home(props: HomeProps) {
                                         <Autocomplete
                                             id="tags-outlined"
                                             options={props.semesters}
-                                            getOptionLabel={(option) => `${option.term}-${option.year}`}
+                                            getOptionLabel={(option) => `${option.term} - ${option.year}`}
                                             filterSelectedOptions
                                             onChange={(event, newValue) => {
                                                 setNewPreEnrollmentSemester(newValue as ISemesterResponse);
@@ -242,7 +242,6 @@ const useStyles = (theme: Theme) => ({
             width: "90%"
         },
         width: '60%',
-        minHeight: '30%',
         backgroundColor: grey[50],
     },
     cardContent: {
@@ -255,7 +254,6 @@ const useStyles = (theme: Theme) => ({
     },
     cardActions: {
         justifyContent: 'flex-end',
-        alignItems: 'flex-end',
     },
 });
 

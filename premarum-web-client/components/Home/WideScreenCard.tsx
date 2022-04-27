@@ -28,7 +28,7 @@ export function WideScreenCard({semesters, handleModalOpen, filterState, setFilt
                         sx={classes.semesterSelect}
                         id="tags-outlined"
                         options={semesters}
-                        getOptionLabel={(option) => `${option.term}: ${option.year}-${option.year+1}`}
+                        getOptionLabel={(option) => `${option.term}: ${option.year} - ${option.year+1}`}
                         filterSelectedOptions
                         onChange={(event: any, newValue: ISemesterResponse | null) => {setFilterState(newValue)}}
                         value={filterState}
