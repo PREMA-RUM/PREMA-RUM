@@ -24,7 +24,7 @@ export function useProfilePicture() {
     }, [data])
     
     return {
-        profilePicture: data as string | undefined,
+        profilePicture: data as string | null | undefined,
         isLoading: !error && !data,
         isError: error,
     }

@@ -4,16 +4,10 @@ import {
     CircularProgress,
     Grid,
     Paper,
-    styled,
-    Tooltip,
-    tooltipClasses,
-    TooltipProps,
-    Typography,
     useMediaQuery
 } from "@mui/material";
 import {
     DataGrid,
-    GridToolbarColumnsButton,
     GridToolbarContainer,
     GridToolbarDensitySelector,
     GridToolbarFilterButton
@@ -101,10 +95,10 @@ export default function CatalogGrid({semesterId, exclude, selectionsRef}: Catalo
     const [rows, setRows] = useState([])
     const [quickSearchState, setQuickSearchState] = useState("")
     const afterExclusion = courseOfferings? courseOfferings.filter(co => !exclude.includes(co.id)): []
+    const [selected, setSelected] = useState<any[]>([])
     
     useEffect(() => {
         if (!isLoading)  {
-            console.log(courseOfferings)
             GetRows(afterExclusion)
                 .then(res => {setRows(res as any)})   
         }
@@ -122,6 +116,7 @@ export default function CatalogGrid({semesterId, exclude, selectionsRef}: Catalo
         <Paper elevation={0} sx={classes.containerBox}>
             <DataGrid
                 onSelectionModelChange={async (selectionModel) => {
+                    setSelected(selectionModel)
                     selectionsRef.current = selectionModel.map(
                         sel =>  (rows[sel as number] as any).entryId )
                 }}
@@ -131,20 +126,24 @@ export default function CatalogGrid({semesterId, exclude, selectionsRef}: Catalo
                 rows={rows}
                 columns={GetColumnFormat({creditSum: null})}
                 autoHeight
+                selectionModel={selected}
                 components={{
                     Toolbar: WrapToolBars,
                 }}
                 componentsProps={{
                     toolbar: {
                         value: quickSearchState,
-                        onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
+                        onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+                            setSelected([])
                             requestSearch({
                                 searchValue: event.target.value,
                                 setSearchText: setQuickSearchState,
                                 rowSetter: (rec: any[]) => GetRows(rec).then(res => setRows(res as any)),
                                 rows: afterExclusion
-                            }),
+                            })
+                        },
                         clearSearch: () => {
+                            setSelected([])
                             setQuickSearchState("")
                             GetRows(afterExclusion)
                                 .then(res => setRows(res as any))

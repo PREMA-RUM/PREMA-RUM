@@ -1,27 +1,17 @@
 import {
     Box,
-    Button,
     CircularProgress,
     Grid,
     Paper,
-    styled,
-    Tooltip,
-    tooltipClasses,
-    TooltipProps,
-    Typography,
     useMediaQuery
 } from "@mui/material";
 import {
     DataGrid,
-    GridToolbarColumnsButton,
     GridToolbarContainer,
     GridToolbarDensitySelector,
     GridToolbarFilterButton
 } from "@mui/x-data-grid";
 import React, {useEffect, useState} from "react";
-import {useSemesterOfferings} from "../utility/hooks/useSemesterOfferings";
-import {AddRounded} from "@mui/icons-material";
-import {usePreEnrollment} from "../utility/hooks/usePreEnrollments";
 import {GetRows} from "../utility/helpers/selectionToRow";
 import { GetColumnFormat } from "../utility/helpers/ColumnFormat";
 import {useRecommendations} from "../utility/hooks/useRecommendations";
@@ -58,6 +48,7 @@ export default function RecommendedGrid({preEnrollmentId, selectionsRef}: Recomm
     const {recommendations, isLoading, isError} = useRecommendations(preEnrollmentId);
     const [rows, setRows] = useState<any[]>([])
     const [quickSearchState, setQuickSearchState] = useState("")
+    const [selected, setSelected] = useState<any[]>([])
     
     useEffect(() => {
         selectionsRef.current = []
@@ -83,9 +74,11 @@ export default function RecommendedGrid({preEnrollmentId, selectionsRef}: Recomm
         <Paper elevation={0} sx={classes.containerBox}>
             <DataGrid
                 onSelectionModelChange={async (selectionModel) => {
+                    setSelected(selectionModel)
                     selectionsRef.current = selectionModel.map(
                         sel =>  (rows[sel as number] as any).entryId )
                 }}
+                selectionModel={selected}
                 checkboxSelection
                 pageSize={25}
                 rowHeight={75}
@@ -98,14 +91,17 @@ export default function RecommendedGrid({preEnrollmentId, selectionsRef}: Recomm
                 componentsProps={{
                     toolbar: {
                         value: quickSearchState,
-                        onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
+                        onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+                            setSelected([])
                             requestSearch({
                                 searchValue: event.target.value,
                                 setSearchText: setQuickSearchState,
                                 rowSetter: (rec: any[]) => GetRows(rec).then(res => setRows(res)),
                                 rows: recommendations!
-                            }),
+                            })
+                        },
                         clearSearch: () => {
+                            setSelected([])
                             setQuickSearchState("")
                             GetRows(recommendations!)
                                 .then(res => setRows(res))
