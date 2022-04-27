@@ -8,10 +8,10 @@ namespace PreEnrollmentMgmt.CourseParserLib;
 
 public class CourseParsingService : ICourseParsingService
 {
-    public CourseParserOutput CompliesWithRequisites(IEnumerable<CoursesTaken> coursesTaken, string? requisites)
+    public CourseParserOutput CompliesWithRequisites(IEnumerable<CoursesTaken> coursesTaken, string requisites)
     {
         if (string.IsNullOrEmpty(requisites))
-            return new CourseParserOutput(true, null);
+            return new CourseParserOutput(true);
         var stream = new AntlrInputStream(requisites);
         var lexer = new CourseGrammarLexer(stream);
         var parser = new CourseGrammarParser(new CommonTokenStream(lexer));

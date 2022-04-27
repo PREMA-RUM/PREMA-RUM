@@ -4,12 +4,12 @@ namespace PreEnrollmentMgmt.Core.Entities.Output;
 
 public class CourseParserOutput
 {
-    public CourseParserOutput(bool compliesWithRequisites = false, List<CourseTakenVisitorValue>? missingCourses = null)
+    public CourseParserOutput(bool compliesWithRequisites = false)
     {
         CompliesWithRequisites = compliesWithRequisites;
-        MissingCourses = missingCourses;
+        MissingCourses = new HashSet<string>();
     }
 
     public bool CompliesWithRequisites { get; set; }
-    public List<CourseTakenVisitorValue>? MissingCourses { get; set; }
+    public HashSet<string> MissingCourses { get; set; }
 }

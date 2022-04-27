@@ -3,9 +3,9 @@ namespace PreEnrollmentMgmt.CourseParserLib;
 public class CourseTakenVisitorValue
 {
     public string CourseCode { get; set; }
-    public int? CourseId { get; set; }
+    public int CourseId { get; set; }
 
-    public CourseTakenVisitorValue(string courseCode, int? courseId)
+    public CourseTakenVisitorValue(string courseCode, int courseId)
     {
         CourseCode = courseCode;
         CourseId = courseId;

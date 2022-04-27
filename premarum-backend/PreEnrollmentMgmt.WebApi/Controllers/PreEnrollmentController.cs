@@ -1,8 +1,11 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Packaging;
+using PreEnrollmentMgmt.Core.Entities.Output;
 using PreEnrollmentMgmt.Core.Repositories;
 using PreEnrollmentMgmt.Core.Services;
+using PreEnrollmentMgmt.Core.Services.Interfaces;
 using PreEnrollmentMgmt.WebApi.Controllers.DTOS;
 using PreEnrollmentMgmt.WebApi.Controllers.DTOS.Requests;
 
@@ -15,13 +18,17 @@ public class PreEnrollmentController : ControllerBase
     private readonly IMapper _mapper;
     private readonly PreEnrollmentService _preEnrollmentService;
     private readonly ITransactionManager _transactionManager;
+    private readonly StudentValidationService _studentValidationService;
+    private readonly ICourseParsingService _courseParsingService;
 
     public PreEnrollmentController(ITransactionManager transactionManager, IMapper mapper,
-        PreEnrollmentService preEnrollmentService)
+        PreEnrollmentService preEnrollmentService, StudentValidationService studentValidationService, ICourseParsingService courseParsingService)
     {
         _transactionManager = transactionManager;
         _mapper = mapper;
         _preEnrollmentService = preEnrollmentService;
+        _studentValidationService = studentValidationService;
+        _courseParsingService = courseParsingService;
     }
 
 
@@ -111,5 +118,26 @@ public class PreEnrollmentController : ControllerBase
         var result = await _preEnrollmentService.GetPreEnrollmentRecommendations(
             preEnrollmentId, User.Identity?.Name!);
         return _mapper.Map<IEnumerable<PreEnrollmentSemesterOfferDTO>>(result);
+    }
+    
+    [Authorize]
+    [HttpGet("{preEnrollmentId}/Requisites")]
+    public async Task<PreEnrollmentCourseParserOutput> StudentCompliesWithRequisites( [FromRoute] int preEnrollmentId)
+    {
+        var preEnrollment = await GetPreEnrollmentById(preEnrollmentId);
+        var selections =  preEnrollment.Selections;
+            var student = await _studentValidationService.ValidateStudentExists(User.Identity?.Name!, true);
+        var result = new PreEnrollmentCourseParserOutput();
+        foreach (var semesterOffer in selections)
+        {
+            var courseParserOutput = _courseParsingService
+                .CompliesWithRequisites(student.CoursesTaken, semesterOffer.Course.CoursePrerequisites);
+            if (!courseParserOutput.CompliesWithRequisites)
+            {
+                result.CourseRequisitesValue.Add(new CourseRequisiteValue(semesterOffer.Course.Id));
+                result.MissingCourses.AddRange(courseParserOutput.MissingCourses);
+            }
+        }
+        return _mapper.Map<PreEnrollmentCourseParserOutput>(result);
     }
 }
