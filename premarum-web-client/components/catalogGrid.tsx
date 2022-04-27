@@ -27,6 +27,7 @@ import { GetColumnFormat } from "../utility/helpers/ColumnFormat";
 import QuickSearchToolbar, {QuickSearchToolbarProps, requestSearch} from "./DataGridAddOns/QuickSearchToolbar";
 import {useTheme} from "@mui/material/styles";
 import {useRecommendations} from "../utility/hooks/useRecommendations";
+import axios from "axios";
 
 function CustomToolbar() {
     return(
@@ -74,9 +75,16 @@ export function AddSelectionButton({preEnrollmentId, selectionsRef, changeTab}: 
                 try {
                     await addSelectionFn(selectionsRef.current)
                 } catch (err) {
-                    alert(err)
+                    if (axios.isAxiosError(err)) {
+                        if (err.response!.data.status === 400) {
+                            alert("Too many selections to add at a time");
+                        } else {
+                            alert(err.response!.data.detail)
+                        }
+                    } else {
+                        alert(err)
+                    }
                     selectionsRef.current = []
-                    changeTab()
                     return
                 }
                 selectionsRef.current = []
