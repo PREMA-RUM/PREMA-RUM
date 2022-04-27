@@ -74,7 +74,7 @@ export default function LandingContact() {
                                 sx={classes.devIcon}
                                 component="img"
                                 alt="Developer"
-                                src="/prema-icon.png"
+                                src="https://github.com/joseriveramorales.png"
                             />
                         </IconButton>
                         <Typography variant="h4" sx={classes.devName}>José Rivera</Typography>
@@ -91,7 +91,7 @@ export default function LandingContact() {
                                 sx={classes.devIcon}
                                 component="img"
                                 alt="Developer"
-                                src="/prema-icon.png"
+                                src="https://github.com/kenneth-rosario.png"
                             />
                         </IconButton>
                         <Typography variant="h4" sx={classes.devName}>Kenneth Rosario</Typography>
@@ -108,7 +108,7 @@ export default function LandingContact() {
                                 sx={classes.devIcon}
                                 component="img"
                                 alt="Developer"
-                                src="/prema-icon.png"
+                                src="https://github.com/YMari.png"
                             />
                         </IconButton>
                         <Typography variant="h4" sx={classes.devName}>Yavier Mari</Typography>
@@ -187,18 +187,19 @@ const useStyles = {
     },
     devItem: {
         padding: '0 20px',
-        transition: 'opacity 0.5s, textShadow 1s',
-        opacity: '0.6',
+        transition: '0.5s all ease',
+        opacity: '0.8',
         textShadow: '0',
         '&:hover': {
-            transition: 'opacity 0.5s, textShadow 1s',
+            transition: '0.5s all ease',
             opacity: '1',
-            textShadow: ' 0 0 5px #fff',
+            textShadow: ' 0 0 3px #fff',
         },
     },
     devIcon: {
         width: '100%',
         maxHeight: '100px',
+        borderRadius: '50%',
     },
     devName: {
         color: 'white',
