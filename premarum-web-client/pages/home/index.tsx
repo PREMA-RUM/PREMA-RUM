@@ -18,7 +18,12 @@ import {grey} from '@mui/material/colors';
 import React, {useEffect, useState} from 'react';
 import {useRouter} from 'next/router';
 import getAllSemesters from "../../utility/requests/getAllSemesters";
-import {IDepartmentResponse, IPreEnrollmentResponse, ISemesterResponse} from "../../utility/requests/responseTypes";
+import {
+    IApiProblem,
+    IDepartmentResponse,
+    IPreEnrollmentResponse,
+    ISemesterResponse
+} from "../../utility/requests/responseTypes";
 import {
     useMutatePreEnrollmentsCache, usePreEnrollments,
 } from "../../utility/hooks/usePreEnrollments";
@@ -30,6 +35,7 @@ import getAllDepartments from '../../utility/requests/getAllDepartments';
 import { useStudent } from '../../utility/hooks/useStudent';
 import {MobileTopArea} from "../../components/Home/MobileTopArea";
 import {WideScreenCard} from "../../components/Home/WideScreenCard";
+import axios from "axios";
 
 type HomeProps = {
     semesters: ISemesterResponse[],
@@ -73,7 +79,12 @@ export default function Home(props: HomeProps) {
             });
         } catch (err) {
             // TODO: Switch with correct backend error message
-            alert(err)
+            if (axios.isAxiosError(err)) {
+                const message = (err.response!.data as IApiProblem).detail
+                alert(message)
+            } else {
+                alert("Something went wrong. Try Again.")
+            }
             setModalLoading(false);
             return;
         }

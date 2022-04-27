@@ -17,6 +17,7 @@ export function MobileTopArea({semesters, handleModalOpen, filterState, setFilte
     const classes = useStyles(theme)
     const {preEnrollments} = usePreEnrollments()
     const [inputVal, setInputVal] = useState('')
+    const semesterIdList = preEnrollments? new Set(preEnrollments.map(pe=>pe.semester.id)): new Set([])
     
     return <Stack sx={classes.topCardMobile} spacing={1}>
         {
@@ -25,7 +26,7 @@ export function MobileTopArea({semesters, handleModalOpen, filterState, setFilte
                     <Autocomplete
                         sx={classes.semesterSelect}
                         id="tags-outlined"
-                        options={semesters}
+                        options={semesters.filter(s => semesterIdList.has(s.id))}
                         getOptionLabel={(option) => `${option.term}: ${option.year}-${option.year+1}`}
                         onChange={(_: any, newValue: ISemesterResponse | null) => {setFilterState(newValue)}}
                         value={filterState}
