@@ -2,7 +2,7 @@ import { Box, Grid, Typography } from "@mui/material";
 
 export default function LandingAbout() {
     return(
-        <Box sx={classes.landingAbout}>
+        <Box sx={classes.landingAbout} id="landing-about">
 
             <Typography align="center" variant="h3" sx={classes.landingAboutTitle}>What is PREMARUM?</Typography>
     
@@ -23,13 +23,15 @@ export default function LandingAbout() {
             </Box>
     
             <Typography align="center" variant="h5" sx={classes.landingAboutSubtitle}>Designed for UPRM students, by UPRM students.</Typography>
-        
+
+            <Box sx={classes.rumLogoWrapper}>
             <Box
                 sx={classes.rumLogo}
                 component="img"
                 alt="UPRM"
                 src="rum-logo-transparent.svg"
             />
+            </Box>
               
         </Box>
     )
@@ -37,27 +39,14 @@ export default function LandingAbout() {
 
 const useStyles = {
     landingAbout: {
-        height: '100%',
-        minHeight: '100vh',
-        padding: '0 0 0 0',
-        direction: "column",
-        justifyContent: "space-between",
-        alignItems: "center",
-        alignContent: "center",
-
-        background: `linear-gradient(rgba(22,74,65,0.6), rgba(0,0,0,0.6)),
-                    url(backgroundImage2.png)`,
-        backgroundColor: 'secondary.main',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center center',
-        backgroundSize: 'cover',
+        height: '100vh',
     },
     mainGrid: {
         height: '100%',
     },
     landingAboutTitle: {
         color: 'white',
-        padding: '80px 0 0 0',
+        padding: '30p 0 0 0',
     },
     videoBox: {
         width: '100%',
@@ -66,7 +55,7 @@ const useStyles = {
     },
     videoBoxWrapper2: { 
         width: '100%',
-        maxWidth: '950px',
+        maxWidth: '720px',
         padding: '0 20px',
     },
     videoBoxWrapper: { // 16:9 ratio
@@ -89,11 +78,15 @@ const useStyles = {
         color: 'white',
         padding: '0 0 0 0',
     },
+    rumLogoWrapper: {
+        
+    },
     rumLogo: {
         width: "100%",
-        height: "250px",
+        height: "100%",
+        maxHeight: "250px",
         marginTop: 3,
-        marginBottom: 3,
+        marginBottom: 2,
     },
 }
   

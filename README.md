@@ -1,6 +1,6 @@
 # [PREMA-RUM](https://www.premarum.com/)
 
-## Team Members: [Kenneth J. Rosario Acevedo](https://github.com/kenneth-rosario), [José A. Rivera Morales](https://github.com/jvserivera), [Yavier A. Mari Rodríguez](https://github.com/YMari)
+## Team Members: [Kenneth J. Rosario Acevedo](https://github.com/kenneth-rosario), [José A. Rivera Morales](https://github.com/https://github.com/joseriveramorales), [Yavier A. Mari Rodríguez](https://github.com/YMari)
 
 ### PREMA-RUM is a web application for creating enrollment logistical plans, storing and sharing them with the community.
 

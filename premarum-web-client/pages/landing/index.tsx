@@ -16,6 +16,8 @@ import LandingContact from "../../components/Landing/landingContact";
 
 export default function Landing() {
     const [value, setValue] = React.useState(0);
+    const theme = useTheme()
+    const matches = useMediaQuery(theme.breakpoints.down('sm'), {noSsr:true});
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
@@ -32,9 +34,7 @@ export default function Landing() {
     }
 
     const StyledTabs = styled(Tabs)({
-        position: 'fixed',
         backgroundColor: "transparent",
-        width: '100%',
         '& .MuiTabs-indicator': {
             backgroundColor: 'white',
             '&.Mui-selected': {
@@ -84,7 +84,8 @@ export default function Landing() {
             <StyledTabs
                 value={value}
                 onChange={handleChange}
-                sx={classes.tabBar}
+                sx={matches? {padding: '0 0 20px 0'}: {padding: '10px 20px 20px 20px'}}
+                variant={matches? 'fullWidth':'standard'}
                 aria-label="tab bar landing page"
             >
                 <StyledTab label='Home' />
@@ -101,8 +102,8 @@ export default function Landing() {
             <TabPanel value={value} index={2}>
                 <LandingContact/>
             </TabPanel>
+            </Box>
 
-        </Box>
     )
 }
 
@@ -117,10 +118,18 @@ const useStyles = {
     fullBox: {
         width: '100%',
         height: '100%',
+        background: `linear-gradient(rgba(22,74,65,0.6), rgba(0,0,0,0.6)),
+        url(backgroundImage2.png)`,
+        backgroundColor: 'secondary.main',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center center',
+        backgroundSize: 'cover',
     },
     tabBar: {
-        marginTop: 1,
-        marginLeft: 2,
+
+    },
+    contentBox: {
+
     },
     tabContent: {
 
