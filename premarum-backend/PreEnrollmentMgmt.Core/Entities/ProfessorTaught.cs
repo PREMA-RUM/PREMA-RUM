@@ -1,4 +1,4 @@
-namespace PreEnrollmentMgmt.Core.Entities.ComputedEntities;
+namespace PreEnrollmentMgmt.Core.Entities;
 
 public class ProfessorTaught
 {

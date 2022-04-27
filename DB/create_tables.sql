@@ -260,7 +260,6 @@ begin
                     FROM ("CoursesTaken" natural inner join "Student") ct1, ("CoursesTaken" natural inner join "Student") ct2
                     WHERE ct1.c_id != ct2.c_id
                       AND ct1.st_id = ct2.st_id
-                      AND ct1.dept_id = (select dept_id from student_department)
                     group by ct1.c_id, ct2.c_id
                 ),
             -- SCORING
@@ -347,8 +346,32 @@ begin
                         AND c_id not in (select selection from current_preenrollment_selections)
                     -- Exclude courses already marked as taken
                         AND c_id not in (select c_id from stduent_courses_taken)
-                    order by rank desc
+                ),
+            -- Exclude seemster offers that conflict with the current pre enrollment
+            preenrollment_with_timeslot as
+                (
+                    SELECT pe_id, so_id, ts_start_time, ts_end_time, d_id
+                    FROM "PreEnrollment"
+                             natural inner join "PreEnrollmentSelection"
+                             natural inner join "SemesterOffer"
+                             natural inner join "TimeSlot"
+                    WHERE pe_id = _pre_enrollment_id
+                ),
+            semester_courses_with_timeslots as
+                (
+                    SELECT
+                        *
+                    FROM semester_courses natural inner join "TimeSlot"
+                ),
+            rec_conflicts as -- recommended semester offers with conflicts
+                (
+                   SELECT a.so_id
+                   FROM semester_courses_with_timeslots a, preenrollment_with_timeslot b
+                   WHERE (a.ts_start_time, a.ts_end_time) OVERLAPS (b.ts_start_time, b.ts_end_time)
+                    AND a.d_id = b.d_id
                 )
-        select * FROM semester_courses LIMIT 100;
+        SELECT * FROM semester_courses WHERE so_id not in (
+            SELECT so_id FROM rec_conflicts
+        ) order by rank DESC LIMIT 100;
 end;
 $$;
