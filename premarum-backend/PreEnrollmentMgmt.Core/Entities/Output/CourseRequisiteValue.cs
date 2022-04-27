@@ -2,10 +2,11 @@ namespace PreEnrollmentMgmt.Core.Entities.Output;
 
 public class CourseRequisiteValue
 {
-    public CourseRequisiteValue(int courseId, bool studentHasRequisites = false)
+    public CourseRequisiteValue(int courseId, string courseCode, bool studentHasRequisites = false)
     {
         CourseId = courseId;
         StudentHasRequisites = studentHasRequisites;
+        CourseCode = courseCode;
     }
 
     protected bool Equals(CourseRequisiteValue other)
@@ -17,7 +18,7 @@ public class CourseRequisiteValue
     {
         if (ReferenceEquals(null, obj)) return false;
         if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != this.GetType()) return false;
+        if (obj.GetType() != GetType()) return false;
         return Equals((CourseRequisiteValue) obj);
     }
 
@@ -28,4 +29,5 @@ public class CourseRequisiteValue
 
     public int CourseId { get; set; }
     public bool StudentHasRequisites { get; set; }
+    public string CourseCode { set; get; }
 }

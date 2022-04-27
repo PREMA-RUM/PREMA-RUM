@@ -5,5 +5,5 @@ namespace PreEnrollmentMgmt.Core.Services.Interfaces;
 
 public interface ICourseParsingService
 {
-    public CourseParserOutput CompliesWithRequisites(IEnumerable<CoursesTaken> coursesTaken, string requisites);
+    public Task<List<Course>> GetMissingCourses(IEnumerable<CoursesTaken> coursesTaken, Course course);
 }

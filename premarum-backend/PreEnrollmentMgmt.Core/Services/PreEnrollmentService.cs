@@ -1,10 +1,9 @@
-using System.Collections.Immutable;
 using PreEnrollmentMgmt.Core.Entities;
 using PreEnrollmentMgmt.Core.Entities.ComputedEntities;
+using PreEnrollmentMgmt.Core.Entities.Output;
 using PreEnrollmentMgmt.Core.Exceptions;
 using PreEnrollmentMgmt.Core.Repositories;
 using PreEnrollmentMgmt.Core.Services.Interfaces;
-
 
 namespace PreEnrollmentMgmt.Core.Services;
 
@@ -19,7 +18,8 @@ public class PreEnrollmentService
 
     public PreEnrollmentService(IPreEnrollmentRepository preEnrollmentRepository,
         ISemesterOfferRepository semesterOfferRepository, IStudentRepository studentRepository,
-        SemesterValidationService semesterValidationService, StudentValidationService studentValidationService, ICourseParsingService courseParsingService)
+        SemesterValidationService semesterValidationService, StudentValidationService studentValidationService,
+        ICourseParsingService courseParsingService)
     {
         _preEnrollmentRepository = preEnrollmentRepository;
         _semesterOfferRepository = semesterOfferRepository;
@@ -48,13 +48,7 @@ public class PreEnrollmentService
             throw new InvalidPreEnrollmentSelectionException("Some selected course offerings to add do not exist");
 
         foreach (var semesterOffer in semesterOffers)
-        {
-            if (_courseParsingService.CompliesWithRequisites(student.CoursesTaken,
-                    semesterOffer.Course.CoursePrerequisites).CompliesWithRequisites)
-                Console.WriteLine("Notify that courses taken do not comply with requisites to add this semesterOffer. Will still permit to add the semesterOffer.");
             preEnrollment.AddSelection(semesterOffer);
-        }
-            
 
         _preEnrollmentRepository.Save(preEnrollment);
         return semesterOffers;
@@ -100,7 +94,7 @@ public class PreEnrollmentService
             .GetByStudentIdPartial(student.Id);
         return preEnrollments;
     }
-    
+
     public async Task<PreEnrollment> GetStudentPreEnrollmentById(string studentEmail, int preEnrollmentId)
     {
         var student = await _studentValidationService.ValidateStudentExists(studentEmail);
@@ -157,5 +151,27 @@ public class PreEnrollmentService
         if (!preEnrollment.CanBeChangedByStudent(student))
             throw new CoreException("Student cannot modify pre enrollment");
         return await _preEnrollmentRepository.GetRecommendationsForPreEnrollment(preEnrollmentId);
+    }
+
+    public async Task<PreEnrollmentCourseParserOutput> StudentCompliesWithRequisites(int preEnrollmentId,
+        string studentEmail)
+    {
+        var preEnrollment = await ValidatePreEnrollmentExists(preEnrollmentId);
+        var selections = preEnrollment.Selections;
+        var student = await _studentValidationService.ValidateStudentExists(studentEmail, true);
+        var result = new PreEnrollmentCourseParserOutput();
+        foreach (var semesterOffer in selections)
+        {
+            var missingCourses = await _courseParsingService
+                .GetMissingCourses(student.CoursesTaken, semesterOffer.Course);
+            
+            if (missingCourses.Any())
+            {
+                result.NotComplyingCourses.Add(semesterOffer.Course);
+                result.MissingCourses.UnionWith(missingCourses);
+            }
+        }
+
+        return result;
     }
 }

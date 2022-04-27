@@ -20,15 +20,17 @@ public class CourseRepository : ICourseRepository
             .Where(co => courseIds.Contains(co.Id))
             .ToListAsync();
     }
-    
+
     public async Task<IEnumerable<Course>> GetBySimpleCourseTakenList(SimpleCourseTaken[] coursesTaken)
     {
         var courseIds = new List<int>();
-        foreach (var courseTaken in coursesTaken)
-        {
-            courseIds.Add(courseTaken.CourseId);
-        }
+        foreach (var courseTaken in coursesTaken) courseIds.Add(courseTaken.CourseId);
         return await GetByIdList(courseIds.ToArray());
+    }
+
+    public async Task<List<Course>> GetByCourseCodeList(List<string> courseCodeList)
+    {
+        return await _context.Courses.Where(c => courseCodeList.Contains(c.CourseCode)).ToListAsync();
     }
 
     private IQueryable<Course> GetAllCourses()

@@ -23,6 +23,7 @@ public class CourseTreeVisitor : CourseGrammarBaseVisitor<CourseParserOutput>
             result.MissingCourses.UnionWith(leftVisit.MissingCourses);
             result.MissingCourses.UnionWith(rightVisit.MissingCourses);
         }
+
         result.CompliesWithRequisites = leftVisit.CompliesWithRequisites && rightVisit.CompliesWithRequisites;
         return result;
     }
@@ -37,8 +38,9 @@ public class CourseTreeVisitor : CourseGrammarBaseVisitor<CourseParserOutput>
             result.MissingCourses.UnionWith(leftVisit.MissingCourses);
             result.MissingCourses.UnionWith(rightVisit.MissingCourses);
         }
+
         result.CompliesWithRequisites = leftVisit.CompliesWithRequisites || rightVisit.CompliesWithRequisites;
-        
+
         return result;
     }
 
@@ -57,7 +59,7 @@ public class CourseTreeVisitor : CourseGrammarBaseVisitor<CourseParserOutput>
             result.CompliesWithRequisites = true;
 
         else result.MissingCourses.Add(currentCourse.CourseCode);
-        
+
         return result;
     }
 
@@ -65,7 +67,7 @@ public class CourseTreeVisitor : CourseGrammarBaseVisitor<CourseParserOutput>
     {
         var result = VisitExpression(context.expression());
         if (result.CompliesWithRequisites)
-            result.MissingCourses.RemoveWhere(str => true);
+            result.MissingCourses.Clear();
         return result;
     }
 
@@ -73,10 +75,9 @@ public class CourseTreeVisitor : CourseGrammarBaseVisitor<CourseParserOutput>
     {
         return Visit(context);
     }
-    
+
     public override CourseParserOutput VisitTerminal(ITerminalNode node)
     {
         return base.VisitTerminal(node);
     }
-
 }

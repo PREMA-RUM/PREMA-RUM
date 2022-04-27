@@ -1,15 +1,13 @@
-using PreEnrollmentMgmt.CourseParserLib;
-
 namespace PreEnrollmentMgmt.Core.Entities.Output;
 
 public class PreEnrollmentCourseParserOutput
 {
     public PreEnrollmentCourseParserOutput()
     {
-        CourseRequisitesValue = new HashSet<CourseRequisiteValue>();
-        MissingCourses = new HashSet<string>();
+        NotComplyingCourses = new HashSet<Course>();
+        MissingCourses = new HashSet<Course>();
     }
 
-    public HashSet<CourseRequisiteValue> CourseRequisitesValue { get; set; }
-    public HashSet<string> MissingCourses { get; set; }
+    public HashSet<Course> NotComplyingCourses { get; set; }
+    public HashSet<Course> MissingCourses { get; set; }
 }
