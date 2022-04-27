@@ -116,9 +116,9 @@ public class PreEnrollmentController : ControllerBase
 
     [Authorize]
     [HttpGet("{preEnrollmentId}/Requisites")]
-    public async Task<PreEnrollmentCourseParserOutput> StudentCompliesWithRequisites([FromRoute] int preEnrollmentId)
+    public async Task<PreEnrollmentCourseParserOutputDTO> StudentCompliesWithRequisites([FromRoute] int preEnrollmentId)
     {
         var result = await _preEnrollmentService.StudentCompliesWithRequisites(preEnrollmentId, User.Identity?.Name);
-        return result;
+        return _mapper.Map<PreEnrollmentCourseParserOutputDTO>(result);
     }
 }

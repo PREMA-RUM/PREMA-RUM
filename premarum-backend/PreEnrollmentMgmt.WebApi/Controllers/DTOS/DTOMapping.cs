@@ -1,6 +1,7 @@
 using AutoMapper;
 using PreEnrollmentMgmt.Core.Entities;
 using PreEnrollmentMgmt.Core.Entities.ComputedEntities;
+using PreEnrollmentMgmt.Core.Entities.Output;
 
 namespace PreEnrollmentMgmt.WebApi.Controllers.DTOS;
 
@@ -29,5 +30,6 @@ public class DTOMapping : Profile
                 opt => { opt.MapFrom(src => src.EndTimeB.ToString()); });
         CreateMap<Department, DepartmentDTO>();
         CreateMap<CoursesTaken, CoursesTakenDTO>();
+        CreateMap<PreEnrollmentCourseParserOutput, PreEnrollmentCourseParserOutputDTO>();
     }
 }
