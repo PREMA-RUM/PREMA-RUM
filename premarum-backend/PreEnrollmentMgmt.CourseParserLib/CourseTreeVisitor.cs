@@ -1,61 +1,70 @@
 ﻿using System.Collections.Immutable;
 using Antlr4.Runtime.Tree;
 using PreEnrollmentMgmt.Core.Entities;
+using PreEnrollmentMgmt.Core.Entities.Output;
 
 namespace PreEnrollmentMgmt.CourseParserLib;
 
 
 
-public class CourseTreeVisitor: CourseGrammarBaseVisitor<bool> {
+public class CourseTreeVisitor: CourseGrammarBaseVisitor<CourseParserOutput> {
     public CourseTreeVisitor(ImmutableHashSet<CourseTakenVisitorValue> coursesTaken)
     {
         CoursesTaken = coursesTaken;
+        Missing = new List<CourseTakenVisitorValue>();
     }
 
     public ImmutableHashSet<CourseTakenVisitorValue> CoursesTaken { get; set; }
     public List<CourseTakenVisitorValue> Missing { get; set; }
 
 
-    public override bool VisitAndExpression(CourseGrammarParser.AndExpressionContext context)
+    public override CourseParserOutput VisitAndExpression(CourseGrammarParser.AndExpressionContext context)
     {
-        return VisitExpression(context.left) && VisitExpression(context.right);
+        var result = new CourseParserOutput();
+        result.CompliesWithRequisites = VisitExpression(context.left).CompliesWithRequisites &&
+                                        VisitExpression(context.right).CompliesWithRequisites;
+        return result;
     }
 
-    public override bool VisitOrExpression(CourseGrammarParser.OrExpressionContext context)
+    public override CourseParserOutput VisitOrExpression(CourseGrammarParser.OrExpressionContext context)
     {
-        return VisitExpression(context.left) || VisitExpression(context.right);
+        var result = new CourseParserOutput();
+        result.CompliesWithRequisites = VisitExpression(context.left).CompliesWithRequisites ||
+                                        VisitExpression(context.right).CompliesWithRequisites;
+        return result;
     }
 
-    public override bool VisitParenExpression(CourseGrammarParser.ParenExpressionContext context)
-    {
-        return base.VisitParenExpression(context);
-    }
-
-    public override bool VisitIdentifierExpression(CourseGrammarParser.IdentifierExpressionContext context)
-    {
-        
-        var currentCourse = new CourseTakenVisitorValue(context.IDENTIFIER().Symbol.Text);
-        
-        if (currentCourse.CourseCode.Equals("dir") || CoursesTaken.Contains(currentCourse))
-            return true;
-        
-        Missing.Add(currentCourse);
-        return false;
-        
-}
-
-    public override bool VisitStart(CourseGrammarParser.StartContext context)
+    public override CourseParserOutput VisitParenExpression(CourseGrammarParser.ParenExpressionContext context)
     {
         return VisitExpression(context.expression());
     }
 
-    public override bool VisitExpression(CourseGrammarParser.ExpressionContext context)
+    public override CourseParserOutput VisitIdentifierExpression(CourseGrammarParser.IdentifierExpressionContext context)
     {
-        return base.VisitExpression(context);
+        var result = new CourseParserOutput();
+        var currentCourse = new CourseTakenVisitorValue(context.IDENTIFIER().Symbol.Text);
+
+        if (currentCourse.CourseCode.Equals("dir") || CoursesTaken.Contains(currentCourse))
+            result.CompliesWithRequisites = true;
+        
+        Missing.Add(currentCourse);
+        return result;
+        
+}
+
+    public override CourseParserOutput VisitStart(CourseGrammarParser.StartContext context)
+    {
+        return VisitExpression(context.expression());
     }
 
-    public override bool VisitTerminal(ITerminalNode node)
+    public override CourseParserOutput VisitExpression(CourseGrammarParser.ExpressionContext context)
+    {
+        return Visit(context);
+    }
+
+    public override CourseParserOutput VisitTerminal(ITerminalNode node)
     {
         return base.VisitTerminal(node);
     }
+    
 }

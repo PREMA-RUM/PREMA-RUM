@@ -4,7 +4,7 @@ namespace PreEnrollmentMgmt.Core.Entities.Output;
 
 public class CourseParserOutput
 {
-    public CourseParserOutput(bool compliesWithRequisites, List<CourseTakenVisitorValue>? missingCourses)
+    public CourseParserOutput(bool compliesWithRequisites = false, List<CourseTakenVisitorValue>? missingCourses = null)
     {
         CompliesWithRequisites = compliesWithRequisites;
         MissingCourses = missingCourses;

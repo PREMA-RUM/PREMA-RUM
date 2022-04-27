@@ -18,6 +18,6 @@ public class CourseParsingService : ICourseParsingService
         var tree = parser.start()!;
         var visitor = new CourseTreeVisitor(coursesTaken
             .Select(ct => new CourseTakenVisitorValue(ct.Course.CourseCode, ct.CourseId)).ToImmutableHashSet());
-        return new CourseParserOutput(visitor.VisitExpression(tree.expression()), null);
+        return visitor.VisitExpression(tree.expression());
     }
 }

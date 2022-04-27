@@ -32,7 +32,6 @@ public class CourseParserController : ControllerBase
     )
     {
         var student = await _studentValidationService.ValidateStudentExists(User.Identity?.Name!, true);
-
         return _mapper.Map<CourseParserOutput>(
             _parsingService.CompliesWithRequisites(student.CoursesTaken, newCourseRequisitesRequest.requisites));
     }
