@@ -78,11 +78,6 @@ export default function Preenrollment() {
         );
     }
     
-    if(isError) {
-        router.push("/home")
-        return <></>
-    }
-    
     if (isLoading || !preEnrollmentId ) {
         return <Grid alignItems="center" justifyContent="center" alignContent="center">
             <CircularProgress />

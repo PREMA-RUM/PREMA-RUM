@@ -3,6 +3,7 @@ import React, {Dispatch, useState} from "react";
 import {ISemesterResponse} from "../../utility/requests/responseTypes";
 import {Theme, useTheme} from "@mui/material/styles";
 import {AddPreEnrollmentButton} from "./AddPreEnrollmentButton";
+import {usePreEnrollments} from "../../utility/hooks/usePreEnrollments";
 
 type WideScreenProps = {
     semesters: ISemesterResponse[],
@@ -14,7 +15,9 @@ type WideScreenProps = {
 export function WideScreenCard({semesters, handleModalOpen, filterState, setFilterState}: WideScreenProps) {
     const theme = useTheme()
     const classes = useStyles(theme)
-    
+
+    const {preEnrollments} = usePreEnrollments()
+    const semesterIdList = preEnrollments? new Set(preEnrollments.map(pe=>pe.semester.id)): new Set([])
     const [inputVal, setInputVal] = useState('')
     
     return <Card sx={classes.topCard}>
@@ -27,7 +30,7 @@ export function WideScreenCard({semesters, handleModalOpen, filterState, setFilt
                     <Autocomplete
                         sx={classes.semesterSelect}
                         id="tags-outlined"
-                        options={semesters}
+                        options={semesters.filter(s => semesterIdList.has(s.id))}
                         getOptionLabel={(option) => `${option.term}: ${option.year} - ${option.year+1}`}
                         filterSelectedOptions
                         onChange={(event: any, newValue: ISemesterResponse | null) => {setFilterState(newValue)}}
