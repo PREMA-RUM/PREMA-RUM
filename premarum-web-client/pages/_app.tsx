@@ -61,10 +61,6 @@ const MyApp: React.FunctionComponent<AppPropsWithLayout> = (props) => {
               <link rel="icon" href="/prema-icon.png" />
           </Head>
           {DefaultLayout(<Component {...pageProps} />)}
-            <Script async
-                    src={"https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1454168480250190"}
-                    crossOrigin={"anonymous"}
-            />
             <Script
                 strategy="afterInteractive"
                 src={`https://www.googletagmanager.com/gtag/js?id=${gtag.GA_TRACKING_ID}`}

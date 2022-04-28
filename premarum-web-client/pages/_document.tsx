@@ -3,6 +3,8 @@ import Document, { Html, Head, Main, NextScript } from 'next/document';
 import createEmotionServer from '@emotion/server/create-instance';
 
 import createEmotionCache from '../utility/createEmotionCache';
+import Script from "next/script";
+import * as gtag from "../utility/gtag";
 
 export default class MyDocument extends Document {
   render() {
@@ -12,6 +14,10 @@ export default class MyDocument extends Document {
           <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+          />
+          <script async
+                  src={"https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1454168480250190"}
+                  crossOrigin={"anonymous"}
           />
         </Head>
         <body>
