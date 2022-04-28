@@ -1,7 +1,9 @@
 using PreEnrollmentMgmt.Core.Entities;
 using PreEnrollmentMgmt.Core.Entities.ComputedEntities;
+using PreEnrollmentMgmt.Core.Entities.Output;
 using PreEnrollmentMgmt.Core.Exceptions;
 using PreEnrollmentMgmt.Core.Repositories;
+using PreEnrollmentMgmt.Core.Services.Interfaces;
 
 namespace PreEnrollmentMgmt.Core.Services;
 
@@ -12,16 +14,19 @@ public class PreEnrollmentService
     private readonly IStudentRepository _studentRepository;
     private readonly SemesterValidationService _semesterValidationService;
     private readonly StudentValidationService _studentValidationService;
+    private readonly ICourseParsingService _courseParsingService;
 
     public PreEnrollmentService(IPreEnrollmentRepository preEnrollmentRepository,
         ISemesterOfferRepository semesterOfferRepository, IStudentRepository studentRepository,
-        SemesterValidationService semesterValidationService, StudentValidationService studentValidationService)
+        SemesterValidationService semesterValidationService, StudentValidationService studentValidationService,
+        ICourseParsingService courseParsingService)
     {
         _preEnrollmentRepository = preEnrollmentRepository;
         _semesterOfferRepository = semesterOfferRepository;
         _studentRepository = studentRepository;
         _semesterValidationService = semesterValidationService;
         _studentValidationService = studentValidationService;
+        _courseParsingService = courseParsingService;
     }
 
     public async Task<IEnumerable<SemesterOffer>> AddSelectionToPreEnrollment(int preEnrollmentId, string studentEmail,
@@ -32,7 +37,7 @@ public class PreEnrollmentService
 
         var preEnrollment = await ValidatePreEnrollmentExists(preEnrollmentId);
 
-        var student = await _studentValidationService.ValidateStudentExists(studentEmail);
+        var student = await _studentValidationService.ValidateStudentExists(studentEmail, true);
 
         if (!preEnrollment.CanBeChangedByStudent(student))
             throw new CoreException("Student cannot change PreEnrollment");
@@ -89,7 +94,7 @@ public class PreEnrollmentService
             .GetByStudentIdPartial(student.Id);
         return preEnrollments;
     }
-    
+
     public async Task<PreEnrollment> GetStudentPreEnrollmentById(string studentEmail, int preEnrollmentId)
     {
         var student = await _studentValidationService.ValidateStudentExists(studentEmail);
@@ -146,5 +151,23 @@ public class PreEnrollmentService
         if (!preEnrollment.CanBeChangedByStudent(student))
             throw new CoreException("Student cannot modify pre enrollment");
         return await _preEnrollmentRepository.GetRecommendationsForPreEnrollment(preEnrollmentId);
+    }
+
+    public async Task<PreEnrollentNonCompliantCourses> StudentCompliesWithPreRequisites(int preEnrollmentId,
+        string studentEmail)
+    {
+        var preEnrollment = await ValidatePreEnrollmentExists(preEnrollmentId);
+        var selections = preEnrollment.Selections;
+        var student = await _studentValidationService.ValidateStudentExists(studentEmail, true);
+        var result = new PreEnrollentNonCompliantCourses();
+
+        foreach (var semesterOffer in selections)
+        {
+            var missingCourses = await _courseParsingService
+                .GetMissingCourses(student.CoursesTaken, semesterOffer.Course);
+            result.IncludeMissingCourses(missingCourses, semesterOffer);
+        }
+
+        return result;
     }
 }

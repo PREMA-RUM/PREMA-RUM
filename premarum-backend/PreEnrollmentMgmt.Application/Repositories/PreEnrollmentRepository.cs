@@ -27,7 +27,7 @@ public class PreEnrollmentRepository : IPreEnrollmentRepository
     {
         return await _context
             .PreEnrollments
-            .Include(pe => pe.Selections)
+            .Include(pe => pe.Selections).ThenInclude(so => so.Course)
             .SingleOrDefaultAsync(pe => pe.Id == preEnrollmentId);
     }
 

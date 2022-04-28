@@ -112,4 +112,13 @@ public class PreEnrollmentController : ControllerBase
             preEnrollmentId, User.Identity?.Name!);
         return _mapper.Map<IEnumerable<PreEnrollmentSemesterOfferDTO>>(result);
     }
+
+    [Authorize]
+    [HttpGet("{preEnrollmentId}/Requisites")]
+    public async Task<PreEnrollmentCourseParserOutputDTO> StudentCompliesWithPreRequisites(
+        [FromRoute] int preEnrollmentId)
+    {
+        var result = await _preEnrollmentService.StudentCompliesWithPreRequisites(preEnrollmentId, User.Identity?.Name);
+        return _mapper.Map<PreEnrollmentCourseParserOutputDTO>(result);
+    }
 }
