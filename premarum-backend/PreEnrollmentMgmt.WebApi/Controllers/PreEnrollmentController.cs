@@ -1,7 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PreEnrollmentMgmt.Core.Entities.Output;
 using PreEnrollmentMgmt.Core.Repositories;
 using PreEnrollmentMgmt.Core.Services;
 using PreEnrollmentMgmt.WebApi.Controllers.DTOS;
@@ -116,9 +115,10 @@ public class PreEnrollmentController : ControllerBase
 
     [Authorize]
     [HttpGet("{preEnrollmentId}/Requisites")]
-    public async Task<PreEnrollmentCourseParserOutputDTO> StudentCompliesWithRequisites([FromRoute] int preEnrollmentId)
+    public async Task<PreEnrollmentCourseParserOutputDTO> StudentCompliesWithPreRequisites(
+        [FromRoute] int preEnrollmentId)
     {
-        var result = await _preEnrollmentService.StudentCompliesWithRequisites(preEnrollmentId, User.Identity?.Name);
+        var result = await _preEnrollmentService.StudentCompliesWithPreRequisites(preEnrollmentId, User.Identity?.Name);
         return _mapper.Map<PreEnrollmentCourseParserOutputDTO>(result);
     }
 }

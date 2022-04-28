@@ -30,6 +30,6 @@ public class DTOMapping : Profile
                 opt => { opt.MapFrom(src => src.EndTimeB.ToString()); });
         CreateMap<Department, DepartmentDTO>();
         CreateMap<CoursesTaken, CoursesTakenDTO>();
-        CreateMap<PreEnrollmentCourseParserOutput, PreEnrollmentCourseParserOutputDTO>();
+        CreateMap<PreEnrollentNonCompliantCourses, PreEnrollmentCourseParserOutputDTO>();
     }
 }

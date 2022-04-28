@@ -153,23 +153,19 @@ public class PreEnrollmentService
         return await _preEnrollmentRepository.GetRecommendationsForPreEnrollment(preEnrollmentId);
     }
 
-    public async Task<PreEnrollmentCourseParserOutput> StudentCompliesWithRequisites(int preEnrollmentId,
+    public async Task<PreEnrollentNonCompliantCourses> StudentCompliesWithPreRequisites(int preEnrollmentId,
         string studentEmail)
     {
         var preEnrollment = await ValidatePreEnrollmentExists(preEnrollmentId);
         var selections = preEnrollment.Selections;
         var student = await _studentValidationService.ValidateStudentExists(studentEmail, true);
-        var result = new PreEnrollmentCourseParserOutput();
+        var result = new PreEnrollentNonCompliantCourses();
+
         foreach (var semesterOffer in selections)
         {
             var missingCourses = await _courseParsingService
                 .GetMissingCourses(student.CoursesTaken, semesterOffer.Course);
-            
-            if (missingCourses.Any())
-            {
-                result.NotComplyingCourses.Add(semesterOffer.Course);
-                result.MissingCourses.UnionWith(missingCourses);
-            }
+            result.IncludeMissingCourses(missingCourses, semesterOffer);
         }
 
         return result;
