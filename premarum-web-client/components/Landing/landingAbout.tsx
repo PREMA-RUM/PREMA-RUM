@@ -1,13 +1,25 @@
-import { Box, Grid, Typography, Grow } from "@mui/material";
+import { Box, Grid, Typography, Grow, useTheme, useMediaQuery } from "@mui/material";
+import useIsMobile from "../../utility/hooks/useIsMobile";
+import LandingContainer from "./landingContainer";
 
 export default function LandingAbout() {
+    const classes = useStyles();
+    //const matches = useMediaQuery(`(max-height: 1000px)`)
+
     return(
-        <Grow
-            in={true}
-            {...{ timeout: 1000 }}
-        >
+        <LandingContainer>
             <Grid container direction='column' justifyContent='center' alignItems="center" sx={classes.landingAbout}>
                 <Box sx={classes.bodyWrapper}>
+
+                    <Box sx={classes.premaIconWrapper}>
+                        <Box
+                            sx={classes.premaIcon}
+                            component="img"
+                            alt="PREMARUM-ICON"
+                            src="prema-icon.png"
+                        />
+                    </Box>
+
                     <Typography align="center" variant="h3" sx={classes.landingAboutTitle}>What is PREMARUM?</Typography>
 
                     <Box sx={classes.videoBox}>
@@ -38,65 +50,86 @@ export default function LandingAbout() {
                     </Box>
                 </Box>
             </Grid>
-        </Grow>
+        </LandingContainer>
     )
 }
 
-const useStyles = {
-    landingAbout: {
-        padding: '0 30px',
-        minHeight: '100vh',
-    },
-    bodyWrapper: {
-        width: '100%',
-        height: '100%',
-        padding: '74px 0 0 0',
-    },
-    mainGrid: {
-        height: '100%',
-    },
-    landingAboutTitle: {
-        color: 'white',
-    },
-    videoBox: {
-        width: '100%',
-        textAlign: '-webkit-center',
-        padding: '40px 0',
-    },
-    videoBoxWrapper2: { 
-        width: '100%',
-        maxWidth: '720px',
-        padding: '0 20px',
-    },
-    videoBoxWrapper: { // 16:9 ratio
-        width: '100%',
-        paddingBottom: '56.25%',
-        position: 'relative',
-    },
-    videoWrapper: {
-        position: 'absolute',
-        top: 0,
-        right: 0,
-        bottom: 0,
-        left: 0,
-    },
-    videoFrame: {
-        width: '100%',
-        height: '100%',
-    },
-    landingAboutSubtitle: {
-        color: 'white',
-        padding: '0 0 0 0',
-    },
-    rumLogoWrapper: {
-        
-    },
-    rumLogo: {
-        width: "100%",
-        height: "250px",
-        marginTop: 3,
-        marginBottom: 2,
-    },
-}
-  
-const classes = useStyles;
+const useStyles = () => {
+    const theme = useTheme()
+
+    return {
+        landingAbout: {
+            padding: '0 30px',
+            minHeight: '100vh',
+        },
+        bodyWrapper: {
+            width: '100%',
+            height: '100%',
+            padding: '100px 0 0 0',
+        },
+        bodyWrapperMobile: {
+            width: '100%',
+            height: '100%',
+            padding: '100px 0 0 0',
+        },
+        premaIconWrapper: {
+            width: '100%',
+            height: '100%',
+            textAlign: 'center',
+            padding: '0 0 20px 0',
+
+        },
+        premaIcon: {
+            width: '100%',
+            height: '100%',
+            maxWidth: '200px',
+        },
+        mainGrid: {
+            height: '100%',
+        },
+        landingAboutTitle: {
+            color: 'white',
+        },
+        videoBox: {
+            width: '100%',
+            textAlign: '-webkit-center',
+            padding: '40px 0',
+        },
+        videoBoxWrapper2: { 
+            width: '100%',
+            maxWidth: '720px',
+            padding: '0 20px',
+        },
+        videoBoxWrapper: { // 16:9 ratio
+            width: '100%',
+            paddingBottom: '56.25%',
+            position: 'relative',
+        },
+        videoWrapper: {
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0,
+        },
+        videoFrame: {
+            width: '100%',
+            height: '100%',
+        },
+        landingAboutSubtitle: {
+            color: 'white',
+            padding: '0 0 0 0',
+        },
+        rumLogoWrapper: {
+            width: '100%',
+        },
+        rumLogo: {
+            width: "100%",
+            height: "250px",
+            [theme.breakpoints.down('sm')]: {
+                height: "150px",
+            },
+            marginTop: 3,
+            marginBottom: 3,
+        },
+}}

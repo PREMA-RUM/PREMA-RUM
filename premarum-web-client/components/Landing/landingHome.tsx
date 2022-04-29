@@ -1,10 +1,12 @@
 import { PopupRequest } from "@azure/msal-browser";
 import { useMsal } from "@azure/msal-react";
-import { Button, Box, Grid, Typography, Grow} from "@mui/material";
+import { Button, Box, Grid, Typography, Grow, useMediaQuery} from "@mui/material";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { TOKEN_REQUEST } from "../../utility/constants";
+import useIsMobile from "../../utility/hooks/useIsMobile";
 import getOrCreateUser from "../../utility/requests/getOrCreateUser";
+import LandingContainer from "./landingContainer";
 
 type ButtonProps = {
     
@@ -13,7 +15,7 @@ type ButtonProps = {
 const LoginButton: React.FunctionComponent<ButtonProps> = () => {
     const { instance, inProgress } = useMsal();
     const [loginLoading, setLoginLoading] = useState(false);
-    const router = useRouter();
+    const router = useRouter()
     
     if (inProgress === "login" || loginLoading) {
         return (
@@ -62,33 +64,35 @@ const LoginButton: React.FunctionComponent<ButtonProps> = () => {
 }
 
 export default function LandingHome() {
+    const matches = useMediaQuery(`(max-height: 1000px)`)
 
     return(
-        <Grow
-            in={true}
-            {...{ timeout: 1000 }}
-        >
+        <LandingContainer>
             <Grid container direction='column' justifyContent='center' alignItems="center" sx={classes.landingHome}>
 
-                <Box
-                    sx={classes.premaLogo}
-                    component="img"
-                    alt="PREMARUM"
-                    src="prema-logo-white-up.png"
-                />
+                <Box sx={matches? classes.bodyWrapperMobile : classes.bodyWrapper}>
+                    <Box sx={classes.premaLogoWrapper}>
+                        <Box
+                            sx={classes.premaLogo}
+                            component="img"
+                            alt="PREMARUM"
+                            src="prema-logo-white-up.png"
+                        />
+                    </Box>
 
-                <Typography align="center" variant="h4" sx={classes.landingHomeSubtitle1}>
-                    The easiest way to prepare yourself for your next semester.
-                </Typography>
+                    <Typography align="center" variant="h4" sx={classes.landingHomeSubtitle1}>
+                        The easiest way to prepare yourself for your next semester.
+                    </Typography>
 
-                <Typography align="center" sx={classes.landingHomeSubtitle2}>
-                    The app for creating enrollment logistical plans, storing, and sharing them with the community.
-                </Typography>
+                    <Typography align="center" sx={classes.landingHomeSubtitle2}>
+                        The app for creating enrollment logistical plans, storing, and sharing them with the community.
+                    </Typography>
+                </Box>
 
                 <LoginButton/>
-
+                
             </Grid>
-        </Grow>
+        </LandingContainer>
     )
 }
 
@@ -103,6 +107,21 @@ const useStyles = {
     landingHome: {
         padding: '0 30px',
         minHeight: '100vh',
+    },
+    bodyWrapper: {
+        width: '100%',
+        height: '100%',
+        textAlign: 'center',
+    },
+    bodyWrapperMobile: {
+        width: '100%',
+        height: '100%',
+        padding: '100px 0 0 0',
+        textAlign: 'center',
+    },
+    premaLogoWrapper: {
+        width: '100%',
+        height: '100%',
     },
     premaLogo: {
         width: '100%',

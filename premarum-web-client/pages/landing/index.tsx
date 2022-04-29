@@ -5,6 +5,7 @@ import OverlayIcons from "../../components/OverlayIcons";
 import LandingHome from "../../components/Landing/landingHome";
 import LandingAbout from "../../components/Landing/landingAbout";
 import LandingContact from "../../components/Landing/landingContact";
+import Head from "next/head";
 
 
 export default function Landing() {
@@ -29,7 +30,7 @@ export default function Landing() {
 
     const StyledTabs = styled(Tabs)({
         backgroundColor: "transparent",
-        position: "fixed",
+        position: "absolute",
         width: "100%",
         top: 0,
         zIndex: 100,
@@ -61,6 +62,22 @@ export default function Landing() {
         })
     )
 
+    const css = `
+        body, html {
+            margin: 0;
+            height: 100vh;
+            width: 100%;
+        }
+        body {
+            background: linear-gradient(rgba(22,74,65,0.6), rgba(0,0,0,0.6)), url(backgroundImage2.png);
+            background-color: #9DC88D;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            background-attachment: fixed;
+        }
+    `
+
     function TabPanel(props: StyledTabsProps) {
         const { children, value, index, ...other } = props;
 
@@ -80,6 +97,9 @@ export default function Landing() {
     return(
         <Box sx={classes.fullBox}>
             <OverlayIcons />
+            <Head>
+                <style>{css}</style>
+            </Head>
             <StyledTabs
                 value={value}
                 onChange={handleChange}
@@ -100,6 +120,7 @@ export default function Landing() {
             <TabPanel value={value} index={2}>
                 <LandingContact/>
             </TabPanel>
+            
         </Box>
     )
 }
@@ -115,13 +136,6 @@ const useStyles = {
     fullBox: {
         width: '100%',
         height: '100%',
-        background: `linear-gradient(rgba(22,74,65,0.6), rgba(0,0,0,0.6)),
-        url(backgroundImage2.png)`,
-        backgroundColor: 'secondary.main',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center center',
-        backgroundSize: 'cover',
-        backgroundAttachment: 'fixed',
     },
     tabBar: {
 

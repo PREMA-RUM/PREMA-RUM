@@ -96,7 +96,7 @@ const useStyles = () => {
             }
         },
         title: {
-            color: theme.palette.secondary.contrastText
+            color: 'white'
         },
         dividerItem: {
             marginLeft: 2,

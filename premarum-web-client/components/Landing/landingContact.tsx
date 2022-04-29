@@ -1,10 +1,15 @@
 import { CheckRounded } from "@mui/icons-material";
-import { Alert, Box, Button, Card, CardActions, CardContent, CardHeader, Divider, Grid, Grow, IconButton, Snackbar, TextField, Typography} from "@mui/material";
+import { Alert, Box, Button, Card, CardActions, CardContent, CardHeader, Divider, Grid, Grow, IconButton, Snackbar, TextField, Typography, useMediaQuery} from "@mui/material";
+import { TransitionProps } from "@mui/material/transitions";
 import React from "react";
+import useIsMobile from "../../utility/hooks/useIsMobile";
+import LandingContainer from "./landingContainer";
 
 export default function LandingContact() {
     const [open, setOpen] = React.useState(false);
     const [successful, setSuccessful] = React.useState(true);
+    const isMobile = useIsMobile()
+    const matches = useMediaQuery(`(max-height: 1000px)`)
 
     const handleSubmit = () => {
         try {
@@ -25,14 +30,18 @@ export default function LandingContact() {
         setOpen(false)
     }
 
+    const NoTransition = React.forwardRef<
+        React.ReactFragment,
+        TransitionProps
+        >(({ children }, ref) => {
+            return <>{ children }</>;
+    });
+
     return(
         <>
-        <Grow
-            in={true}
-            {...{ timeout: 1000 }}
-        >
+        <LandingContainer>
             <Grid container direction='column' justifyContent='center' alignItems="center" sx={classes.landingContact}>
-                <Box sx={{padding: '74px 0 20px 0'}}>
+                <Box sx={matches? classes.bodyWrapperMobile : classes.bodyWrapper}>
                     <Card sx={classes.cardContainer}>
 
                         <CardHeader title='Contact Us!' sx={classes.cardHeader}/>
@@ -80,7 +89,7 @@ export default function LandingContact() {
                                     sx={classes.devIcon}
                                     component="img"
                                     alt="Developer"
-                                    src="https://github.com/joseriveramorales.png"
+                                    src="dev-jose-profile.jfif"
                                 />
                             </IconButton>
                             <Typography variant="h4" sx={classes.devName}>José Rivera</Typography>
@@ -99,7 +108,7 @@ export default function LandingContact() {
                                     sx={classes.devIcon}
                                     component="img"
                                     alt="Developer"
-                                    src="https://github.com/kenneth-rosario.png"
+                                    src="dev-kenneth-profile.jfif"
                                 />
                             </IconButton>
                             <Typography variant="h4" sx={classes.devName}>Kenneth Rosario</Typography>
@@ -118,7 +127,7 @@ export default function LandingContact() {
                                     sx={classes.devIcon}
                                     component="img"
                                     alt="Developer"
-                                    src="https://github.com/YMari.png"
+                                    src="dev-yavier-profile.jfif"
                                 />
                             </IconButton>
                             <Typography variant="h4" sx={classes.devName}>Yavier Mari</Typography>
@@ -128,13 +137,14 @@ export default function LandingContact() {
 
                 </Grid>
             </Grid>
-        </Grow>
+        </LandingContainer>
 
         <Snackbar
             open={open}
             autoHideDuration={6000} 
             onClose={handleClose}
             anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            TransitionComponent={isMobile? NoTransition : Grow}
             sx={classes.snackbar}
         >
             {successful?
@@ -155,7 +165,7 @@ export default function LandingContact() {
                     severity="error"
                     variant='filled'
                 >
-                    Error — Your message could not be sent.
+                    Error — Your message could not be sent. Please try again later.
                 </Alert>
             }    
         </Snackbar>
@@ -169,8 +179,15 @@ const useStyles = {
         padding: '0 30px',
         minHeight: '100vh',
     },
+    bodyWrapper: {
+        
+    },
+    bodyWrapperMobile: {
+        padding: '100px 0 20px 0', 
+    },
     cardContainer: {
         maxWidth: '700px',
+        borderRadius: '20px'
     },
     cardHeader: {
         textAlign: 'center',
@@ -206,8 +223,9 @@ const useStyles = {
         },
     },
     devIcon: {
-        width: '100%',
-        maxHeight: '100px',
+        transition: '0.5s all ease',
+        width: '100px',
+        height: '100px',
         borderRadius: '50%',
     },
     devName: {
