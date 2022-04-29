@@ -30,13 +30,6 @@ export default function LandingContact() {
         setOpen(false)
     }
 
-    const NoTransition = React.forwardRef<
-        React.ReactFragment,
-        TransitionProps
-        >(({ children }, ref) => {
-            return <>{ children }</>;
-    });
-
     return(
         <>
         <LandingContainer>
@@ -144,7 +137,7 @@ export default function LandingContact() {
             autoHideDuration={6000} 
             onClose={handleClose}
             anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-            TransitionComponent={isMobile? NoTransition : Grow}
+            TransitionComponent={isMobile? ({ children}) => children : Grow}
             sx={classes.snackbar}
         >
             {successful?
