@@ -27,7 +27,7 @@ export function MobileTopArea({semesters, handleModalOpen, filterState, setFilte
                         sx={classes.semesterSelect}
                         id="tags-outlined"
                         options={semesters.filter(s => semesterIdList.has(s.id))}
-                        getOptionLabel={(option) => `${option.term}: ${option.year}-${option.year+1}`}
+                        getOptionLabel={(option) => `${option.term}: ${option.year} - ${option.year+1}`}
                         onChange={(_: any, newValue: ISemesterResponse | null) => {setFilterState(newValue)}}
                         value={filterState}
                         filterSelectedOptions
