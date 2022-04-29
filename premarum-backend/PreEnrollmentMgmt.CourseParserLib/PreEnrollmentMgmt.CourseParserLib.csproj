@@ -29,5 +29,9 @@
     <ItemGroup>
       <None Remove="PreEnrollmentMgmt\**" />
     </ItemGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\PreEnrollmentMgmt.Core\PreEnrollmentMgmt.Core.csproj" />
+    </ItemGroup>
 
 </Project>

@@ -6,5 +6,4 @@
         <Nullable>enable</Nullable>
         <RootNamespace>PreEnrollmentMgmt.Core</RootNamespace>
     </PropertyGroup>
-
 </Project>
