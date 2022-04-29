@@ -32,7 +32,7 @@ public class PreEnrollmentService
 
         var preEnrollment = await ValidatePreEnrollmentExists(preEnrollmentId);
 
-        if (preEnrollment.HasReachedMaxSelectionCapacity())
+        if (preEnrollment.HasReachedMaxSelectionCapacity() || preEnrollment.WillReachMaxCapacityAfterAddition(courseOfferings.Length))
             throw new CoreException(
                 "Pre-Enrollment has reached its max selection capacity. You can always create another pre-enrollment."
             );

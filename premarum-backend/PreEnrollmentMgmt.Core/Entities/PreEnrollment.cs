@@ -52,4 +52,9 @@ public class PreEnrollment
     {
         return ((HashSet<SemesterOffer>) Selections).Count >= 20;
     }
+
+    public bool WillReachMaxCapacityAfterAddition(int numberOfEntries)
+    {
+        return ((HashSet<SemesterOffer>) Selections).Count + numberOfEntries >= 20;
+    }
 }
