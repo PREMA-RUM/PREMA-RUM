@@ -1,5 +1,5 @@
 import { CheckRounded } from "@mui/icons-material";
-import { Alert, Box, Button, Card, CardActions, CardContent, CardHeader, Divider, Grid, IconButton, Snackbar, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Card, CardActions, CardContent, CardHeader, Divider, Grid, Grow, IconButton, Snackbar, TextField, Typography} from "@mui/material";
 import React from "react";
 
 export default function LandingContact() {
@@ -27,97 +27,108 @@ export default function LandingContact() {
 
     return(
         <>
-        <Box sx={classes.landingContact}>
-            <Box sx={classes.cardWrapper}>
-                <Card sx={classes.cardContainer}>
+        <Grow
+            in={true}
+            {...{ timeout: 1000 }}
+        >
+            <Grid container direction='column' justifyContent='center' alignItems="center" sx={classes.landingContact}>
+                <Box sx={{padding: '74px 0 20px 0'}}>
+                    <Card sx={classes.cardContainer}>
 
-                    <CardHeader title='Contact Us!' sx={classes.cardHeader}/>
+                        <CardHeader title='Contact Us!' sx={classes.cardHeader}/>
 
-                    <Divider/>
+                        <Divider/>
 
-                    <CardContent sx={classes.cardContent}>
-                        <Grid container rowSpacing={2} columnSpacing={2}>
-                            <Grid item xs={12} sm={6}>
-                                <TextField label="First Name" variant="outlined" fullWidth/>
+                        <CardContent sx={classes.cardContent}>
+                            <Grid container rowSpacing={2} columnSpacing={2}>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField label="First Name" variant="outlined" fullWidth/>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField label="Last Name" variant="outlined" fullWidth/>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField label="Email" variant="outlined" fullWidth/>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField label="Message" variant="outlined" fullWidth multiline rows={3}/>
+                                </Grid>
                             </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField label="Last Name" variant="outlined" fullWidth/>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField label="Email" variant="outlined" fullWidth/>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField label="Message" variant="outlined" fullWidth multiline rows={3}/>
-                            </Grid>
-                        </Grid>
-                    </CardContent>
+                        </CardContent>
 
-                    <Divider/>
+                        <Divider/>
 
-                    <CardActions sx={classes.cardActions}>
-                        <Grid container direction="column" justifyContent="center" alignItems="center">
-                            <Button fullWidth sx={classes.submitButton} onClick={handleSubmit}>Submit</Button>
-                        </Grid>
-                    </CardActions>
-                    
-                </Card>
+                        <CardActions sx={classes.cardActions}>
+                            <Grid container direction="column" justifyContent="center" alignItems="center">
+                                <Button fullWidth sx={classes.submitButton} onClick={handleSubmit}>Submit</Button>
+                            </Grid>
+                        </CardActions>
+                        
+                    </Card>
+                </Box>
 
                 <Grid container direction="row" justifyContent="space-around" alignItems="center" sx={classes.devContainer}>
 
                     <Grid item sx={classes.devItem}>
-                        <IconButton
-                            disableRipple
-                            href="https://github.com/joseriveramorales"
-                            target="_blank"
-                        >
-                            <Box
-                                sx={classes.devIcon}
-                                component="img"
-                                alt="Developer"
-                                src="https://github.com/joseriveramorales.png"
-                            />
-                        </IconButton>
-                        <Typography variant="h4" sx={classes.devName}>José Rivera</Typography>
-                        <Typography variant="h6" sx={classes.devName}>Backend Dev</Typography>
+                        <Grid container direction="column" justifyContent="center" alignItems="center">
+                            <IconButton
+                                disableRipple
+                                href="https://github.com/joseriveramorales"
+                                target="_blank"
+                            >
+                                <Box
+                                    sx={classes.devIcon}
+                                    component="img"
+                                    alt="Developer"
+                                    src="https://github.com/joseriveramorales.png"
+                                />
+                            </IconButton>
+                            <Typography variant="h4" sx={classes.devName}>José Rivera</Typography>
+                            <Typography variant="h6" sx={classes.devName}>Backend Dev</Typography>
+                        </Grid>
                     </Grid>
 
                     <Grid item sx={classes.devItem}>
-                        <IconButton
-                            disableRipple
-                            href="https://github.com/kenneth-rosario"
-                            target="_blank"
-                        >
-                            <Box
-                                sx={classes.devIcon}
-                                component="img"
-                                alt="Developer"
-                                src="https://github.com/kenneth-rosario.png"
-                            />
-                        </IconButton>
-                        <Typography variant="h4" sx={classes.devName}>Kenneth Rosario</Typography>
-                        <Typography variant="h6" sx={classes.devName}>Backend Dev</Typography>
+                        <Grid container direction="column" justifyContent="center" alignItems="center">
+                            <IconButton
+                                disableRipple
+                                href="https://github.com/kenneth-rosario"
+                                target="_blank"
+                            >
+                                <Box
+                                    sx={classes.devIcon}
+                                    component="img"
+                                    alt="Developer"
+                                    src="https://github.com/kenneth-rosario.png"
+                                />
+                            </IconButton>
+                            <Typography variant="h4" sx={classes.devName}>Kenneth Rosario</Typography>
+                            <Typography variant="h6" sx={classes.devName}>Backend Dev</Typography>
+                        </Grid>
                     </Grid>
 
                     <Grid item sx={classes.devItem}>
-                        <IconButton
-                            disableRipple
-                            href="https://github.com/YMari"
-                            target="_blank"
-                        >
-                            <Box
-                                sx={classes.devIcon}
-                                component="img"
-                                alt="Developer"
-                                src="https://github.com/YMari.png"
-                            />
-                        </IconButton>
-                        <Typography variant="h4" sx={classes.devName}>Yavier Mari</Typography>
-                        <Typography variant="h6" sx={classes.devName}>Frontend Dev</Typography>
+                        <Grid container direction="column" justifyContent="center" alignItems="center">
+                            <IconButton
+                                disableRipple
+                                href="https://github.com/YMari"
+                                target="_blank"
+                            >
+                                <Box
+                                    sx={classes.devIcon}
+                                    component="img"
+                                    alt="Developer"
+                                    src="https://github.com/YMari.png"
+                                />
+                            </IconButton>
+                            <Typography variant="h4" sx={classes.devName}>Yavier Mari</Typography>
+                            <Typography variant="h6" sx={classes.devName}>Frontend Dev</Typography>
+                        </Grid>
                     </Grid>
 
                 </Grid>
-            </Box>
-        </Box>
+            </Grid>
+        </Grow>
 
         <Snackbar
             open={open}
@@ -148,17 +159,15 @@ export default function LandingContact() {
                 </Alert>
             }    
         </Snackbar>
+
         </>
     )
 }
 
 const useStyles = {
     landingContact: {
-        height: '100vh',
-        textAlign: '-webkit-center',
-    },
-    cardWrapper: {
         padding: '0 30px',
+        minHeight: '100vh',
     },
     cardContainer: {
         maxWidth: '700px',

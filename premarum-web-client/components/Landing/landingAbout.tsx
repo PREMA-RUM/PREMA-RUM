@@ -1,52 +1,62 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography, Grow } from "@mui/material";
 
 export default function LandingAbout() {
     return(
-        <Box sx={classes.landingAbout} id="landing-about">
+        <Grow
+            in={true}
+            {...{ timeout: 1000 }}
+        >
+            <Grid container direction='column' justifyContent='center' alignItems="center" sx={classes.landingAbout}>
+                <Box sx={classes.bodyWrapper}>
+                    <Typography align="center" variant="h3" sx={classes.landingAboutTitle}>What is PREMARUM?</Typography>
 
-            <Typography align="center" variant="h3" sx={classes.landingAboutTitle}>What is PREMARUM?</Typography>
-    
-            <Box sx={classes.videoBox}>
-                <Box sx={classes.videoBoxWrapper2}>
-                    <Box sx={classes.videoBoxWrapper}>
-                        <Box sx={classes.videoWrapper}>
-                            <Box
-                                sx={classes.videoFrame}
-                                component="iframe"
-                                frameBorder="0"
-                                title="PREMARUM Demo Video"
-                                src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                            />
+                    <Box sx={classes.videoBox}>
+                        <Box sx={classes.videoBoxWrapper2}>
+                            <Box sx={classes.videoBoxWrapper}>
+                                <Box sx={classes.videoWrapper}>
+                                    <Box
+                                        sx={classes.videoFrame}
+                                        component="iframe"
+                                        frameBorder="0"
+                                        title="PREMARUM Demo Video"
+                                        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                                    />
+                                </Box>
+                            </Box>
                         </Box>
                     </Box>
-                </Box>
-            </Box>
-    
-            <Typography align="center" variant="h5" sx={classes.landingAboutSubtitle}>Designed for UPRM students, by UPRM students.</Typography>
 
-            <Box sx={classes.rumLogoWrapper}>
-            <Box
-                sx={classes.rumLogo}
-                component="img"
-                alt="UPRM"
-                src="rum-logo-transparent.svg"
-            />
-            </Box>
-              
-        </Box>
+                    <Typography align="center" variant="h5" sx={classes.landingAboutSubtitle}>Designed for UPRM students, by UPRM students.</Typography>
+
+                    <Box sx={classes.rumLogoWrapper}>
+                        <Box
+                            sx={classes.rumLogo}
+                            component="img"
+                            alt="UPRM"
+                            src="rum-logo-transparent.svg"
+                        />
+                    </Box>
+                </Box>
+            </Grid>
+        </Grow>
     )
 }
 
 const useStyles = {
     landingAbout: {
-        height: '100vh',
+        padding: '0 30px',
+        minHeight: '100vh',
+    },
+    bodyWrapper: {
+        width: '100%',
+        height: '100%',
+        padding: '74px 0 0 0',
     },
     mainGrid: {
         height: '100%',
     },
     landingAboutTitle: {
         color: 'white',
-        padding: '30p 0 0 0',
     },
     videoBox: {
         width: '100%',
@@ -83,8 +93,7 @@ const useStyles = {
     },
     rumLogo: {
         width: "100%",
-        height: "100%",
-        maxHeight: "250px",
+        height: "250px",
         marginTop: 3,
         marginBottom: 2,
     },

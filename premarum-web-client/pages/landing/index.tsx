@@ -1,14 +1,7 @@
-import {Box, Button, Card, CardContent, Grid, styled, Tab, Tabs, Typography, useMediaQuery, useTheme} from "@mui/material";
-import {useMsal} from "@azure/msal-react";
-import {PopupRequest} from "@azure/msal-browser";
-import getOrCreateUser from "../../utility/requests/getOrCreateUser";
-import { TOKEN_REQUEST } from "../../utility/constants";
+import {Box,Grow,styled, Tab, Tabs, useMediaQuery, useTheme} from "@mui/material";
 import {NextPage} from "next";
-import {useRouter} from "next/router";
-import React, {useRef, useState} from "react";
+import React from "react";
 import OverlayIcons from "../../components/OverlayIcons";
-import { url } from "inspector";
-import { ExpandMoreOutlined } from "@mui/icons-material";
 import LandingHome from "../../components/Landing/landingHome";
 import LandingAbout from "../../components/Landing/landingAbout";
 import LandingContact from "../../components/Landing/landingContact";
@@ -17,7 +10,8 @@ import LandingContact from "../../components/Landing/landingContact";
 export default function Landing() {
     const [value, setValue] = React.useState(0);
     const theme = useTheme()
-    const matches = useMediaQuery(theme.breakpoints.down('sm'), {noSsr:true});
+    const matches = useMediaQuery(theme.breakpoints.down('sm'), {noSsr:true}); // it reloads the iframe everytime it fetches this query (not intended)
+    const [animation, setAnimation] = React.useState(false);
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
@@ -35,6 +29,11 @@ export default function Landing() {
 
     const StyledTabs = styled(Tabs)({
         backgroundColor: "transparent",
+        position: "fixed",
+        width: "100%",
+        top: 0,
+        zIndex: 100,
+        padding: '10px 20px 20px 20px',
         '& .MuiTabs-indicator': {
             backgroundColor: 'white',
             '&.Mui-selected': {
@@ -84,7 +83,6 @@ export default function Landing() {
             <StyledTabs
                 value={value}
                 onChange={handleChange}
-                sx={matches? {padding: '0 0 20px 0'}: {padding: '10px 20px 20px 20px'}}
                 variant={matches? 'fullWidth':'standard'}
                 aria-label="tab bar landing page"
             >
@@ -102,8 +100,7 @@ export default function Landing() {
             <TabPanel value={value} index={2}>
                 <LandingContact/>
             </TabPanel>
-            </Box>
-
+        </Box>
     )
 }
 
@@ -124,6 +121,7 @@ const useStyles = {
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center center',
         backgroundSize: 'cover',
+        backgroundAttachment: 'fixed',
     },
     tabBar: {
 
