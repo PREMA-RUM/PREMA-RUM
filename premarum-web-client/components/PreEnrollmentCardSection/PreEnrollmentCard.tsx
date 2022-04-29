@@ -95,7 +95,7 @@ function PreEnrollmentCardItem({preEnrollment}: PreEnrollmentCardItemProps) {
             }}>
                 <CardHeader
                     avatar={
-                        <Avatar sx={{bgcolor: 'secondary.dark'}} aria-label={`${preEnrollment.name}`}>
+                        <Avatar sx={{bgcolor: 'primary.dark'}} aria-label={`${preEnrollment.name}`}>
                             {preEnrollment.name[0]}
                         </Avatar>
                     }

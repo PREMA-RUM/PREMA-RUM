@@ -81,6 +81,7 @@ export default function RecommendedGrid({preEnrollmentId, selectionsRef}: Recomm
                 selectionModel={selected}
                 checkboxSelection
                 pageSize={25}
+                rowsPerPageOptions={[]}
                 rowHeight={75}
                 rows={rows}
                 columns={GetColumnFormat({creditSum: null})}

@@ -130,6 +130,7 @@ export default function CatalogGrid({semesterId, exclude, selectionsRef}: Catalo
                 }}
                 checkboxSelection
                 pageSize={25}
+                rowsPerPageOptions={[]}
                 rowHeight={75}
                 rows={rows}
                 columns={GetColumnFormat({creditSum: null})}
@@ -171,7 +172,7 @@ const useStyles = {
 
     },
     addSelectionButton: {
-        backgroundColor: 'secondary.main',
+        backgroundColor: 'primary.main',
     },
 };
   

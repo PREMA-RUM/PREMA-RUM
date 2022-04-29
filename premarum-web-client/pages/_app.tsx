@@ -54,7 +54,7 @@ const MyApp: React.FunctionComponent<AppPropsWithLayout> = (props) => {
       <CacheProvider value={emotionCache}>
         <ThemeProvider theme={lightTheme}>
           <CssBaseline /> 
-          <NextNProgress/>
+          <NextNProgress color='white'/>
           <Head>
               <title>PREMARUM</title>
               <meta name="description" content="Easiest way to create enrollment logistical plans for UPRM students." />

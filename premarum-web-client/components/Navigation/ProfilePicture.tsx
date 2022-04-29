@@ -49,10 +49,12 @@ export default function ProfilePicture() {
 
 const useStyles = {
     profilePic: {
-        borderRadius: 100,
-        width:40,
-        height:40,
-        overflow:'hidden'
+        borderRadius: '50%',
+        width:45,
+        height:45,
+        overflow:'hidden',
+        borderStyle: 'solid',
+        borderColor: '#00221b',
     }
 }
 
