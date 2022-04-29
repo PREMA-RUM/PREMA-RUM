@@ -37,7 +37,12 @@ public class PreEnrollmentService
 
         var preEnrollment = await ValidatePreEnrollmentExists(preEnrollmentId);
 
-        var student = await _studentValidationService.ValidateStudentExists(studentEmail, true);
+        if (preEnrollment.HasReachedMaxSelectionCapacity() || preEnrollment.WillReachMaxCapacityAfterAddition(courseOfferings.Length))
+            throw new CoreException(
+                "Pre-Enrollment has reached its max selection capacity. You can always create another pre-enrollment."
+            );
+        
+        var student = await _studentValidationService.ValidateStudentExists(studentEmail);
 
         if (!preEnrollment.CanBeChangedByStudent(student))
             throw new CoreException("Student cannot change PreEnrollment");
@@ -49,8 +54,7 @@ public class PreEnrollmentService
 
         foreach (var semesterOffer in semesterOffers)
             preEnrollment.AddSelection(semesterOffer);
-
-        _preEnrollmentRepository.Save(preEnrollment);
+        
         return semesterOffers;
     }
 
@@ -76,8 +80,12 @@ public class PreEnrollmentService
 
     public async Task<PreEnrollment> CreateNewPreEnrollment(string studentEmail, string name, int semesterId)
     {
-        var student = await _studentValidationService.ValidateStudentExists(studentEmail);
+        var student = await _studentValidationService.ValidateStudentExistIncludePreEnrollments(studentEmail);
         await _semesterValidationService.ValidateSemesterExists(semesterId);
+        if (student.HasReachedMaxPreEnrollmentCapacity())
+            throw new CoreException(
+                "Student has reached max pre enrollment capacity. Consider deleting old pre-enrollments"
+            );
         if (await _preEnrollmentRepository.ContainsWithNameStudentAndSemesterId(name, student.Id, semesterId))
             throw new CoreException("PreEnrollment With Given Name Already Exists In Selected Semester");
         var newPreEnrollment = new PreEnrollment(name, semesterId, student.Id);
@@ -114,7 +122,6 @@ public class PreEnrollmentService
             throw new CoreException("Student cannot change PreEnrollment");
 
         preEnrollment.Name = newName;
-        _preEnrollmentRepository.Save(preEnrollment);
     }
 
     public async Task<PreEnrollment> ValidatePreEnrollmentExists(int preEnrollmentId, bool fetchComplete = false)

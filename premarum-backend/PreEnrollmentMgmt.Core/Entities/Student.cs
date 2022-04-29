@@ -47,4 +47,9 @@ public class Student
         return deleted;
 
     }
+
+    public bool HasReachedMaxPreEnrollmentCapacity()
+    {
+        return ((HashSet<PreEnrollment>) PreEnrollments).Count >= 30;
+    }
 }

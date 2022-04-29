@@ -25,4 +25,12 @@ public class StudentValidationService
             throw new CoreException("No student found with specified email");
         return student;
     }
+
+    public async Task<Student> ValidateStudentExistIncludePreEnrollments(string studentEmail)
+    {
+        var student = await _studentRepository.GetByEmailWithPreEnrollmentsSimple(studentEmail);
+        if (student == null)
+            throw new CoreException("No student found with specified email");
+        return student;
+    }
 }

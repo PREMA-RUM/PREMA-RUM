@@ -26,7 +26,14 @@ public class StudentRepository : IStudentRepository
             .Where(st => st!.Email == email)
             .FirstOrDefaultAsync();
     }
-    
+
+    public async Task<Student?> GetByEmailWithPreEnrollmentsSimple(string email)
+    {
+        return await _context.Students
+            .Include(st => st.PreEnrollments)
+            .SingleOrDefaultAsync(st => st.Email.Equals(email));
+    }
+
     private IQueryable<Student> GetStudentWithCoursesQueryable()
     {
         return _context

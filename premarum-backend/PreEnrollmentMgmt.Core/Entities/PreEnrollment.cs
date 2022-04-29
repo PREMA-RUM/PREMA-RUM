@@ -47,4 +47,14 @@ public class PreEnrollment
     {
         ((HashSet<SemesterOffer>) Selections).RemoveWhere(so => CourseOfferings.Contains(so.Id));
     }
+
+    public bool HasReachedMaxSelectionCapacity()
+    {
+        return ((HashSet<SemesterOffer>) Selections).Count >= 20;
+    }
+
+    public bool WillReachMaxCapacityAfterAddition(int numberOfEntries)
+    {
+        return ((HashSet<SemesterOffer>) Selections).Count + numberOfEntries >= 20;
+    }
 }
