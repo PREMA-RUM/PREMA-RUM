@@ -105,7 +105,7 @@ const useStyles = {
     },
     landingHome: {
         padding: '0 30px',
-        minHeight: '80vh',
+        minHeight: '90vh',
     },
     bodyWrapper: {
         width: '100%',

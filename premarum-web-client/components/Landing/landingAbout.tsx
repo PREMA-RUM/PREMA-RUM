@@ -61,15 +61,18 @@ const useStyles = () => {
     return {
         landingAbout: {
             padding: '0 30px',
-            minHeight: '100vh',
+            [theme.breakpoints.down("sm")]: {
+                minHeight: '70vh'
+            },
+            minHeight: '100vh'
         },
         bodyWrapper: {
             width: '100%',
             height: '100%',
             padding: '100px 0 0 0',
             [theme.breakpoints.down("sm")]: {
-                pt:0
-            }
+                pt:10
+            },
         },
         bodyWrapperMobile: {
             width: '100%',

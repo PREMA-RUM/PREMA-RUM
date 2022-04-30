@@ -43,7 +43,7 @@ export default function Landing() {
         width: "100%",
         top: 0,
         zIndex: 100,
-        padding: '10px 20px 20px 20px',
+        padding: '10px 20px 0px 20px',
         '& .MuiTabs-indicator': {
             backgroundColor: 'white',
             '&.Mui-selected': {
