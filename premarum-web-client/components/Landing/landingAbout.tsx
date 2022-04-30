@@ -20,7 +20,7 @@ export default function LandingAbout() {
                         />
                     </Box>
 
-                    <Typography align="center" variant="h3" sx={classes.landingAboutTitle}>What is PREMARUM?</Typography>
+                    <Typography align="center" sx={classes.landingAboutTitle}>What is PREMARUM?</Typography>
 
                     <Box sx={classes.videoBox}>
                         <Box sx={classes.videoBoxWrapper2}>
@@ -82,13 +82,15 @@ const useStyles = () => {
         premaIcon: {
             width: '100%',
             height: '100%',
-            maxWidth: '200px',
+            maxWidth: '100px',
         },
         mainGrid: {
             height: '100%',
         },
         landingAboutTitle: {
             color: 'white',
+            fontWeight: 400,
+            fontSize: '3.8rem'
         },
         videoBox: {
             width: '100%',

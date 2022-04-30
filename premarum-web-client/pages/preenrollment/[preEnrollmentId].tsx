@@ -181,7 +181,7 @@ export default function Preenrollment() {
                         <Tabs
                             value={value}
                             onChange={handleChange}
-                            textColor="secondary"
+                            textColor="primary"
                             indicatorColor="secondary"
                             variant="fullWidth"
                             aria-label="scrollable auto tabs example"
@@ -197,7 +197,7 @@ export default function Preenrollment() {
                                 <Tabs
                                     value={value}
                                     onChange={handleChange}
-                                    textColor="secondary"
+                                    textColor="primary"
                                     indicatorColor="secondary"
                                     aria-label="scrollable auto tabs example"
                                 >
@@ -238,10 +238,7 @@ const useStyles = (theme: Theme) => ({
         padding: 0
     },
     editTitleButton: {
-        [theme.breakpoints.down("sm")]: {
-            backgroundColor: theme.palette.secondary.dark,    
-        },
-        backgroundColor: theme.palette.primary.light,
+        backgroundColor: theme.palette.secondary.dark,
     },
     topCard: {
         padding: '5px 25px',

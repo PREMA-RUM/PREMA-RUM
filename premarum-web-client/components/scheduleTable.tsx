@@ -91,6 +91,7 @@ export default function ScheduleTable({selections, selectionRef}: ScheduleTableP
                 }}
                 hideFooterPagination
                 pageSize={25}
+                rowsPerPageOptions={[]}
                 rowHeight={75}
                 rows={rows}
                 columns={GetColumnFormat({creditSum})}
@@ -109,7 +110,7 @@ const useStyles = {
         marginBottom: 2,
     },
     removeSelection: {
-        backgroundColor: 'secondary.main',
+        backgroundColor: 'primary.main',
     },
 };
   

@@ -92,6 +92,7 @@ export default function Catalog({semesters}: SemesterProps) {
                             autoHeight
                             disableSelectionOnClick
                             pageSize={25}
+                            rowsPerPageOptions={[]}
                             rowHeight={75}
                             rows={rows}
                             columns={GetColumnFormat({creditSum: null})}
@@ -155,7 +156,7 @@ const useStyles = (theme: Theme) => ({
           p:1,
           minHeight: '70vh'  
         },
-        backgroundColor: grey[100],
+        backgroundColor: 'secondary.light',
         padding: '15px',
         minHeight: '80vh',
         overflow: 'auto',

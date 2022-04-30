@@ -28,6 +28,7 @@ const useStyles = (theme: Theme) => ({
         [theme.breakpoints.down("sm")]: {
           backgroundColor: theme.palette.primary.main  
         },
-        backgroundColor: theme.palette.primary.light,
+        backgroundColor: theme.palette.secondary.dark,
+        color: 'white',
     }
 })
