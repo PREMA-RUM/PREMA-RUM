@@ -1,6 +1,7 @@
 import { Box, Grid, Typography, Grow, useTheme, useMediaQuery } from "@mui/material";
 import useIsMobile from "../../utility/hooks/useIsMobile";
 import LandingContainer from "./landingContainer";
+import Image from "next/image";
 
 export default function LandingAbout() {
     const classes = useStyles();
@@ -12,11 +13,11 @@ export default function LandingAbout() {
                 <Box sx={classes.bodyWrapper}>
 
                     <Box sx={classes.premaIconWrapper}>
-                        <Box
-                            sx={classes.premaIcon}
-                            component="img"
+                        <Image
+                            height={100}
+                            width={100}
                             alt="PREMARUM-ICON"
-                            src="prema-icon.png"
+                            src="/prema-icon.png"
                         />
                     </Box>
 

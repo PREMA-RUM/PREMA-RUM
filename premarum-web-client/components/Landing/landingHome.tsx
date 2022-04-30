@@ -4,7 +4,6 @@ import { Button, Box, Grid, Typography, Grow, useMediaQuery} from "@mui/material
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { TOKEN_REQUEST } from "../../utility/constants";
-import useIsMobile from "../../utility/hooks/useIsMobile";
 import getOrCreateUser from "../../utility/requests/getOrCreateUser";
 import LandingContainer from "./landingContainer";
 
@@ -106,7 +105,7 @@ const useStyles = {
     },
     landingHome: {
         padding: '0 30px',
-        minHeight: '100vh',
+        minHeight: '80vh',
     },
     bodyWrapper: {
         width: '100%',
@@ -116,7 +115,7 @@ const useStyles = {
     bodyWrapperMobile: {
         width: '100%',
         height: '100%',
-        padding: '100px 0 0 0',
+        // padding: '100px 0 0 0',
         textAlign: 'center',
     },
     premaLogoWrapper: {
