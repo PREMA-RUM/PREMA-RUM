@@ -13,7 +13,7 @@ export default function Landing() {
     const theme = useTheme()
     const matches = useMediaQuery(theme.breakpoints.down('sm'), {noSsr:true}); // it reloads the iframe everytime it fetches this query (not intended)
     const [animation, setAnimation] = React.useState(false);
-    const [tabType, setTabType] = useState<"fullWidth" | "standard">('fullWidth')
+    const [tabType, setTabType] = useState<"fullWidth" | "standard">('standard')
     
     useEffect(() => {
         if (matches) {
