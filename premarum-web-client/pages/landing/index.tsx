@@ -1,6 +1,6 @@
 import {Box,Grow,styled, Tab, Tabs, useMediaQuery, useTheme} from "@mui/material";
 import {NextPage} from "next";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import OverlayIcons from "../../components/OverlayIcons";
 import LandingHome from "../../components/Landing/landingHome";
 import LandingAbout from "../../components/Landing/landingAbout";
@@ -13,6 +13,15 @@ export default function Landing() {
     const theme = useTheme()
     const matches = useMediaQuery(theme.breakpoints.down('sm'), {noSsr:true}); // it reloads the iframe everytime it fetches this query (not intended)
     const [animation, setAnimation] = React.useState(false);
+    const [tabType, setTabType] = useState<"fullWidth" | "standard">('standard')
+    
+    useEffect(() => {
+        if (matches) {
+            setTabType('fullWidth')
+        } else {
+            setTabType('standard')
+        }
+    }, [matches, tabType])
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
@@ -30,11 +39,11 @@ export default function Landing() {
 
     const StyledTabs = styled(Tabs)({
         backgroundColor: "transparent",
-        position: "absolute",
+        position: "static",
         width: "100%",
         top: 0,
         zIndex: 100,
-        padding: '10px 20px 20px 20px',
+        padding: '10px 20px 0px 20px',
         '& .MuiTabs-indicator': {
             backgroundColor: 'white',
             '&.Mui-selected': {
@@ -103,7 +112,7 @@ export default function Landing() {
             <StyledTabs
                 value={value}
                 onChange={handleChange}
-                variant={matches? 'fullWidth':'standard'}
+                variant={tabType}
                 aria-label="tab bar landing page"
             >
                 <StyledTab label='Home' />
