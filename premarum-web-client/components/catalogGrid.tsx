@@ -1,7 +1,13 @@
-import {Box, Button, CircularProgress, Grid, Paper, styled, Tooltip, tooltipClasses, TooltipProps, Typography} from "@mui/material";
+import {
+    Box,
+    Button,
+    CircularProgress,
+    Grid,
+    Paper,
+    useMediaQuery
+} from "@mui/material";
 import {
     DataGrid,
-    GridToolbarColumnsButton,
     GridToolbarContainer,
     GridToolbarDensitySelector,
     GridToolbarFilterButton
@@ -12,12 +18,15 @@ import {AddRounded} from "@mui/icons-material";
 import {usePreEnrollment} from "../utility/hooks/usePreEnrollments";
 import {GetRows} from "../utility/helpers/selectionToRow";
 import { GetColumnFormat } from "../utility/helpers/ColumnFormat";
+import QuickSearchToolbar, {QuickSearchToolbarProps, requestSearch} from "./DataGridAddOns/QuickSearchToolbar";
+import {useTheme} from "@mui/material/styles";
+import {useRecommendations} from "../utility/hooks/useRecommendations";
+import axios from "axios";
 
 function CustomToolbar() {
     return(
         <Box sx={classes.toolbarBox}>
             <GridToolbarContainer>
-                <GridToolbarColumnsButton />
                 <GridToolbarFilterButton />
                 <GridToolbarDensitySelector />
             </GridToolbarContainer>
@@ -25,21 +34,26 @@ function CustomToolbar() {
     )
 }
 
+function WrapToolBars(props: QuickSearchToolbarProps) {
+    const theme = useTheme()
+    const match = useMediaQuery(theme.breakpoints.down("sm"))
+    
+    return <>
+        <QuickSearchToolbar {...props} />
+        {!match? <CustomToolbar /> : null}
+    </>
+}
+
 type AddSelectionProps = {
     preEnrollmentId: number,
     changeTab: () => void,
-    selectionsRef: any
+    selectionsRef: any,
 }
 
 export function AddSelectionButton({preEnrollmentId, selectionsRef, changeTab}: AddSelectionProps) {
     const { addSelectionFn } = usePreEnrollment(preEnrollmentId)
     const [isLoading, setIsLoading] = useState(false)
-    // const [selected, setSelected] = useState(false)
-
-    // useEffect(() => {
-    //     selectionsRef.current.length === 0? setSelected(false) : setSelected(true)
-    //     console.log(selectionsRef.current.length)
-    // })
+    const {manualRevalidate} = useRecommendations(preEnrollmentId);
     
     return(
         <Button
@@ -55,12 +69,20 @@ export function AddSelectionButton({preEnrollmentId, selectionsRef, changeTab}: 
                 try {
                     await addSelectionFn(selectionsRef.current)
                 } catch (err) {
-                    alert(err)
+                    if (axios.isAxiosError(err)) {
+                        if (err.response!.data.status === 400) {
+                            alert("Too many selections to add at a time");
+                        } else {
+                            alert(err.response!.data.detail)
+                        }
+                    } else {
+                        alert(err)
+                    }
                     selectionsRef.current = []
-                    changeTab()
                     return
                 }
                 selectionsRef.current = []
+                manualRevalidate()
                 changeTab()
             }}
             disabled={isLoading}
@@ -79,14 +101,16 @@ type CatalogGridProps = {
 export default function CatalogGrid({semesterId, exclude, selectionsRef}: CatalogGridProps) {
     const {courseOfferings, isLoading, isError} = useSemesterOfferings(semesterId);
     const [rows, setRows] = useState([])
+    const [quickSearchState, setQuickSearchState] = useState("")
+    const afterExclusion = courseOfferings? courseOfferings.filter(co => !exclude.includes(co.id)): []
+    const [selected, setSelected] = useState<any[]>([])
     
     useEffect(() => {
         if (!isLoading)  {
-            console.log(courseOfferings)
-            GetRows(courseOfferings.filter(co => !exclude.includes(co.id)))
+            GetRows(afterExclusion)
                 .then(res => {setRows(res as any)})   
         }
-    }, [courseOfferings])
+    }, [courseOfferings, isLoading])
     
     if (!rows || isLoading) {
         return(
@@ -100,6 +124,7 @@ export default function CatalogGrid({semesterId, exclude, selectionsRef}: Catalo
         <Paper elevation={0} sx={classes.containerBox}>
             <DataGrid
                 onSelectionModelChange={async (selectionModel) => {
+                    setSelected(selectionModel)
                     selectionsRef.current = selectionModel.map(
                         sel =>  (rows[sel as number] as any).entryId )
                 }}
@@ -109,8 +134,29 @@ export default function CatalogGrid({semesterId, exclude, selectionsRef}: Catalo
                 rows={rows}
                 columns={GetColumnFormat({creditSum: null})}
                 autoHeight
+                selectionModel={selected}
                 components={{
-                    Toolbar: CustomToolbar,
+                    Toolbar: WrapToolBars,
+                }}
+                componentsProps={{
+                    toolbar: {
+                        value: quickSearchState,
+                        onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+                            setSelected([])
+                            requestSearch({
+                                searchValue: event.target.value,
+                                setSearchText: setQuickSearchState,
+                                rowSetter: (rec: any[]) => GetRows(rec).then(res => setRows(res as any)),
+                                rows: afterExclusion
+                            })
+                        },
+                        clearSearch: () => {
+                            setSelected([])
+                            setQuickSearchState("")
+                            GetRows(afterExclusion)
+                                .then(res => setRows(res as any))
+                        }
+                    }
                 }}
             />
         </Paper>
@@ -119,7 +165,6 @@ export default function CatalogGrid({semesterId, exclude, selectionsRef}: Catalo
 
 const useStyles = {
     toolbarBox: {
-        marginTop: 1,
         marginLeft: 1,
     },
     containerBox: {
@@ -130,4 +175,4 @@ const useStyles = {
     },
 };
   
-const classes = useStyles;
+const classes = useStyles

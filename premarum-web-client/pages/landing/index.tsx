@@ -1,109 +1,127 @@
-import {Box, Button, Card, CardContent, Grid, Typography} from "@mui/material";
-import {useMsal} from "@azure/msal-react";
-import {PopupRequest} from "@azure/msal-browser";
-import getOrCreateUser from "../../utility/requests/getOrCreateUser";
-import { TOKEN_REQUEST } from "../../utility/constants";
+import {Box,Grow,styled, Tab, Tabs, useMediaQuery, useTheme} from "@mui/material";
 import {NextPage} from "next";
-import {useRouter} from "next/router";
-import React, {useState} from "react";
+import React from "react";
 import OverlayIcons from "../../components/OverlayIcons";
+import LandingHome from "../../components/Landing/landingHome";
+import LandingAbout from "../../components/Landing/landingAbout";
+import LandingContact from "../../components/Landing/landingContact";
+import Head from "next/head";
 
-type ButtonProps = {
-    
-}
-
-const LoginButton: React.FunctionComponent<ButtonProps> = () => {
-    const { instance, inProgress } = useMsal();
-    const [loginLoading, setLoginLoading] = useState(false);
-    const router = useRouter();
-    
-    if (inProgress === "login" || loginLoading) {
-        return (
-            <Button size="large" sx={classes.loginButton} disabled>
-                Authentication In Progress...
-            </Button>
-        )
-    }
-    
-    let loginRequest:PopupRequest = {
-        ...TOKEN_REQUEST
-    }
-    
-    async function loginBehavior() {
-        setLoginLoading(true)
-        try {
-            const res = await instance.loginPopup(loginRequest)
-            await instance.setActiveAccount(res.account)
-        } catch(err: any) {
-            alert("Login Failed. Try Again.");
-            console.error(err);
-            setLoginLoading(false)
-            return
-        }
-
-        try {
-            await getOrCreateUser(instance);
-            await router.push("/home");
-        } catch(err) {
-            alert("Login Failed. Try Again.");
-            console.error(err);
-            await instance.logoutRedirect({
-                onRedirectNavigate: (url) => {
-                    return false
-                }
-            })
-            setLoginLoading(false);
-        }
-    }
-    
-    return (
-        <Button size="large" sx={classes.loginButton} onClick={loginBehavior}>
-            Get Started
-        </Button>
-    )
-}
 
 export default function Landing() {
-    return(
-        // <Grid container direction="column" justifyContent="center" alignItems="center">
-        <>
-        <OverlayIcons />
-        <Card elevation={0} square sx={classes.topCard}>
-            <CardContent>
-                <Grid container direction="column" justifyContent="space-around" alignItems="center">
-                    <Typography variant="h1" sx={classes.topTitle}>PREMA-RUM</Typography>
-                    <Typography variant="h5" sx={classes.topSubtitle}>The easiest way to prepare yourself for your next semester.</Typography>
-                    <Typography variant='h5' sx={classes.topSubtitle}>The app for creating enrollment logistical plans, storing, and sharing them with the community.</Typography>
-                    <LoginButton/>
-                </Grid>
-            </CardContent>
-        </Card>
+    const [value, setValue] = React.useState(0);
+    const theme = useTheme()
+    const matches = useMediaQuery(theme.breakpoints.down('sm'), {noSsr:true}); // it reloads the iframe everytime it fetches this query (not intended)
+    const [animation, setAnimation] = React.useState(false);
 
-        <Card elevation={0} square sx={classes.bottomCard}>
-            <CardContent>
-                <Grid container direction="column" justifyContent="center" alignItems="center">
-                    <Typography variant="h3" sx={classes.bottomTitle}>What is PREMA-RUM?</Typography>
-                    <Box>
-                        <iframe
-                            width="720"
-                            height="420"
-                            frameBorder="0"
-                            title="PREMA-RUM Demo Video"
-                            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                        />
+    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+        setValue(newValue);
+    }
+
+    interface StyledTabsProps {
+        children?: React.ReactNode;
+        index: number;
+        value: number;
+    }
+
+    interface StyledTabProps {
+        label: string;
+    }
+
+    const StyledTabs = styled(Tabs)({
+        backgroundColor: "transparent",
+        position: "absolute",
+        width: "100%",
+        top: 0,
+        zIndex: 100,
+        padding: '10px 20px 20px 20px',
+        '& .MuiTabs-indicator': {
+            backgroundColor: 'white',
+            '&.Mui-selected': {
+                color: 'white',
+            },
+            '&.Mui-focusVisible': {
+                backgroundColor: 'white',
+            },
+        },
+    });
+
+    const StyledTab = styled((props: StyledTabProps) => <Tab wrapped disableRipple {...props} />)(
+        ({ theme }) => ({
+            color: 'rgba(255, 255, 255, 0.6)',
+            '&:hover': {
+                color: 'white',
+                opacity: 1,
+            },
+            '&.Mui-selected': {
+                color: 'white',
+            },
+            '&.Mui-focusVisible': {
+                backgroundColor: 'rgba(100, 95, 228, 0.32)',
+            },
+        })
+    )
+
+    const css = `
+        body, html {
+            margin: 0;
+            height: 100vh;
+            width: 100%;
+        }
+        body {
+            background: linear-gradient(rgba(22,74,65,0.6), rgba(0,0,0,0.6)), url(backgroundImage2.png);
+            background-color: #9DC88D;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            background-attachment: fixed;
+        }
+    `
+
+    function TabPanel(props: StyledTabsProps) {
+        const { children, value, index, ...other } = props;
+
+        return (
+            <Box
+                {...other}
+            >
+                {value === index && (
+                    <Box sx={classes.tabContent}>
+                        {children}
                     </Box>
-                    <Typography variant="h5" sx={classes.bottomSubtitle}>Designed for UPRM students, by UPRM students.</Typography>
-                    <Box
-                        sx={classes.boxSize}
-                        component="img"
-                        alt="UPRM"
-                        src="https://www.uprm.edu/wdt/resources/seal-rum-uprm.svg"
-                    />
-                </Grid>
-            </CardContent>
-        </Card>
+                )}
+            </Box>
+        );
+    }
 
-        </>
+    return(
+        <Box sx={classes.fullBox}>
+            <OverlayIcons />
+            <Head>
+                <style>{css}</style>
+            </Head>
+            <StyledTabs
+                value={value}
+                onChange={handleChange}
+                variant={matches? 'fullWidth':'standard'}
+                aria-label="tab bar landing page"
+            >
+                <StyledTab label='Home' />
+                <StyledTab label='About' />
+                <StyledTab label='Contact Us' />
+            </StyledTabs>
+
+            <TabPanel value={value} index={0}>
+                <LandingHome/>
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+                <LandingAbout/>
+            </TabPanel>
+            <TabPanel value={value} index={2}>
+                <LandingContact/>
+            </TabPanel>
+            
+        </Box>
     )
 }
 
@@ -115,41 +133,19 @@ Landing.getLayout = function getLayout(page: NextPage) {
 
 
 const useStyles = {
-    loginButton: {
-        color: 'black',
-        backgroundColor: 'secondary.light',
-        marginTop: 5,
-    },
-    fullContainer: {
+    fullBox: {
         width: '100%',
         height: '100%',
     },
-    topCard: {
-        backgroundColor: 'primary.main',
-        width: '100%',
-        minHeight: '350px',
+    tabBar: {
+
     },
-    topTitle: {
-        padding: '20px 0 10px 0',
+    contentBox: {
+
     },
-    topSubtitle: {
-        
+    tabContent: {
+
     },
-    bottomCard: {
-        backgroundColor: 'info.light',
-        width: '100%',
-        minHeight: '500px',
-    },
-    bottomTitle: {
-        padding: '20px 0 20px 0',
-    },
-    bottomSubtitle: {
-        padding: '20px 0 20px 0',
-    },
-    boxSize: {
-        width: "250px",
-        height: "250px",
-    }
 };
   
 const classes = useStyles;

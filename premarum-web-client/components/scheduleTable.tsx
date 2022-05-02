@@ -6,18 +6,8 @@ import {GetRows} from "../utility/helpers/selectionToRow";
 import {RemoveRounded} from "@mui/icons-material";
 import {usePreEnrollment} from "../utility/hooks/usePreEnrollments";
 import { GetColumnFormat } from "../utility/helpers/ColumnFormat";
-
-function CustomToolbar() {
-    return(
-        <Box sx={classes.toolbarBox}>
-            <GridToolbarContainer>
-                <GridToolbarColumnsButton />
-                <GridToolbarFilterButton />
-                <GridToolbarDensitySelector />
-            </GridToolbarContainer>
-        </Box>
-    )
-}
+import {useRecommendations} from "../utility/hooks/useRecommendations";
+import axios from "axios";
 
 async function totalCredits(selections: IPreEnrollmentSelectionResponse[]) {
     if (selections.length === 0) return 0;
@@ -38,15 +28,25 @@ export function RemoveSelectionButton({preEnrollmentId, selectionsRef}: AddSelec
     
     const {removeSelectionsFn} = usePreEnrollment(preEnrollmentId)
     const [isDisabled, setIsDisabled] = useState(false);
+    const {manualRevalidate} = useRecommendations(preEnrollmentId);
     
     async function removeSelections() {
         setIsDisabled(true)
         try {
             await removeSelectionsFn([...selectionsRef.current])
         } catch (err) {
-            alert(err)
+            if (axios.isAxiosError(err)) {
+                if (err.response!.data.status === 400) {
+                    alert("Too many selections to remove at a time");
+                } else {
+                    alert(err.response!.data.detail)
+                }
+            } else {
+                alert(err)
+            }
             setIsDisabled(false)
         }
+        manualRevalidate()
         setIsDisabled(false)
     }
     
@@ -95,9 +95,6 @@ export default function ScheduleTable({selections, selectionRef}: ScheduleTableP
                 rows={rows}
                 columns={GetColumnFormat({creditSum})}
                 autoHeight
-                components={{
-                    Toolbar: CustomToolbar,
-                }}
             />
         </Paper>
     )

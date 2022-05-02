@@ -1,5 +1,5 @@
 import {DeleteRounded} from "@mui/icons-material";
-import {Card, CardHeader, Divider, Avatar, Button, ButtonGroup} from "@mui/material";
+import {Card, CardHeader, Divider, Avatar, Button, ButtonGroup, useMediaQuery} from "@mui/material";
 import { useRouter } from "next/router";
 import {
     IPreEnrollmentResponse,
@@ -8,6 +8,9 @@ import {
 } from "../../utility/requests/responseTypes";
 import {usePreEnrollments} from "../../utility/hooks/usePreEnrollments";
 import {useEffect, useState} from "react";
+import {useTheme} from "@mui/material/styles";
+import DeletePreenrollmentModal from "./deletePreenrollmentModal";
+import React from "react";
 
 export type OptionsButtonProps = {
     preEnrollment: IPreEnrollmentResponse
@@ -15,21 +18,28 @@ export type OptionsButtonProps = {
 
 function OptionsButton({preEnrollment}: OptionsButtonProps) {
     const router = useRouter();
-    const {removePreEnrollmentFromCache} = usePreEnrollments()
+    const [open, setOpen] = React.useState(false);
     
-    async function handleDelete() {
-        if (confirm(`Are your sure you want to delete pre enrollment ${preEnrollment.name}?`)) {
-            await removePreEnrollmentFromCache(preEnrollment.id)
-        }
-    }
+    const handleDeleteOpen = () => {
+        setOpen(true);
+    };
 
     return(
+        <>
         <ButtonGroup variant="contained" disableElevation sx={classes.buttonGroup}>
-            <Button onClick={() => {router.push(`/preenrollment/${preEnrollment.id}`)}}>Edit</Button>
+            <Button onClick={(event: any) => {
+                event.stopPropagation()
+                router.push(`/preenrollment/${preEnrollment.id}`)
+            }}>Edit</Button>
             <Button size="small">
-                <DeleteRounded onClick={handleDelete} />
+                <DeleteRounded onClick={(event:any) => {
+                    event.stopPropagation()
+                    handleDeleteOpen()
+                }} />
             </Button>
         </ButtonGroup>
+        <DeletePreenrollmentModal openModalState={open} setOpenModalState={setOpen} preEnrollment={preEnrollment}/>
+        </>
     )
 }
 
@@ -41,6 +51,9 @@ function PreEnrollmentCardItem({preEnrollment}: PreEnrollmentCardItemProps) {
     
     const [totalCredits, setTotalCredits] = useState(0)
     const [courseStringList, setCourseStringList] = useState("")
+    const router = useRouter()
+    const theme = useTheme()
+    const matches = useMediaQuery(theme.breakpoints.down("sm"), {noSsr:true})
     
     async function getTotalCredits(): Promise<number> {
         return preEnrollment
@@ -77,7 +90,9 @@ function PreEnrollmentCardItem({preEnrollment}: PreEnrollmentCardItemProps) {
 
     return (
         <>
-            <Card elevation={0} square sx={classes.itemCard}>
+            <Card elevation={0} square sx={classes.itemCard} onClick={() => {
+                if (matches) router.push(`/preenrollment/${preEnrollment.id}`)
+            }}>
                 <CardHeader
                     avatar={
                         <Avatar sx={{bgcolor: 'secondary.dark'}} aria-label={`${preEnrollment.name}`}>
@@ -103,10 +118,10 @@ export type PreEnrollmentCardProps = {
 
 export default function PreEnrollmentCard({group, semester}: PreEnrollmentCardProps) {
     return (
-        <Card sx={classes.containerCard}>
+        <Card sx={classes.containerCard} elevation={3}>
             <CardHeader
                 sx={classes.mainHeader}
-                title={`Semester - ${semester.term} - ${semester.year}`}
+                title={`${semester.term}: ${semester.year}-${semester.year + 1}`}
             />
             <Divider/>
             {group.map((currVal: IPreEnrollmentResponse, index: number) => {

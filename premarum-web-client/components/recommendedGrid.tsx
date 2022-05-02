@@ -1,86 +1,66 @@
-import {Box, Button, CircularProgress, Grid, Paper, styled, Tooltip, tooltipClasses, TooltipProps, Typography} from "@mui/material";
+import {
+    Box,
+    CircularProgress,
+    Grid,
+    Paper,
+    useMediaQuery
+} from "@mui/material";
 import {
     DataGrid,
-    GridToolbarColumnsButton,
     GridToolbarContainer,
     GridToolbarDensitySelector,
     GridToolbarFilterButton
 } from "@mui/x-data-grid";
 import React, {useEffect, useState} from "react";
-import {useSemesterOfferings} from "../utility/hooks/useSemesterOfferings";
-import {AddRounded} from "@mui/icons-material";
-import {usePreEnrollment} from "../utility/hooks/usePreEnrollments";
 import {GetRows} from "../utility/helpers/selectionToRow";
 import { GetColumnFormat } from "../utility/helpers/ColumnFormat";
+import {useRecommendations} from "../utility/hooks/useRecommendations";
+import QuickSearchToolbar, {QuickSearchToolbarProps, requestSearch} from "./DataGridAddOns/QuickSearchToolbar";
+import {useTheme} from "@mui/material/styles";
 
 function CustomToolbar() {
     return(
         <Box sx={classes.toolbarBox}>
             <GridToolbarContainer>
-                <GridToolbarColumnsButton />
-                <GridToolbarFilterButton />
+                <GridToolbarFilterButton  />
                 <GridToolbarDensitySelector />
             </GridToolbarContainer>
         </Box>
     )
 }
 
-type AddSelectionProps = {
-    preEnrollmentId: number,
-    changeTab: () => void,
-    selectionsRef: any
-}
+function WrapToolBars(props: QuickSearchToolbarProps) {
+    const theme = useTheme()
+    const match = useMediaQuery(theme.breakpoints.down("sm"))
 
-export function AddSelectionButton({preEnrollmentId, selectionsRef, changeTab}: AddSelectionProps) {
-    const { addSelectionFn } = usePreEnrollment(preEnrollmentId)
-    const [isLoading, setIsLoading] = useState(false)
-    
-    return(
-        <Button
-            startIcon={<AddRounded/>}
-            variant="contained"
-            sx={classes.addSelectionButton}
-            onClick={async () => {
-                setIsLoading(true)
-                if (selectionsRef.current.length === 0) {
-                    setIsLoading(false)
-                    return
-                }
-                try {
-                    await addSelectionFn(selectionsRef.current)
-                } catch (err) {
-                    alert(err)
-                    selectionsRef.current = []
-                    changeTab()
-                    return
-                }
-                selectionsRef.current = []
-                changeTab()
-            }}
-            disabled={isLoading}
-        >
-            Add Selection
-        </Button>
-    )
+    return <>
+        <QuickSearchToolbar {...props} />
+        {!match? <CustomToolbar /> : null}
+    </>
 }
 
 type RecommendedGridProps = {
-    semesterId: number,
-    exclude: number[],
+    preEnrollmentId: number,
     selectionsRef: any// Ids to exclude
 }
 
-export default function RecommendedGrid({semesterId, exclude, selectionsRef}: RecommendedGridProps) {
-    const {courseOfferings, isLoading, isError} = useSemesterOfferings(semesterId);
-    const [rows, setRows] = useState([])
+export default function RecommendedGrid({preEnrollmentId, selectionsRef}: RecommendedGridProps) {
+    const {recommendations, isLoading, isError} = useRecommendations(preEnrollmentId);
+    const [rows, setRows] = useState<any[]>([])
+    const [quickSearchState, setQuickSearchState] = useState("")
+    const [selected, setSelected] = useState<any[]>([])
+    
+    useEffect(() => {
+        selectionsRef.current = []
+    }, [selectionsRef])
     
     useEffect(() => {
         if (!isLoading)  {
-            console.log(courseOfferings)
-            GetRows(courseOfferings.filter(co => !exclude.includes(co.id)))
+            GetRows(recommendations!)
                 .then(res => {setRows(res as any)})   
         }
-    }, [courseOfferings])
+    }, [recommendations, isLoading])
+    
     
     if (!rows || isLoading) {
         return(
@@ -94,9 +74,11 @@ export default function RecommendedGrid({semesterId, exclude, selectionsRef}: Re
         <Paper elevation={0} sx={classes.containerBox}>
             <DataGrid
                 onSelectionModelChange={async (selectionModel) => {
+                    setSelected(selectionModel)
                     selectionsRef.current = selectionModel.map(
                         sel =>  (rows[sel as number] as any).entryId )
                 }}
+                selectionModel={selected}
                 checkboxSelection
                 pageSize={25}
                 rowHeight={75}
@@ -104,7 +86,27 @@ export default function RecommendedGrid({semesterId, exclude, selectionsRef}: Re
                 columns={GetColumnFormat({creditSum: null})}
                 autoHeight
                 components={{
-                    Toolbar: CustomToolbar,
+                    Toolbar: WrapToolBars
+                }}
+                componentsProps={{
+                    toolbar: {
+                        value: quickSearchState,
+                        onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+                            setSelected([])
+                            requestSearch({
+                                searchValue: event.target.value,
+                                setSearchText: setQuickSearchState,
+                                rowSetter: (rec: any[]) => GetRows(rec).then(res => setRows(res)),
+                                rows: recommendations!
+                            })
+                        },
+                        clearSearch: () => {
+                            setSelected([])
+                            setQuickSearchState("")
+                            GetRows(recommendations!)
+                                .then(res => setRows(res))
+                        }
+                    }
                 }}
             />
         </Paper>
@@ -113,7 +115,6 @@ export default function RecommendedGrid({semesterId, exclude, selectionsRef}: Re
 
 const useStyles = {
     toolbarBox: {
-        marginTop: 1,
         marginLeft: 1,
     },
     containerBox: {

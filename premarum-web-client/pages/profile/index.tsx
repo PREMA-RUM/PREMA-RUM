@@ -18,7 +18,7 @@ import {
     TooltipProps,
     CircularProgress
 } from '@mui/material'
-import {Add, AddRounded, CloseRounded, EditRounded} from '@mui/icons-material'
+import {CloseRounded} from '@mui/icons-material'
 import React, {useState} from 'react';
 import { grey } from '@mui/material/colors';
 import {getAllCourses} from "../../utility/requests/getAllCourses";
@@ -28,6 +28,9 @@ import {useStudent} from "../../utility/hooks/useStudent";
 import axios, {AxiosError} from "axios";
 import { StudentDepartmentModal } from '../../components/departmentChoiceModal';
 import getAllDepartments from '../../utility/requests/getAllDepartments';
+import useIsMobile from "../../utility/hooks/useIsMobile";
+import {MobileTopArea, WideScreenTopArea} from "../../components/Profile/TopCard";
+import {useTheme} from "@mui/material/styles";
 
 const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
     <Tooltip {...props} classes={{ popper: className }} />
@@ -49,6 +52,10 @@ export default function Profile({courses, departments}: ProfileProps) {
     const {student, isLoading:studentLoading} = useStudent()
     const [selectedCourses, setSelectedCourses] = useState([])
     const [coursesAdditionInProgress, setCoursesAdditionInProgress] = useState(false)
+    const [coursesLoading, setCoursesLoading] = useState(false);
+    const isMobile = useIsMobile()
+    const classes = useStyles()
+
     
     const handleModalOpen = () => {
         setOpen(true);
@@ -76,32 +83,6 @@ export default function Profile({courses, departments}: ProfileProps) {
         }
         handleModalClose()
         setCoursesAdditionInProgress(false)
-    } 
-
-    function AddButton() {
-        return(
-            <Button
-                startIcon={<AddRounded/>}
-                variant="contained"
-                sx={classes.addCoursesButton}
-                onClick={handleModalOpen}
-            >
-                Add Courses Taken
-            </Button>
-        )
-    }
-
-    function EditDepartmentButton() {
-        return(
-            <Button
-                startIcon={<EditRounded/>}
-                variant="contained"
-                sx={classes.editDepartmentButton}
-                onClick={handleDeptOpen}
-            >
-                Edit Department
-            </Button>
-        )
     }
     
     type CourseCardProps = {
@@ -111,6 +92,7 @@ export default function Profile({courses, departments}: ProfileProps) {
     function CourseCard({course}: CourseCardProps) {
         
         async function handleDelete() {
+            setCoursesLoading(true)
             try {
                 await removeCoursesTakenFromCache([course.id])
             } catch (err) {
@@ -118,6 +100,8 @@ export default function Profile({courses, departments}: ProfileProps) {
                     console.log((err as AxiosError).response)
                 }
                 alert(err)
+            } finally {
+                setCoursesLoading(false)
             }
         }
         
@@ -148,26 +132,10 @@ export default function Profile({courses, departments}: ProfileProps) {
         <Grid container direction="column">
 
             <Grid item>
-                <Card sx={classes.topCard}>
-                    <Grid container direction="row" justifyContent="space-between" alignItems="center">
-                        
-                        <Grid item>
-                            <Grid container direction="row" alignItems="center">
-                                <Typography sx={classes.title}>Profile</Typography>
-                                <Divider orientation="vertical" variant='middle' light flexItem sx={classes.dividerItem}/>
-                                <TextField size="small" variant="outlined" placeholder="Search Courses..." sx={classes.searchInput}/>
-                            </Grid>
-                        </Grid>
-
-                        <Grid item>
-                            <EditDepartmentButton/>
-                            <AddButton/>
-                        </Grid>
-
-                    </Grid>
-                </Card>
+                {isMobile?
+                    <MobileTopArea handleEdit={handleDeptOpen} handleAdd={handleModalOpen}/>:
+                    <WideScreenTopArea handleEdit={handleDeptOpen} handleAdd={handleModalOpen}/>}
             </Grid>
-            
 
             <Grid item>
                 <Card sx={classes.contentCard}>
@@ -181,9 +149,15 @@ export default function Profile({courses, departments}: ProfileProps) {
                         <Divider/>
                         
                         <Grid container direction="row" alignContent='center' justifyContent="center" sx={classes.coursesContainer}>
-                            {coursesTaken!.map((ct: ICoursesTakenResponse, index: number) => (
-                                <CourseCard key={index} course={ct.course}/>
-                            ))}
+                            {coursesLoading?
+                                <CircularProgress />
+                            :
+                                <>
+                                {coursesTaken!.map((ct: ICoursesTakenResponse, index: number) => (
+                                    <CourseCard key={index} course={ct.course}/>
+                                ))}
+                                </>
+                            }
                         </Grid>
                         
                     </Grid>
@@ -222,7 +196,7 @@ export default function Profile({courses, departments}: ProfileProps) {
                                         .filter(ct => 
                                             ct.course.courseCode === c.courseCode).length === 0)
                                 }
-                                getOptionLabel={(option) => option.courseCode}
+                                getOptionLabel={(option) => `${option.courseCode} - ${option.courseName}`}
                                 filterSelectedOptions
                                 onChange={(event:any, newValue:any) => {
                                     setSelectedCourses(newValue)
@@ -262,77 +236,69 @@ export async function getStaticProps() {
     }
 }
 
-const useStyles = {
-    topCard: {
-        padding: '5px 25px',
-        backgroundColor: 'primary.light',
-        marginBottom: 1.5
-    },
-    title: {
-
-    },
-    dividerItem: {
-        marginLeft: 2,
-        marginRight: 2,
-    },
-    searchInput: {
-        backgroundColor: 'white'
-    },
-    addCoursesButton: {
-        backgroundColor: 'primary.dark'
-    },
-    editDepartmentButton: {
-        backgroundColor: 'secondary.dark',
-        marginRight: 1,
-    },
-    courseCard: {
-        minWidth: '175px',
-        height: '45px',
-        margin: 0.5,
-        backgroundColor: grey[200],
-    },
-    courseCardGrid: {
-        height: '100%',
-        padding: '0 5px 0 10px'
-    },
-    courseText: {
-
-    },
-    courseDeleteIcon: {
-        marginLeft: 0.5,
-    },
-    contentCard: {
-        backgroundColor: 'secondary.light',
-        padding: '15px',
-        minHeight: '80vh',
-    },
-    contentText: {
-        padding: '2px 10px',
-    },
-    takenBox: {
-
-    },
-    coursesContainer: {
-        marginTop: 1.5,
-    },
-    modalGridMain: {
-        width: '100%',
-        height: '90%',
-    },
-    modalCard: {
-        width: '60%',
-        minHeight: '30%',
-        backgroundColor: grey[50],
-    },
-    cardContent: {
-        width: '100%',
-        height: '100%',
-        padding: '50px 20px',
-    },
-    cardActions: {
-        justifyContent: 'flex-end',
-        alignItems: 'flex-end',
-    },
-  };
-
-const classes = useStyles;
+const useStyles = () => {
+    const theme = useTheme()
+    
+    return {
+        searchInput: {
+            backgroundColor: 'white'
+        },
+        courseCard: {
+            minWidth: '175px',
+            height: '45px',
+            margin: 0.5,
+            backgroundColor: grey[200],
+        },
+        courseCardGrid: {
+            height: '100%',
+            padding: '0 5px 0 10px'
+        },
+        courseText: {
+    
+        },
+        courseDeleteIcon: {
+            marginLeft: 0.5,
+        },
+        contentCard: {
+            backgroundColor: 'secondary.light',
+            padding: '15px',
+            minHeight: '80vh',
+        },
+        contentText: {
+            padding: '2px 10px',
+        },
+        takenBox: {
+    
+        },
+        coursesContainer: {
+            marginTop: 1.5,
+        },
+        modalGridMain: {
+            width: '100%',
+            height: '90%',
+        },
+        modalCard: {
+            [theme.breakpoints.down("sm")]: {
+                width: '90%',
+                minHeight: '40%'
+            },
+            width: '60%',
+            minHeight: '30%',
+            backgroundColor: grey[50],
+        },
+        cardContent: {
+            [theme.breakpoints.down("sm")]: {
+                p: 1,
+                pt:5,
+                pb:5
+            },
+            width: '100%',
+            height: '100%',
+            padding: '50px 20px',
+        },
+        cardActions: {
+            justifyContent: 'flex-end',
+            alignItems: 'flex-end',
+        },
+    }
+}

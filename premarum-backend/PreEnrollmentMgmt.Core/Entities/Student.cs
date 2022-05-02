@@ -33,7 +33,7 @@ public class Student
     {
         CoursesTaken.Add(coursesTaken);
     }
-    
+
     public IEnumerable<CoursesTaken> RemoveCoursesTaken(int[] CourseIds)
     {
         var deleted = new List<CoursesTaken>();
@@ -42,9 +42,14 @@ public class Student
             if (CourseIds.Contains(coursesTaken.CourseId))
                 deleted.Add(coursesTaken);
         }
-        
+
         ((HashSet<CoursesTaken>) CoursesTaken).RemoveWhere(taken => CourseIds.Contains(taken.CourseId));
         return deleted;
 
+    }
+
+    public bool HasReachedMaxPreEnrollmentCapacity()
+    {
+        return ((HashSet<PreEnrollment>) PreEnrollments).Count >= 30;
     }
 }

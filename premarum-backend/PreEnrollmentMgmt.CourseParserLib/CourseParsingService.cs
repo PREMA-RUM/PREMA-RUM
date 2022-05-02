@@ -1,17 +1,32 @@
 using System.Collections.Immutable;
 using Antlr4.Runtime;
+using PreEnrollmentMgmt.Core.Entities;
+using PreEnrollmentMgmt.Core.Repositories;
+using PreEnrollmentMgmt.Core.Services.Interfaces;
 
 namespace PreEnrollmentMgmt.CourseParserLib;
 
-public class CourseParsingService
+public class CourseParsingService : ICourseParsingService
 {
-    public bool CompliesWithRequisites(IEnumerable<string> coursesTaken, string requisites)
+    private readonly ICourseRepository _courseRepository;
+
+    public CourseParsingService(ICourseRepository courseRepository)
     {
-        var stream = new AntlrInputStream(requisites);
+        _courseRepository = courseRepository;
+    }
+
+    public async Task<List<Course>> GetMissingCourses(IEnumerable<CoursesTaken> coursesTaken, Course course)
+    {
+        if (string.IsNullOrEmpty(course.CoursePrerequisites))
+            return new List<Course>();
+        var stream = new AntlrInputStream(course.CoursePrerequisites);
         var lexer = new CourseGrammarLexer(stream);
         var parser = new CourseGrammarParser(new CommonTokenStream(lexer));
         var tree = parser.start()!;
-        var visitor = new CourseTreeVisitor( coursesTaken.ToImmutableHashSet() );
-        return false;
+        var visitor = new CourseTreeVisitor(coursesTaken
+            .Select(ct => new CourseTakenVisitorValue(ct.Course.CourseCode, ct.CourseId)).ToImmutableHashSet());
+        var result = visitor.VisitExpression(tree.expression());
+        var courses = await _courseRepository.GetByCourseCodeList(result.MissingCourses.ToList());
+        return courses;
     }
 }

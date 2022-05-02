@@ -37,14 +37,24 @@ public class PreEnrollment
     private void ValidateSelection(SemesterOffer selectionCandidate)
     {
         if (SemesterId != selectionCandidate.Semester.Id)
-            throw new InvalidPreEnrollmentSelectionException(
+            throw new CoreException(
                 "Semester offer must of the same semester as pre enrollment");
         if (Selections.Contains(selectionCandidate))
-            throw new InvalidPreEnrollmentSelectionException("Semester offer must not already be selected");
+            throw new CoreException("Semester offer must not already be selected");
     }
 
     public void RemoveSelections(int[] CourseOfferings)
     {
         ((HashSet<SemesterOffer>) Selections).RemoveWhere(so => CourseOfferings.Contains(so.Id));
+    }
+
+    public bool HasReachedMaxSelectionCapacity()
+    {
+        return ((HashSet<SemesterOffer>) Selections).Count >= 20;
+    }
+
+    public bool WillReachMaxCapacityAfterAddition(int numberOfEntries)
+    {
+        return ((HashSet<SemesterOffer>) Selections).Count + numberOfEntries >= 20;
     }
 }

@@ -19,6 +19,7 @@
     <ItemGroup>
         <ProjectReference Include="..\PreEnrollmentMgmt.Application\PreEnrollmentMgmt.Application.csproj" />
         <ProjectReference Include="..\PreEnrollmentMgmt.Core\PreEnrollmentMgmt.Core.csproj" />
+        <ProjectReference Include="..\PreEnrollmentMgmt.CourseParserLib\PreEnrollmentMgmt.CourseParserLib.csproj" />
         <ProjectReference Include="..\PreEnrollmentMgmt.DataAccess\PreEnrollmentMgmt.DataAccess.csproj" />
     </ItemGroup>
 

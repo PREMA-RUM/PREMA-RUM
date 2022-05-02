@@ -17,8 +17,8 @@ async function ScheduleDates(courseOfferings: IPreEnrollmentSelectionResponse[])
             let realEndTime = convertToMilitaryTime(ts.endTime)
             return {
                 title: val.course.courseCode,
-                start: new Date(`03-${(days as any)[ts.day] as string}-2022 ${realStartTime}`),
-                end: new Date(`03-${(days as any)[ts.day] as string}-2022 ${realEndTime}`)
+                start: new Date(`2022-03-${(days as any)[ts.day] as string}T${realStartTime}`),
+                end: new Date(`2022-03-${(days as any)[ts.day] as string}T${realEndTime}`)
             }
         })
     })
@@ -38,8 +38,6 @@ const StyledOuterBox = styled(Box)(
         [theme.breakpoints.down("sm")]: {
             maxWidth: "100%",
             overflowX: "scroll",
-            maxHeight: "1000px",
-            overflowY: "scroll"
         }
     })
 );
@@ -73,7 +71,7 @@ export default function ScheduleCalendar({courseOfferings: courseOfferings}: Sch
                     view="week"
                     toolbar={false}
                     formats={formats}
-                    defaultDate={new Date('03-20-2022 00:00')} // default date to make week static on this time
+                    defaultDate={new Date('2022-03-20T00:00')} // default date to make week static on this time
                     events={dates}
                     eventPropGetter={(event, start, end, isSelected) => ({
                         event,
@@ -85,7 +83,6 @@ export default function ScheduleCalendar({courseOfferings: courseOfferings}: Sch
                             border: 'none',
                             padding: '10px 0 10px 10px'
                         },
-                        
                     })}
                 />  
             </StyledInnerPaper>

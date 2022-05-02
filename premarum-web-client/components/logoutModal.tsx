@@ -11,7 +11,6 @@ type ModalProps = {
 }
 
 export function LogoutModal(props: ModalProps) {
-    const [open, setOpen] = React.useState(false);
     const [modalLoading, setModalLoading] = React.useState(false);
 
     const router = useRouter();
@@ -38,6 +37,7 @@ export function LogoutModal(props: ModalProps) {
         }
         handleLogoutClose()
         setModalLoading(false);
+        window.location.href="/"
     }
 
     return(

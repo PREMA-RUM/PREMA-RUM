@@ -1,15 +1,35 @@
-import { InteractionRequiredAuthError, IPublicClientApplication } from "@azure/msal-browser";
-import { TOKEN_REQUEST } from "../constants";
+import {InteractionRequiredAuthError, IPublicClientApplication} from "@azure/msal-browser";
+import {TOKEN_REQUEST} from "../constants";
 
 export async function getAuthToken(instance: IPublicClientApplication) {
     try {
-        const token = (await instance.acquireTokenSilent({
-            scopes:["api://83c3cbe7-f00e-4ea8-87d8-bf4d75690f17/access_as_user"],
+        return (await instance.acquireTokenSilent({
+            scopes: TOKEN_REQUEST.scopes,
         })).accessToken;
-        return token;
     } catch(err) {
         if (err instanceof InteractionRequiredAuthError) {
-            return await (await instance.acquireTokenPopup(TOKEN_REQUEST)).accessToken;
+            return (await instance.acquireTokenPopup(TOKEN_REQUEST)).accessToken;
+        }
+        console.error(err);
+        throw err;
+    }
+}
+ 
+export async function getGraphAuthToken(instance: IPublicClientApplication) {
+    try {
+        return (await instance.acquireTokenSilent({
+            scopes: [
+                "User.Read"
+            ],
+        })).accessToken;
+    } catch(err) {
+        if (err instanceof InteractionRequiredAuthError) {
+            await instance.acquireTokenRedirect({
+                scopes:[
+                    "User.Read"
+                ],
+                redirectUri: "/home"
+            })
         }
         console.error(err);
         throw err;
