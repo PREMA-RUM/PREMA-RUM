@@ -58,6 +58,5 @@ The database will be mapped to your machine's port 9001.
 ### CI/CD has been configured making new changes to main automatically be pushed to the backend and frontend servers. 
 
 ### Current Hosting Services: (as of March 16, 2022)
-- [Heroku](https://www.heroku.com/) for Backend.
-- [AWS](https://aws.amazon.com/) for Database.
+- [Heroku](https://www.heroku.com/) for Backend and Database.
 - [Vercel](https://vercel.com/) for Frontend server.
