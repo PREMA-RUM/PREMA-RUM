@@ -194,9 +194,9 @@ begin
     return query
         with
             -- Student Data
+            -- Get the courses in current pre enrollment
             current_preenrollment_selections as
                 (
-                    -- Get the pre-enrollment of interest
                     SELECT c_id selection
                     FROM "PreEnrollment"
                              natural inner join "PreEnrollmentSelection"
@@ -204,20 +204,22 @@ begin
                              natural inner join "Course"
                     WHERE pe_id = _pre_enrollment_id
                 ),
+            -- Get the department of the student for later use
             student_department as (
                 SELECT dept_id
                 FROM "Student"
                          natural inner join "PreEnrollment"
                 where pe_id = _pre_enrollment_id LIMIT 1
             ),
+            -- Get all the courses taken by student
             stduent_courses_taken as (
-                SELECT c_id 
-                FROM "Student" 
+                SELECT c_id
+                FROM "Student"
                     natural inner join "PreEnrollment"
                     inner join "CoursesTaken" CT on "Student".st_id = CT.st_id
                 WHERE pe_id = _pre_enrollment_id
             ),
-            --- Statistics
+            --- Get all selections from all pre enrollments 
             global_selected_courses as
                 (
                     -- Simple join to get all selections of all pre enrollments
@@ -230,6 +232,7 @@ begin
                             inner join "SemesterOffer" on "PreEnrollmentSelection".so_id = "SemesterOffer".so_id
                             inner join "Course" on "SemesterOffer".c_id = "Course".c_id
                 ),
+            -- Filter by pre enrollments made by students in the same department
             department_selected_courses as
                 (
                     select * from global_selected_courses
@@ -293,28 +296,25 @@ begin
                     order by c_id_a
                 ),
             all_stats as (
-                select dept_scores.c_id,
-                       dept_scores.score
+                select coalesce(dept_scores.c_id, global_scores.c_id, courses_taken_scores.c_id) as c_id,
+                       coalesce(dept_scores.score, 0)
                            / (
-                           SELECT max(score)
+                           SELECT coalesce(max(score), 1)
                            FROM dept_scores
-                       )* 0.75
-                           dept_score,
+                       )* 0.75 as dept_score,
                        coalesce(global_scores.score, 0)
                            /(
-                           SELECT max(score)
+                           SELECT coalesce(max(score), 1)
                            FROM global_scores
-                       ) * 0.20
-                           global_score,
+                       ) * 0.20 as global_score,
                        coalesce(courses_taken_scores.score, 0)
                            /(
-                           SELECT max(courses_taken_scores.score)
+                           SELECT coalesce(max(score), 1)
                            FROM courses_taken_scores
-                       ) *0.05
-                           course_taken_score
+                       ) *0.05 as course_taken_score
                 from dept_scores
-                         left join global_scores on dept_scores.c_id = global_scores.c_id
-                         left join courses_taken_scores on dept_scores.c_id = courses_taken_scores.c_id
+                         full join global_scores on dept_scores.c_id = global_scores.c_id
+                         full join courses_taken_scores on dept_scores.c_id = courses_taken_scores.c_id
             ),
             final_scores as
                 (
@@ -333,21 +333,28 @@ begin
             semester_courses as
                 (
                     SELECT
-                        so_id, so_capacity, so_section_name, c_id, s_id, so_classroom, round(rank, 3) as rank
+                        so_id, so_capacity, so_section_name, c_id, s_id, so_classroom, 
+                           --- Bump recommendations from same department
+                           CASE
+                            WHEN dept_id = (select dept_id from student_department)
+                                THEN round(rank, 3)*1.75 -- Bump by 75 percent courses from same dept
+                            ELSE round(rank, 3)*0.5 -- Reduce by 50 percent courses not from your dept
+                           END as rank
                     FROM aggregate_rank
                              natural inner join "SemesterOffer"
+                             natural inner join "Course"
                     WHERE s_id = (
                         SELECT s_id
                         FROM "PreEnrollment"
                         WHERE pe_id = _pre_enrollment_id
                         LIMIT 1
-                    ) 
-                    -- Exclude courses being selected
-                        AND c_id not in (select selection from current_preenrollment_selections)
-                    -- Exclude courses already marked as taken
-                        AND c_id not in (select c_id from stduent_courses_taken)
+                    )
+                      -- Exclude courses being selected
+                      AND c_id not in (select selection from current_preenrollment_selections)
+                      -- Exclude courses already marked as taken
+                      AND c_id not in (select c_id from stduent_courses_taken)
                 ),
-            -- Exclude seemster offers that conflict with the current pre enrollment
+            -- Exclude semester offers that conflict with the current pre enrollment
             preenrollment_with_timeslot as
                 (
                     SELECT pe_id, so_id, ts_start_time, ts_end_time, d_id
@@ -365,13 +372,17 @@ begin
                 ),
             rec_conflicts as -- recommended semester offers with conflicts
                 (
-                   SELECT a.so_id
-                   FROM semester_courses_with_timeslots a, preenrollment_with_timeslot b
-                   WHERE (a.ts_start_time, a.ts_end_time) OVERLAPS (b.ts_start_time, b.ts_end_time)
-                    AND a.d_id = b.d_id
+                    SELECT a.so_id
+                    FROM semester_courses_with_timeslots a, preenrollment_with_timeslot b
+                    WHERE (a.ts_start_time, a.ts_end_time) OVERLAPS (b.ts_start_time, b.ts_end_time)
+                      AND a.d_id = b.d_id
+                ),
+            output as
+                (
+                    SELECT * FROM semester_courses WHERE so_id not in (
+                        SELECT so_id FROM rec_conflicts
+                    ) order by rank DESC
                 )
-        SELECT * FROM semester_courses WHERE so_id not in (
-            SELECT so_id FROM rec_conflicts
-        ) order by rank DESC LIMIT 100;
+        select * from output;
 end;
 $$;

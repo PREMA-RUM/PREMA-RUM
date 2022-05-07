@@ -8,7 +8,7 @@ export function useRecommendations(preEnrollmentId: number) {
     const {data, error, mutate} = useSWR(`getRecommendations-${preEnrollmentId}`, 
         async () => {
         return await getRecommendations(pca, preEnrollmentId)
-    }, {revalidateIfStale: false})
+    }, {dedupingInterval:50000}) 
     
     return  {
         recommendations: data as IPreEnrollmentSelectionResponse[] | undefined,
