@@ -3,9 +3,9 @@ import { Construct } from 'constructs';
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as kms from "aws-cdk-lib/aws-kms"
 import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager"
-import * as ag from "aws-cdk-lib/aws-apigateway" 
 import {Architecture} from "aws-cdk-lib/aws-lambda";
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
+import * as apigwv2 from "@aws-cdk/aws-apigatewayv2-alpha"
+import { HttpLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
 
 export class PremarumAwsInfrastructureStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -20,7 +20,7 @@ export class PremarumAwsInfrastructureStack extends Stack {
       encryptionKey,
     });
     
-    const premarum_lambda = new lambda.DockerImageFunction(this, 'PremarumLambdaFn', {
+    const premarum_lambda = new lambda.DockerImageFunction(this, 'premalambda', {
       code: lambda.DockerImageCode.fromImageAsset("../premarum-backend", {
         buildArgs: {
           "-f": "DockerfileLambda",
@@ -36,14 +36,19 @@ export class PremarumAwsInfrastructureStack extends Stack {
         LAMBDA_NET_SERIALIZER_DEBUG: "true"
       }
     })
+
+    const lambdaIntegration = new HttpLambdaIntegration("PreEnrollmentMgmtIntegration", premarum_lambda)
     
-    const api = new ag.LambdaRestApi(this, 'API GW', {
-      handler: premarum_lambda,
-      proxy: true
+    const api = new apigwv2.HttpApi(this, "APIGW")
+
+    api.addRoutes({
+      path: "/{proxy+}",
+      methods: [apigwv2.HttpMethod.ANY],
+      integration: lambdaIntegration,
     })
     
     new CfnOutput(this, 'api url', {
-      value: api.url
+      value: api.url!
     });
   }
 }
