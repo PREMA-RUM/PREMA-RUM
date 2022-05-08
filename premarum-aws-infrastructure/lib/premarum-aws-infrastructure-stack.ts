@@ -29,7 +29,7 @@ export class PremarumAwsInfrastructureStack extends Stack {
       }),
       timeout: Duration.minutes(5),
       architecture: Architecture.ARM_64,
-      memorySize: 512,
+      memorySize: 1024,
       environment: {
         DATABASE_SERVER_URL: db_secret.secretValue.unsafeUnwrap(),
         ASPNETCORE_ENVIRONMENT: "Production",
