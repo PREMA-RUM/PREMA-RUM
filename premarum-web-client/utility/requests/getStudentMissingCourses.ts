@@ -5,7 +5,7 @@ import axios from "axios";
 
 export default async function getStudentMissingCourses(preEnrollmentId: Number): Promise<IMissingPreEnrollmentsResponse> {
     const token = await getAuthToken(pca)
-    return (await axios.post(`${HOST}/PreEnrollment/${preEnrollmentId}/Requisites`, {}, {
+    return (await axios.get(`${HOST}/PreEnrollment/${preEnrollmentId}/Requisites`,{
         headers: {
             Authorization: `Bearer ${token}`
         }
