@@ -24,7 +24,6 @@ export class PremarumAwsInfrastructureStack extends Stack {
       code: lambda.DockerImageCode.fromImageAsset("../premarum-backend", {
         buildArgs: {
           "-f": "DockerfileLambda",
-          "--platform": "linux/arm64"
         }
       }),
       timeout: Duration.minutes(5),
