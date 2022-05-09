@@ -53,6 +53,11 @@ export interface ICoursesTakenResponse {
     semester: ISemesterResponse | null
 }
 
+export interface IMissingPreEnrollmentsResponse {
+    notComplyingCourses: ICourseResponse[],
+    missingCourses: ICourseResponse[]
+}
+
 export interface IApiProblem {
     type: string,
     detail: string,

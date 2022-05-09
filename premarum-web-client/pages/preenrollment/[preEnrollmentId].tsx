@@ -1,4 +1,5 @@
 import {
+    Alert,
     Autocomplete,
     Box,
     Button,
@@ -22,6 +23,7 @@ import { grey } from '@mui/material/colors';
 import ScheduleTable, {RemoveSelectionButton} from '../../components/scheduleTable';
 import {useRouter} from "next/router";
 import {usePreEnrollment} from "../../utility/hooks/usePreEnrollments";
+import {useStudentMissingCourses} from "../../utility/hooks/useStudentMissingCourses";
 import RecommendedGrid from '../../components/recommendedGrid';
 import {Theme, useTheme} from "@mui/material/styles";
 import { EditRounded } from '@mui/icons-material';
@@ -33,7 +35,8 @@ export default function Preenrollment() {
     const [value, setValue] = React.useState(0);
     const router = useRouter()
     const [preEnrollmentId, setPreEnrollmentId] = React.useState<number | null>(null);
-    const {preEnrollment, isLoading, isError, updateTitle} = usePreEnrollment(preEnrollmentId) 
+    const {preEnrollment, isLoading, isError, updateTitle} = usePreEnrollment(preEnrollmentId)
+    const {missingCourses} = useStudentMissingCourses(preEnrollmentId);
     // To keep track of selected cells without re-rendering
     const selectedAddCoursesRef = useRef([])
     const removeSelectionRef = useRef([])
