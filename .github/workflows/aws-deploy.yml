@@ -18,8 +18,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: 'us-east-1'
       - name: Install dependencies
-        run: npm install
+        run: cd ./premarum-aws-infrastructure && npm install
       - name: Synth stack
-        run: cd ./premarum-aws-infrastructure && npx cdk synth
+        run: npx cdk synth
       - name: Deploy stack
         run: npx cdk deploy '*' --require-approval never
