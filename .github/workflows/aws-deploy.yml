@@ -20,6 +20,6 @@ jobs:
       - name: Install dependencies
         run: cd ./premarum-aws-infrastructure && npm install
       - name: Synth stack
-        run: npx cdk synth
+        run: cd ./premarum-aws-infrastructure && npx cdk synth
       - name: Deploy stack
-        run: npx cdk deploy '*' --require-approval never
+        run: cd ./premarum-aws-infrastructure && npx cdk deploy '*' --require-approval never
