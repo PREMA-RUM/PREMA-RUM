@@ -29,7 +29,7 @@ INSERT INTO "Course"
     ('CIIC4050', 'Operating Systems', '(ICOM4035 O CIIC4020) Y (CIIC4082 O INEL4206)', '', 4, 'OS', 1),
     ('INSO4101', '', 'ICOM4035 O CIIC4020', '', 3, 'Intro to Software', 1),
     ('JAPO0101', '', '', '', 3, 'Japones', 8),
-    ('CIIC 3015', '', '', '', 3, 'Into to computer science', 1),
+    ('CIIC3015', '', '', '', 3, 'Into to computer science', 1),
     ('ININ4010', '', '', '', 4, 'Prob and statistics', 5);
 
 INSERT INTO "Semester" (t_id, s_year) VALUES
