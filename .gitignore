@@ -451,3 +451,5 @@ $RECYCLE.BIN/
 premarum-backend/.vscode/
 
 out
+
+!premarum-aws-infrastructure/bin
