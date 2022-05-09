@@ -653,6 +653,7 @@ students = [
         ('INSO4151', 'INGE3035')
     ])]
 
+spaces = '\n' + '\n' + '\n' + '\n' + '\n' + '\n' + '\n' + '\n' + '\n'
 
 class PreEnrollmentGenerator:
     def __init__(self, student, pe_number):
@@ -661,7 +662,7 @@ class PreEnrollmentGenerator:
         self.st_id = student[0]
 
     def generateInsertValues(self):
-        return ",('%s','%s','%s')" % (
+        return ",('%s',%s,%s)" % (
             self.pe_name, self.s_id, self.st_id)
 
 
@@ -682,7 +683,7 @@ class PreEnrollmentSelectionGenerator:
         for course in self.preEnrollmentTuple:
             semester_Offer_id = self.getSemesterOfferId(course)
             if semester_Offer_id >= 0:
-                result += ",('%s','%s')" % (
+                result += ",(%s,%s)" % (
                     self.preEnrollmentId, self.getSemesterOfferId(course))
         return result
 
@@ -694,30 +695,25 @@ def generate_preEnrollment_String():
     preEnrollment_number = 1
     for student in students:
         for preEnrollment in student[3]:
-            PeG = PreEnrollmentGenerator(student, preEnrollment_number)
-            PreEnrollmentInsertString += '\n' + PeG.generateInsertValues()
-            preEnrollment_number += 1
+            for i in range(3):
+                PeG = PreEnrollmentGenerator(student, preEnrollment_number)
+                PreEnrollmentInsertString += '\n' + PeG.generateInsertValues()
+                preEnrollment_number += 1
     print(PreEnrollmentInsertString)
 
 
 def generate_preEnrollment_selections_string():
     PreEnrollmentSelectionsString = 'insert into \"PreEnrollmentSelection\" (pe_id, so_id) VALUES '
-    preEnrollment_id = 1
+    preEnrollment_id = 60
     for student in students:
         for preEnrollment in student[3]:
-            PeSG = PreEnrollmentSelectionGenerator(student, preEnrollment_id, semester_Offers, preEnrollment)
-            PreEnrollmentSelectionsString += '\n' + PeSG.generateInsertValues()
-            preEnrollment_id += 1
+            for i in range(3):
+                PeSG = PreEnrollmentSelectionGenerator(student, preEnrollment_id, semester_Offers, preEnrollment)
+                PreEnrollmentSelectionsString += '\n' + PeSG.generateInsertValues()
+                preEnrollment_id += 1
     print(PreEnrollmentSelectionsString)
 
 
 generate_preEnrollment_String()
-
-print('\n')
-print('\n')
-print('\n')
-print('\n')
-print('\n')
-print('\n')
-
+print(spaces)
 generate_preEnrollment_selections_string()
