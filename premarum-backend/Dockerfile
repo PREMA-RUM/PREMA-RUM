@@ -1,11 +1,10 @@
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+FROM --platform=linux/arm64 mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
 WORKDIR /app
 
 COPY . .
 RUN dotnet restore
 RUN dotnet publish ./PreEnrollmentMgmt.WebApi -c Release -o out
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0
-WORKDIR /app
-COPY --from=build-env /app/out .
-CMD ASPNETCORE_URLS=http://*:$PORT dotnet PreEnrollmentMgmt.WebApi.dll
+FROM --platform=linux/arm64 public.ecr.aws/lambda/dotnet:6-arm64
+COPY --from=build-env /app/out/ ${LAMBDA_TASK_ROOT}
+CMD ["PreEnrollmentMgmt.WebApi"]
