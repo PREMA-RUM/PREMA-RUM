@@ -21,11 +21,7 @@ export class PremarumAwsInfrastructureStack extends Stack {
     });
     
     const premarum_lambda = new lambda.DockerImageFunction(this, 'premalambda', {
-      code: lambda.DockerImageCode.fromImageAsset("../premarum-backend", {
-        buildArgs: {
-          "-f": "DockerfileLambda",
-        }
-      }),
+      code: lambda.DockerImageCode.fromImageAsset("../premarum-backend"),
       timeout: Duration.minutes(5),
       architecture: Architecture.ARM_64,
       memorySize: 1024,
