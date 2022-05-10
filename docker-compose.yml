@@ -13,20 +13,6 @@ services:
       - POSTGRES_DB=premadb
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=supersecretpassword
-    
-  preenrollmentmgmt:
-    build:
-      context: ./premarum-backend
-      dockerfile: Dockerfile.dev
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - DATABASE_SERVER_URL=postgresql://postgres:supersecretpassword@db:5432/premadb
-    ports:
-      - '8888:80'
-    volumes:
-      - ./premarum-backend/PreEnrollmentMgmt.WebApi/bin/Debug/net6.0:/app
-    depends_on:
-      - db
 
 volumes:
   postgres_data:
