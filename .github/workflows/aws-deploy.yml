@@ -22,4 +22,4 @@ jobs:
       - name: Synth stack
         run: cd ./premarum-aws-infrastructure && npx cdk synth
       - name: Authenticate Public ECR and Deploy Stack
-        run: cd ./premarum-aws-infrastructure && aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws && npx cdk deploy '*' --require-approval never
+        run: DOCKER_DEFAULT_PLATFORM='linux/arm64' cd ./premarum-aws-infrastructure && aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws && npx cdk deploy '*' --require-approval never
