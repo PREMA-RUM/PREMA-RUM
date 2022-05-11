@@ -177,7 +177,7 @@ export default function Home(props: HomeProps) {
                                         <Autocomplete
                                             id="tags-outlined"
                                             options={props.semesters}
-                                            getOptionLabel={(option) => `${option.term} - ${option.year}`}
+                                            getOptionLabel={(option) => `${option.term}: ${option.year} - ${option.year+1}`}
                                             filterSelectedOptions
                                             onChange={(event, newValue) => {
                                                 setNewPreEnrollmentSemester(newValue as ISemesterResponse);
