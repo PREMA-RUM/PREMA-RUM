@@ -32,7 +32,7 @@ create table if not exists "Professor"
     p_id serial not null
         constraint professor_pk
             primary key,
-    p_name varchar(30) not null,
+    p_name varchar(200),
     dept_id integer not null
         constraint dept_id
             references "Department" on delete restrict
