@@ -28,7 +28,7 @@ async function ScheduleDates(courseOfferings: IPreEnrollmentSelectionResponse[])
             let realStartTime = convertToMilitaryTime(ts.startTime)
             let realEndTime = convertToMilitaryTime(ts.endTime)
             return {
-                title: val.course.courseCode,
+                title: `${val.course.courseCode} - ${val.sectionName}`,
                 start: new Date(`2022-03-${(days as any)[ts.day] as string}T${realStartTime}`),
                 end: new Date(`2022-03-${(days as any)[ts.day] as string}T${realEndTime}`),
                 color: colors[index % colors.length]
