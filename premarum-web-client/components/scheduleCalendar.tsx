@@ -31,7 +31,8 @@ async function ScheduleDates(courseOfferings: IPreEnrollmentSelectionResponse[])
                 title: `${val.course.courseCode} - ${val.sectionName}`,
                 start: new Date(`2022-03-${(days as any)[ts.day] as string}T${realStartTime}`),
                 end: new Date(`2022-03-${(days as any)[ts.day] as string}T${realEndTime}`),
-                color: colors[index % colors.length]
+                color: colors[index % colors.length],
+                tooltip: `${val.course.courseCode} - ${val.course.courseName}`
             }
         })
     })
@@ -86,6 +87,9 @@ export default function ScheduleCalendar({courseOfferings: courseOfferings}: Sch
                     formats={formats}
                     defaultDate={new Date('2022-03-20T00:00')} // default date to make week static on this time
                     events={dates}
+                    tooltipAccessor={event => {
+                        return (event as any).tooltip
+                    }}
                     eventPropGetter={event => {
                         return {
                             style: {
