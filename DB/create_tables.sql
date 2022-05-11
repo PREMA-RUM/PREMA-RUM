@@ -301,7 +301,7 @@ begin
                            / (
                            SELECT coalesce(max(score), 1)
                            FROM dept_scores
-                       )* 0.75 as dept_score,
+                       )* 0.79 as dept_score,
                        coalesce(global_scores.score, 0)
                            /(
                            SELECT coalesce(max(score), 1)
@@ -311,7 +311,7 @@ begin
                            /(
                            SELECT coalesce(max(score), 1)
                            FROM courses_taken_scores
-                       ) *0.05 as course_taken_score
+                       ) *0.01 as course_taken_score
                 from dept_scores
                          full join global_scores on dept_scores.c_id = global_scores.c_id
                          full join courses_taken_scores on dept_scores.c_id = courses_taken_scores.c_id
@@ -337,7 +337,7 @@ begin
                            --- Bump recommendations from same department
                            CASE
                             WHEN dept_id = (select dept_id from student_department)
-                                THEN round(rank, 3)*1.75 -- Bump by 75 percent courses from same dept
+                                THEN round(rank, 3)*1.60 -- Bump by 60 percent courses from same dept
                             ELSE round(rank, 3)*0.5 -- Reduce by 50 percent courses not from your dept
                            END as rank
                     FROM aggregate_rank
