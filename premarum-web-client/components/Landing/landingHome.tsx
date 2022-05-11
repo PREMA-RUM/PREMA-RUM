@@ -1,6 +1,6 @@
 import { PopupRequest } from "@azure/msal-browser";
 import { useMsal } from "@azure/msal-react";
-import { Button, Box, Grid, Typography, Grow, useMediaQuery} from "@mui/material";
+import { Button, Box, Grid, Typography, Grow, useMediaQuery, CircularProgress} from "@mui/material";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { TOKEN_REQUEST } from "../../utility/constants";
@@ -18,7 +18,17 @@ const LoginButton: React.FunctionComponent<ButtonProps> = () => {
     
     if (inProgress === "login" || loginLoading) {
         return (
-            <Button size="large" sx={classes.loginButton} disabled>
+            <Button
+                size="large"
+                disabled
+                sx={classes.loginButton}
+                endIcon={
+                    <CircularProgress
+                        size={25}
+                        sx={classes.authProgress}
+                    />
+                }
+            >
                 Authentication In Progress...
             </Button>
         )
@@ -139,6 +149,11 @@ const useStyles = {
         marginTop: 2.5,
         fontSize: '1.1rem',
         fontWeight: 400,
+    },
+    authProgress: {
+        animationDuration: '2000ms',
+        marginLeft: '10px',
+        marginRight: '5px',
     },
 }
   

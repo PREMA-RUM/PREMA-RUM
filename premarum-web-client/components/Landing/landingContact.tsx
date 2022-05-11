@@ -140,7 +140,7 @@ export default function LandingContact() {
             TransitionComponent={isMobile? ({ children}) => children : Grow}
             sx={classes.snackbar}
         >
-            {successful?
+            {!successful?
                 <Alert
                     sx={classes.alert}
                     onClose={handleClose}
