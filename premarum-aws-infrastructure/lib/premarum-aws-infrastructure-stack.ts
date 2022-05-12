@@ -24,7 +24,7 @@ export class PremarumAwsInfrastructureStack extends Stack {
       code: lambda.DockerImageCode.fromImageAsset("../premarum-backend"),
       timeout: Duration.minutes(5),
       architecture: Architecture.ARM_64,
-      memorySize: 1024,
+      memorySize: 2048,
       environment: {
         DATABASE_SERVER_URL: db_secret.secretValue.unsafeUnwrap(),
         ASPNETCORE_ENVIRONMENT: "Production",

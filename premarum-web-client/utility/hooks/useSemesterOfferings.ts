@@ -4,7 +4,9 @@ import {IPreEnrollmentSelectionResponse} from "../requests/responseTypes";
 
 export function useSemesterOfferings(semesterId: number) {
     const {data, error} = useSWR(`semesterOfferingsFetch-${semesterId}`, async () => {
-        return await getSemesterCourseOfferings(semesterId);  
+        if (semesterId)
+            return await getSemesterCourseOfferings(semesterId);
+        return []
     }, {revalidateIfStale:false})
 
     return {

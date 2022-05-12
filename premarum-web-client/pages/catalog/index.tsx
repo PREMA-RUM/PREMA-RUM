@@ -1,7 +1,7 @@
 import {
     Autocomplete,
     Box,
-    Card,
+    Card, CircularProgress,
     Divider,
     Grid,
     Paper,
@@ -62,7 +62,7 @@ export default function Catalog({semesters}: SemesterProps) {
     const theme = useTheme();
     const matches = useMediaQuery(theme.breakpoints.down("sm"))
     const classes = useStyles(theme)
-
+    
     useEffect(() => {
         if (!isLoading)  {
             GetRows(courseOfferings).then(res => {setRows(res as any)})
@@ -87,38 +87,39 @@ export default function Catalog({semesters}: SemesterProps) {
             
             <Grid item>
                 <Card sx={classes.contentCard} >
-                    <Paper elevation={0} sx={classes.dataContainer}>
-                        <DataGrid
-                            autoHeight
-                            disableSelectionOnClick
-                            pageSize={25}
-                            rowsPerPageOptions={[]}
-                            rowHeight={75}
-                            rows={rows}
-                            columns={GetColumnFormat({creditSum: null})}
-                            components={{
-                                Toolbar: WrapToolBars,
-                            }}
-                            loading={isLoading}
-                            componentsProps={{
-                                toolbar: {
-                                    value: quickSearchState,
-                                    onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
-                                        requestSearch({
-                                            searchValue: event.target.value,
-                                            setSearchText: setQuickSearchState,
-                                            rowSetter: (rec: any[]) => GetRows(rec).then(res => setRows(res as any)),
-                                            rows: courseOfferings!
-                                        }),
-                                    clearSearch: () => {
-                                        setQuickSearchState("")
-                                        GetRows(courseOfferings?.length >= 0? courseOfferings: [])
-                                            .then(res => setRows(res as any))
+                    {isLoading?<Box sx={{pt: 5, width:"100%", textAlign:"center"}}><CircularProgress /></Box>:
+                        <Paper elevation={0} sx={classes.dataContainer}>
+                            <DataGrid
+                                autoHeight
+                                disableSelectionOnClick
+                                pageSize={25}
+                                rowsPerPageOptions={[]}
+                                rowHeight={75}
+                                rows={rows}
+                                columns={GetColumnFormat({creditSum: null})}
+                                components={{
+                                    Toolbar: WrapToolBars,
+                                }}
+                                componentsProps={{
+                                    toolbar: {
+                                        value: quickSearchState,
+                                        onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
+                                            requestSearch({
+                                                searchValue: event.target.value,
+                                                setSearchText: setQuickSearchState,
+                                                rowSetter: (rec: any[]) => GetRows(rec).then(res => setRows(res as any)),
+                                                rows: courseOfferings!
+                                            }),
+                                        clearSearch: () => {
+                                            setQuickSearchState("")
+                                            GetRows(courseOfferings?.length >= 0? courseOfferings: [])
+                                                .then(res => setRows(res as any))
+                                        }
                                     }
-                                }
-                            }}
-                        />
-                    </Paper>
+                                }}
+                            />
+                        </Paper>
+                    }
                 </Card>
             </Grid>
           
