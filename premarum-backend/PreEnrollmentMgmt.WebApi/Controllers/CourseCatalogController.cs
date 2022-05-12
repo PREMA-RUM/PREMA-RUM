@@ -49,6 +49,7 @@ public class CourseCatalogController : ControllerBase
         var result = _semesterOfferRepository.GetCompleteSemesterOfferQueryable();
         if (semesterId != null)
             result = result.Where(so => so.Semester.Id == semesterId);
+        result = result.OrderBy(so => so.Course.CourseCode);
         return _mapper.Map<IEnumerable<PreEnrollmentSemesterOfferDTO>>(await result.ToListAsync());
     }
 }
