@@ -32,7 +32,8 @@ export default function LandingAbout() {
                                         component="iframe"
                                         frameBorder="0"
                                         title="PREMARUM Demo Video"
-                                        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                                        allowFullScreen
+                                        src="https://www.youtube.com/embed/v-1e9KQL0WQ"
                                     />
                                 </Box>
                             </Box>
