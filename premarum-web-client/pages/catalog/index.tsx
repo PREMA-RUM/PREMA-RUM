@@ -63,8 +63,6 @@ export default function Catalog({semesters}: SemesterProps) {
     const matches = useMediaQuery(theme.breakpoints.down("sm"))
     const classes = useStyles(theme)
     
-    console.log(isLoading)
-    
     useEffect(() => {
         if (!isLoading)  {
             GetRows(courseOfferings).then(res => {setRows(res as any)})
