@@ -87,7 +87,7 @@ export default function Catalog({semesters}: SemesterProps) {
             
             <Grid item>
                 <Card sx={classes.contentCard} >
-                    {isLoading?<Box sx={{width:"100%", textAlign:"center"}}><CircularProgress /></Box>:
+                    {isLoading?<Box sx={{pt: 5, width:"100%", textAlign:"center"}}><CircularProgress /></Box>:
                         <Paper elevation={0} sx={classes.dataContainer}>
                             <DataGrid
                                 autoHeight
